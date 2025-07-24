@@ -465,3 +465,31 @@ final List<Category> categories = [
     excercises: allExercises.where((exercise) => exercise.categoryId == 'c14').toList(),
   ),
 ];
+
+final Map<String, List<Excercise>> scheduledExercises = {
+    'Monday': [
+      allExercises[0], // Plank
+      allExercises[1], // Push Ups
+      allExercises[4], // Pull Ups
+    ],
+    'Tuesday': [
+      allExercises[8], // Squats (assuming it exists)
+      allExercises[9], // Lunges (assuming it exists)
+    ],
+    'Wednesday': [
+      allExercises[2], // Chest Dips
+      allExercises[5], // Superman
+    ],
+    'Thursday': [
+      allExercises[0], // Plank
+      allExercises[4], // Pull Ups
+    ],
+    'Friday': [
+      allExercises[1], // Push Ups
+      allExercises[3], // Incline Push Ups
+    ],
+    'Saturday': [
+      allExercises[6], // Lat Pulldowns
+    ],
+    'Sunday': [], // Rest day
+  };

@@ -1,109 +1,109 @@
 import 'package:flutter/material.dart';
+import 'package:planner/widgets/navigation_screen.dart';
+import 'package:planner/data.dart';
+import 'package:planner/models/excersice.dart';
 
-class MyplanScreen extends StatelessWidget {
+class MyplanScreen extends StatefulWidget {
   const MyplanScreen({super.key});
 
+  @override
+  State<MyplanScreen> createState() => _MyplanScreenState();
+}
 
+class _MyplanScreenState extends State<MyplanScreen> {
+  bool _isSchedule = true;
+
+  // change the state of the screen based on the navigation toggle
+  @override
+  void didChangeDependencies() {
+    setState(() {
+      print( '_isSchedule: $_isSchedule');
+    });
+    super.didChangeDependencies();
+  }
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Column(
         children: [
-          NavigationScreen()
+          NavigationScreen(
+            onToggle: (isSchedule) {
+              setState(() {
+                _isSchedule = isSchedule;
+              });
+              print('Navigation toggled: $_isSchedule');
+            },
+          ),
+          const SizedBox(height: 20),
+          Expanded(
+            child: _isSchedule ? _buildScheduleView() : _buildCustomView(),
+          ),
         ],
       ),
     );
   }
-}
 
-class NavigationScreen extends StatefulWidget {
-  const NavigationScreen({
-    super.key,
-  });
-
-  @override
-  State<NavigationScreen> createState() => _NavigationScreenState();
-}
-
-class _NavigationScreenState extends State<NavigationScreen> {
-  bool isSchedule = true;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        InkWell(
-          onTap: () {
-            // TODO: Implement navigation to schedule screen
-            setState(() {
-              isSchedule = true;
-            });
-          },
-          borderRadius: const BorderRadius.only(
-            topLeft: Radius.circular(25),
-            bottomLeft: Radius.circular(25),
-          ),
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            width: 110,
-            height: 50,
-            decoration: BoxDecoration(
-              color: isSchedule ? Colors.deepOrange : null,
-              borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(25),
-                bottomLeft: Radius.circular(25),
-              ),
-              border: Border.all(
-                width: 2,
-                color: Theme.of(context).colorScheme.primary,
+  Widget _buildScheduleView() {
+    return ListView.builder(
+      itemCount: scheduledExercises.keys.length,
+      itemBuilder: (context, index) {
+        String day = scheduledExercises.keys.elementAt(index);
+        List<Excercise> exercises = scheduledExercises[day]!;
+        return Card(
+          margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          child: ExpansionTile(
+            title: Text(
+              day,
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 18,
               ),
             ),
-            child: Center(
-              child: Text('Schedule',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: isSchedule ? Colors.white : Theme.of(context).colorScheme.primary,
-                  )),
-            ),
+            subtitle: Text('${exercises.length} exercises'),
+            children: exercises.isEmpty
+                ? [
+                    const Padding(
+                      padding: EdgeInsets.all(16.0),
+                      child: Text(
+                        'Rest Day',
+                        style: TextStyle(
+                          fontStyle: FontStyle.italic,
+                          color: Colors.grey,
+                        ),
+                      ),
+                    ),
+                  ]
+                : exercises
+                    .map((exercise) => ListTile(
+                          leading: CircleAvatar(
+                            backgroundImage: AssetImage(exercise.excerciseImage),
+                          ),
+                          title: Text(exercise.excerciseTitle),
+                          trailing: Checkbox(
+                            value: false, // You can add state tracking here
+                            onChanged: (value) {
+                              // Handle exercise completion
+                            },
+                          ),
+                        ))
+                    .toList(),
           ),
+        );
+      },
+    );
+  }
+
+  Widget _buildCustomView() {
+    return const Center(
+      child: Text(
+        'Custom Workout View\n(Coming Soon)',
+        textAlign: TextAlign.center,
+        style: TextStyle(
+          fontSize: 18,
+          color: Colors.grey,
         ),
-        InkWell(
-          onTap: () {
-            // TODO: Implement navigation to custom screen
-            setState(() {
-              isSchedule = false;
-            });
-          },
-          borderRadius: const BorderRadius.only(
-            topRight: Radius.circular(25),
-            bottomRight: Radius.circular(25),
-          ),
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            width: 110,
-            height: 50,
-            decoration: BoxDecoration(
-              color: isSchedule ? null : Colors.deepOrange,
-              borderRadius: const BorderRadius.only(
-                topRight: Radius.circular(25),
-                bottomRight: Radius.circular(25),
-              ),
-              border: Border.all(
-                color: Theme.of(context).colorScheme.primary,
-                width: 2,
-              ),
-            ),
-            child: Center(
-              child: Text('Custom',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: isSchedule ? Theme.of(context).colorScheme.primary : Colors.white,
-                  )),
-            ),
-          ),
-        ),
-      ],
+      ),
     );
   }
 }
