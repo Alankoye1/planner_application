@@ -378,7 +378,6 @@ final List<Excercise> allExercises = [
   ),
 ];
 
-// Categories with their associated exercises
 final List<Category> categories = [
   Category(
     id: 'c1',
@@ -493,3 +492,5 @@ final Map<String, List<Excercise>> scheduledExercises = {
     ],
     'Sunday': [], // Rest day
   };
+
+final Map<String, List<Excercise>> customExercises = {};

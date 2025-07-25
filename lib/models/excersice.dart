@@ -12,8 +12,10 @@ class Excercise {
     required this.categoryId,
   });
 
-  // Excercise findById(String id) {
-  //   return excercises.firstWhere((element) => element.id == id);
-  // }
+
+
+  void addExcerciseToCustom() {
+    
+  }
 }
 
