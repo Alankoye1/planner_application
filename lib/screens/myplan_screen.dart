@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:planner/screens/custom_excercise_screen.dart';
-import 'package:planner/screens/schedule_screen.dart';
+import 'package:planner/data.dart';
+import 'package:planner/widgets/custom_excercise.dart';
+import 'package:planner/widgets/schedule.dart';
 import 'package:planner/widgets/navigation_screen.dart';
+import 'package:planner/providers/custom_exercise_provider.dart';
+import 'package:provider/provider.dart';
 
 class MyplanScreen extends StatefulWidget {
   const MyplanScreen({super.key});
@@ -12,13 +15,6 @@ class MyplanScreen extends StatefulWidget {
 
 class _MyplanScreenState extends State<MyplanScreen> {
   bool _isSchedule = true;
-
-  // change the state of the screen based on the navigation toggle
-  @override
-  void didChangeDependencies() {
-    setState(() {});
-    super.didChangeDependencies();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,11 +29,22 @@ class _MyplanScreenState extends State<MyplanScreen> {
             },
           ),
           const SizedBox(height: 20),
-          Expanded(
-            child: _isSchedule ? ScheduleScreen() : CustomExerciseScreen(),
-          ),
+          Expanded(child: _isSchedule ? Schedule() : CustomExercise()),
         ],
       ),
+      floatingActionButton: _isSchedule
+          ? null
+          : customExercises.isNotEmpty
+          ? FloatingActionButton(
+              onPressed: () {
+                Provider.of<CustomExerciseProvider>(
+                  context,
+                  listen: false,
+                ).addingExercise(context);
+              },
+              child: const Icon(Icons.add),
+            )
+          : null,
     );
   }
 }

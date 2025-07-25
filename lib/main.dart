@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:planner/screens/tab_screen.dart';
+import 'package:planner/providers/custom_exercise_provider.dart';
+import 'package:provider/provider.dart';
 // TODO: Create UI for whole app
 // TODO: Implement custom exercise functionality
 // TODO: Responsive design for different screen sizes
@@ -15,17 +17,20 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        primaryColor: Colors.deepOrange,
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: Colors.red,
-          primary: Colors.deepOrange,
-          secondary: Colors.orangeAccent,
+    return ChangeNotifierProvider(
+      create: (context) => CustomExerciseProvider(),
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          primaryColor: Colors.deepOrange,
+          colorScheme: ColorScheme.fromSeed(
+            seedColor: Colors.red,
+            primary: Colors.deepOrange,
+            secondary: Colors.orangeAccent,
+          ),
         ),
+        home: TabScreen(),
       ),
-      home: TabScreen(),
     );
   }
 }

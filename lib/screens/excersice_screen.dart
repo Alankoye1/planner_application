@@ -3,7 +3,6 @@ import 'package:planner/data.dart';
 import 'package:planner/widgets/excercise_item.dart';
 
 class Excercisescreen extends StatelessWidget {
-  static const routeName = '/excercise-screen';
   final String categoryTitle;
 
   const Excercisescreen({super.key, required this.categoryTitle});

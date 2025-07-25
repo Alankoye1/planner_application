@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:planner/data.dart';
 import 'package:planner/models/excersice.dart';
 
-class ScheduleScreen extends StatelessWidget {
-  const ScheduleScreen({super.key});
+class Schedule extends StatelessWidget {
+  const Schedule({super.key});
 
   @override
   Widget build(BuildContext context) {

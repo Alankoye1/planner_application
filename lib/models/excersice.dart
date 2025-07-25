@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 class Excercise {
   final String id;
   final String excerciseTitle;
@@ -11,7 +13,7 @@ class Excercise {
     required this.categoryId,
   });
 
-  void addExcerciseToCustom() {
+  void addExcerciseToCustom(BuildContext context) {
     // TODO: Implement adding exercise functionality
   }
 }
