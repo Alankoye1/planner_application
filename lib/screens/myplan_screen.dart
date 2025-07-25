@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:planner/screens/custom_excercise_screen.dart';
 import 'package:planner/screens/schedule_screen.dart';
 import 'package:planner/widgets/navigation_screen.dart';
-import 'package:planner/data.dart';
-import 'package:planner/models/excersice.dart';
 
 class MyplanScreen extends StatefulWidget {
   const MyplanScreen({super.key});
@@ -18,12 +16,10 @@ class _MyplanScreenState extends State<MyplanScreen> {
   // change the state of the screen based on the navigation toggle
   @override
   void didChangeDependencies() {
-    setState(() {
-      print( '_isSchedule: $_isSchedule');
-    });
+    setState(() {});
     super.didChangeDependencies();
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,7 +30,6 @@ class _MyplanScreenState extends State<MyplanScreen> {
               setState(() {
                 _isSchedule = isSchedule;
               });
-              print('Navigation toggled: $_isSchedule');
             },
           ),
           const SizedBox(height: 20),
@@ -45,8 +40,4 @@ class _MyplanScreenState extends State<MyplanScreen> {
       ),
     );
   }
-
-  
-
- 
 }

@@ -19,9 +19,11 @@ class CategoryItem extends StatelessWidget {
     final theme = Theme.of(context);
     return InkWell(
       onTap: () {
-        Navigator.of(
-          context,
-        ).push(MaterialPageRoute(builder: (context) => Excercisescreen(categoryTitle: categoryTitle),));
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => Excercisescreen(categoryTitle: categoryTitle),
+          ),
+        );
       },
       child: Card(
         elevation: 4,

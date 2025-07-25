@@ -26,7 +26,7 @@ final List<Excercise> allExercises = [
     excerciseImage: 'assets/images/chest.jpg',
     categoryId: 'c1',
   ),
-  
+
   // Back exercises
   Excercise(
     id: 'e5',
@@ -46,7 +46,7 @@ final List<Excercise> allExercises = [
     excerciseImage: 'assets/images/lat.jpg',
     categoryId: 'c2',
   ),
-  
+
   // Leg exercises
   Excercise(
     id: 'e8',
@@ -72,7 +72,7 @@ final List<Excercise> allExercises = [
     excerciseImage: 'assets/images/leg.jpg',
     categoryId: 'c3',
   ),
-  
+
   // Shoulder exercises
   Excercise(
     id: 'e12',
@@ -92,7 +92,7 @@ final List<Excercise> allExercises = [
     excerciseImage: 'assets/images/shoulder.jpg',
     categoryId: 'c4',
   ),
-  
+
   // Triceps exercises
   Excercise(
     id: 'e15',
@@ -112,7 +112,7 @@ final List<Excercise> allExercises = [
     excerciseImage: 'assets/images/triceps.jpg',
     categoryId: 'c5',
   ),
-  
+
   // Abs exercises
   Excercise(
     id: 'e18',
@@ -383,114 +383,142 @@ final List<Category> categories = [
     id: 'c1',
     categoryTitle: 'Chest',
     categoryImage: 'assets/images/chest.jpg',
-    excercises: allExercises.where((exercise) => exercise.categoryId == 'c1').toList(),
+    excercises: allExercises
+        .where((exercise) => exercise.categoryId == 'c1')
+        .toList(),
   ),
   Category(
     id: 'c2',
     categoryTitle: 'Back',
     categoryImage: 'assets/images/lat.jpg',
-    excercises: allExercises.where((exercise) => exercise.categoryId == 'c2').toList(),
+    excercises: allExercises
+        .where((exercise) => exercise.categoryId == 'c2')
+        .toList(),
   ),
   Category(
     id: 'c3',
     categoryTitle: 'Legs',
     categoryImage: 'assets/images/leg.jpg',
-    excercises: allExercises.where((exercise) => exercise.categoryId == 'c3').toList(),
+    excercises: allExercises
+        .where((exercise) => exercise.categoryId == 'c3')
+        .toList(),
   ),
   Category(
     id: 'c4',
     categoryTitle: 'Shoulders',
     categoryImage: 'assets/images/shoulder.jpg',
-    excercises: allExercises.where((exercise) => exercise.categoryId == 'c4').toList(),
+    excercises: allExercises
+        .where((exercise) => exercise.categoryId == 'c4')
+        .toList(),
   ),
   Category(
     id: 'c5',
     categoryTitle: 'Triceps',
     categoryImage: 'assets/images/triceps.jpg',
-    excercises: allExercises.where((exercise) => exercise.categoryId == 'c5').toList(),
+    excercises: allExercises
+        .where((exercise) => exercise.categoryId == 'c5')
+        .toList(),
   ),
   Category(
     id: 'c6',
     categoryTitle: 'Abs',
     categoryImage: 'assets/images/abs.jpg',
-    excercises: allExercises.where((exercise) => exercise.categoryId == 'c6').toList(),
+    excercises: allExercises
+        .where((exercise) => exercise.categoryId == 'c6')
+        .toList(),
   ),
   Category(
     id: 'c7',
     categoryTitle: 'Biceps',
     categoryImage: 'assets/images/chest.jpg',
-    excercises: allExercises.where((exercise) => exercise.categoryId == 'c7').toList(),
+    excercises: allExercises
+        .where((exercise) => exercise.categoryId == 'c7')
+        .toList(),
   ),
   Category(
     id: 'c8',
     categoryTitle: 'Cardio',
     categoryImage: 'assets/images/leg.jpg',
-    excercises: allExercises.where((exercise) => exercise.categoryId == 'c8').toList(),
+    excercises: allExercises
+        .where((exercise) => exercise.categoryId == 'c8')
+        .toList(),
   ),
   Category(
     id: 'c9',
     categoryTitle: 'Full Body',
     categoryImage: 'assets/images/chest.jpg',
-    excercises: allExercises.where((exercise) => exercise.categoryId == 'c9').toList(),
+    excercises: allExercises
+        .where((exercise) => exercise.categoryId == 'c9')
+        .toList(),
   ),
   Category(
     id: 'c10',
     categoryTitle: 'Yoga/Stretching',
     categoryImage: 'assets/images/abs.jpg',
-    excercises: allExercises.where((exercise) => exercise.categoryId == 'c10').toList(),
+    excercises: allExercises
+        .where((exercise) => exercise.categoryId == 'c10')
+        .toList(),
   ),
   Category(
     id: 'c11',
     categoryTitle: 'Glutes',
     categoryImage: 'assets/images/leg.jpg',
-    excercises: allExercises.where((exercise) => exercise.categoryId == 'c11').toList(),
+    excercises: allExercises
+        .where((exercise) => exercise.categoryId == 'c11')
+        .toList(),
   ),
   Category(
     id: 'c12',
     categoryTitle: 'HIIT',
     categoryImage: 'assets/images/leg.jpg',
-    excercises: allExercises.where((exercise) => exercise.categoryId == 'c12').toList(),
+    excercises: allExercises
+        .where((exercise) => exercise.categoryId == 'c12')
+        .toList(),
   ),
   Category(
     id: 'c13',
     categoryTitle: 'Forearms',
     categoryImage: 'assets/images/chest.jpg',
-    excercises: allExercises.where((exercise) => exercise.categoryId == 'c13').toList(),
+    excercises: allExercises
+        .where((exercise) => exercise.categoryId == 'c13')
+        .toList(),
   ),
   Category(
     id: 'c14',
     categoryTitle: 'Calves',
     categoryImage: 'assets/images/leg.jpg',
-    excercises: allExercises.where((exercise) => exercise.categoryId == 'c14').toList(),
+    excercises: allExercises
+        .where((exercise) => exercise.categoryId == 'c14')
+        .toList(),
   ),
 ];
 
 final Map<String, List<Excercise>> scheduledExercises = {
-    'Monday': [
-      allExercises[0], // Plank
-      allExercises[1], // Push Ups
-      allExercises[4], // Pull Ups
-    ],
-    'Tuesday': [
-      allExercises[8], // Squats (assuming it exists)
-      allExercises[9], // Lunges (assuming it exists)
-    ],
-    'Wednesday': [
-      allExercises[2], // Chest Dips
-      allExercises[5], // Superman
-    ],
-    'Thursday': [
-      allExercises[0], // Plank
-      allExercises[4], // Pull Ups
-    ],
-    'Friday': [
-      allExercises[1], // Push Ups
-      allExercises[3], // Incline Push Ups
-    ],
-    'Saturday': [
-      allExercises[6], // Lat Pulldowns
-    ],
-    'Sunday': [], // Rest day
-  };
+  'Monday': [
+    allExercises[0], // Plank
+    allExercises[1], // Push Ups
+    allExercises[4], // Pull Ups
+  ],
+  'Tuesday': [
+    allExercises[8], // Squats (assuming it exists)
+    allExercises[9], // Lunges (assuming it exists)
+  ],
+  'Wednesday': [
+    allExercises[2], // Chest Dips
+    allExercises[5], // Superman
+  ],
+  'Thursday': [
+    allExercises[0], // Plank
+    allExercises[4], // Pull Ups
+  ],
+  'Friday': [
+    allExercises[1], // Push Ups
+    allExercises[3], // Incline Push Ups
+  ],
+  'Saturday': [
+    allExercises[6], // Lat Pulldowns
+  ],
+  'Sunday': [], // Rest day
+};
 
 final Map<String, List<Excercise>> customExercises = {};

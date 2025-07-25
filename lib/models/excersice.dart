@@ -1,4 +1,3 @@
-
 class Excercise {
   final String id;
   final String excerciseTitle;
@@ -12,10 +11,7 @@ class Excercise {
     required this.categoryId,
   });
 
-
-
   void addExcerciseToCustom() {
-    
+    // TODO: Implement adding exercise functionality
   }
 }
-

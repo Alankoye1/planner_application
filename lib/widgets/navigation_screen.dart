@@ -1,10 +1,7 @@
-
 import 'package:flutter/material.dart';
 
 class NavigationScreen extends StatefulWidget {
-  const NavigationScreen({
-    super.key,  required this.onToggle, 
-  });
+  const NavigationScreen({super.key, required this.onToggle});
   final Function(bool isSchedule) onToggle;
 
   @override
@@ -21,7 +18,6 @@ class _NavigationScreenState extends State<NavigationScreen> {
       children: [
         InkWell(
           onTap: () {
-            // TODO: Implement navigation to schedule screen
             setState(() {
               isSchedule = true;
             });
@@ -47,11 +43,15 @@ class _NavigationScreenState extends State<NavigationScreen> {
               ),
             ),
             child: Center(
-              child: Text('Schedule',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: isSchedule ? Colors.white : Theme.of(context).colorScheme.primary,
-                  )),
+              child: Text(
+                'Schedule',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: isSchedule
+                      ? Colors.white
+                      : Theme.of(context).colorScheme.primary,
+                ),
+              ),
             ),
           ),
         ),
@@ -82,11 +82,15 @@ class _NavigationScreenState extends State<NavigationScreen> {
               ),
             ),
             child: Center(
-              child: Text('Custom',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: isSchedule ? Theme.of(context).colorScheme.primary : Colors.white,
-                  )),
+              child: Text(
+                'Custom',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: isSchedule
+                      ? Theme.of(context).colorScheme.primary
+                      : Colors.white,
+                ),
+              ),
             ),
           ),
         ),

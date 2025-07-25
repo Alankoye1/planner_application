@@ -18,10 +18,7 @@ class _TabScreenState extends State<TabScreen> {
   void initState() {
     _pages = [
       {'page': CategoryScreen(), 'title': 'Categories'},
-      {
-        'page': MyplanScreen(),
-        'title': 'My Plan',
-      },
+      {'page': MyplanScreen(), 'title': 'My Plan'},
     ];
     super.initState();
   }
@@ -37,11 +34,14 @@ class _TabScreenState extends State<TabScreen> {
     final theme = Theme.of(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text(_pages![_selectedPageIndex]['title'] as String, style: TextStyle(
-          fontSize: 24,
-          fontWeight: FontWeight.bold,
-          color: theme.colorScheme.primary,
-        ),),
+        title: Text(
+          _pages![_selectedPageIndex]['title'] as String,
+          style: TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+            color: theme.colorScheme.primary,
+          ),
+        ),
       ),
       body: _pages![_selectedPageIndex]['page'] as Widget,
       bottomNavigationBar: BottomNavigationBar(
