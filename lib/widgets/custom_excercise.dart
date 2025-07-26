@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:planner/data.dart';
 import 'package:planner/models/excersice.dart';
 import 'package:planner/providers/custom_exercise_provider.dart';
+import 'package:planner/screens/excercise_detail_screen.dart';
 import 'package:provider/provider.dart';
 
 class CustomExercise extends StatelessWidget {
@@ -52,8 +53,7 @@ class CustomExercise extends StatelessWidget {
                           IconButton(
                             icon: const Icon(Icons.add, color: Colors.green),
                             onPressed: () {
-                              // TODO: Implement adding exercise to category
-                              provider.addExcerciseToCustom(context, category);
+                              provider.addExcerciseToCustom(context, category, exercises);
                             },
                           ),
                           const Icon(Icons.expand_more),
@@ -80,11 +80,18 @@ class CustomExercise extends StatelessWidget {
                               color: Colors.blueAccent,
                             ),
                             onPressed: () {
-                              // TODO: Implement edit functionality
+                              provider.editExerciseInCustom(context, category, exercises, exercise);
                             },
                           ),
                           onTap: () {
-                            // TODO: Implement exercise details or actions
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) => ExerciseDetailScreen(
+                                  imageUrl: exercise.excerciseImage,
+                                  title: exercise.excerciseTitle,
+                                ),
+                              ),
+                            );
                           },
                         );
                       }).toList(),

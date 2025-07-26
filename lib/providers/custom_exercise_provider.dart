@@ -33,7 +33,11 @@ class CustomExerciseProvider extends ChangeNotifier {
     );
   }
 
-  void addExcerciseToCustom(BuildContext context, String category) {
+  void addExcerciseToCustom(
+    BuildContext context,
+    String category,
+    List<Excercise> exercises,
+  ) {
     showDialog(
       context: context,
       builder: (context) {
@@ -44,18 +48,30 @@ class CustomExerciseProvider extends ChangeNotifier {
             child: ListView(
               shrinkWrap: true,
               children: allExercises.map((exercise) {
+                // Check if exercise is already in the custom category
+                bool isAlreadyAdded =
+                    customExercises[category]?.any(
+                      (existingExercise) => existingExercise.id == exercise.id,
+                    ) ??
+                    false;
+
                 return ListTile(
                   leading: CircleAvatar(
                     backgroundImage: AssetImage(exercise.excerciseImage),
                   ),
                   title: Text(exercise.excerciseTitle),
                   trailing: IconButton(
-                    onPressed: () {
-                      customExercises['$category']!.add(exercise);
-                      notifyListeners();
-                      Navigator.of(context).pop();
-                    },
-                    icon: const Icon(Icons.add, color: Colors.green),
+                    onPressed: isAlreadyAdded
+                        ? null
+                        : () {
+                            customExercises[category]!.add(exercise);
+                            notifyListeners();
+                            Navigator.of(context).pop();
+                          },
+                    icon: Icon(
+                      isAlreadyAdded ? Icons.check : Icons.add,
+                      color: isAlreadyAdded ? Colors.grey : Colors.green,
+                    ),
                   ),
                   onTap: () {
                     Navigator.of(context).push(
@@ -81,4 +97,73 @@ class CustomExerciseProvider extends ChangeNotifier {
       },
     );
   }
+
+  void editExerciseInCustom(
+    BuildContext context,
+    String category,
+    List<Excercise> exercises,
+    Excercise removeExercise,
+  ) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Add Exercise to Custom'),
+          content: SizedBox(
+            width: double.maxFinite,
+            child: ListView(
+              shrinkWrap: true,
+              children: allExercises.map((exercise) {
+                // Check if exercise is already in the custom category
+                bool isAlreadyAdded =
+                    customExercises[category]?.any(
+                      (existingExercise) => existingExercise.id == exercise.id,
+                    ) ??
+                    false;
+
+                return ListTile(
+                  leading: CircleAvatar(
+                    backgroundImage: AssetImage(exercise.excerciseImage),
+                  ),
+                  title: Text(exercise.excerciseTitle),
+                  trailing: IconButton(
+                    onPressed: isAlreadyAdded
+                        ? null
+                        : () {
+                            customExercises[category]!.remove(removeExercise);
+                            customExercises[category]!.add(exercise);
+                            notifyListeners();
+                            Navigator.of(context).pop();
+                          },
+                    icon: Icon(
+                      isAlreadyAdded ? Icons.check : Icons.change_circle,
+                      color: isAlreadyAdded ? Colors.grey : Colors.green,
+                    ),
+                  ),
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => ExerciseDetailScreen(
+                          imageUrl: exercise.excerciseImage,
+                          title: exercise.excerciseTitle,
+                        ),
+                      ),
+                    );
+                  },
+                );
+              }).toList(),
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('Cancel'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+
 }
