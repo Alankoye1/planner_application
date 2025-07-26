@@ -23,7 +23,9 @@ class CustomExerciseProvider extends ChangeNotifier {
                   customExercises[name.text.trim()] = <Excercise>[];
                   notifyListeners(); // Notify widgets to rebuild
                 }
-                Navigator.of(context).pop();
+                if (context.mounted) {
+                  Navigator.of(context).pop();
+                }
               },
               child: const Text('Add'),
             ),
@@ -66,7 +68,9 @@ class CustomExerciseProvider extends ChangeNotifier {
                         : () {
                             customExercises[category]!.add(exercise);
                             notifyListeners();
-                            Navigator.of(context).pop();
+                            if (context.mounted) {
+                              Navigator.of(context).pop();
+                            }
                           },
                     icon: Icon(
                       isAlreadyAdded ? Icons.check : Icons.add,
@@ -74,14 +78,16 @@ class CustomExerciseProvider extends ChangeNotifier {
                     ),
                   ),
                   onTap: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) => ExerciseDetailScreen(
-                          imageUrl: exercise.excerciseImage,
-                          title: exercise.excerciseTitle,
+                    if (context.mounted) {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => ExerciseDetailScreen(
+                            imageUrl: exercise.excerciseImage,
+                            title: exercise.excerciseTitle,
+                          ),
                         ),
-                      ),
-                    );
+                      );
+                    }
                   },
                 );
               }).toList(),
@@ -89,7 +95,11 @@ class CustomExerciseProvider extends ChangeNotifier {
           ),
           actions: [
             TextButton(
-              onPressed: () => Navigator.of(context).pop(),
+              onPressed: () {
+                if (context.mounted) {
+                  Navigator.of(context).pop();
+                }
+              },
               child: const Text('Cancel'),
             ),
           ],
@@ -133,7 +143,9 @@ class CustomExerciseProvider extends ChangeNotifier {
                             customExercises[category]!.remove(removeExercise);
                             customExercises[category]!.add(exercise);
                             notifyListeners();
-                            Navigator.of(context).pop();
+                            if (context.mounted) {
+                              Navigator.of(context).pop();
+                            }
                           },
                     icon: Icon(
                       isAlreadyAdded ? Icons.check : Icons.change_circle,
@@ -141,14 +153,16 @@ class CustomExerciseProvider extends ChangeNotifier {
                     ),
                   ),
                   onTap: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) => ExerciseDetailScreen(
-                          imageUrl: exercise.excerciseImage,
-                          title: exercise.excerciseTitle,
+                    if (context.mounted) {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => ExerciseDetailScreen(
+                            imageUrl: exercise.excerciseImage,
+                            title: exercise.excerciseTitle,
+                          ),
                         ),
-                      ),
-                    );
+                      );
+                    }
                   },
                 );
               }).toList(),
@@ -156,7 +170,11 @@ class CustomExerciseProvider extends ChangeNotifier {
           ),
           actions: [
             TextButton(
-              onPressed: () => Navigator.of(context).pop(),
+              onPressed: () {
+                if (context.mounted) {
+                  Navigator.of(context).pop();
+                }
+              },
               child: const Text('Cancel'),
             ),
           ],

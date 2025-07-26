@@ -15,20 +15,26 @@ class MyplanScreen extends StatefulWidget {
 
 class _MyplanScreenState extends State<MyplanScreen> {
   bool _isSchedule = true;
+  CustomExerciseProvider? _provider;
 
   @override
-  void initState() {
-    super.initState();
-    Provider.of<CustomExerciseProvider>(context, listen: false).addListener(_updateUI);
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_provider == null) {
+      _provider = Provider.of<CustomExerciseProvider>(context, listen: false);
+      _provider!.addListener(_updateUI);
+    }
   }
 
   void _updateUI() {
-    setState(() {});
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   @override
   void dispose() {
-    Provider.of<CustomExerciseProvider>(context, listen: false).removeListener(_updateUI);
+    _provider?.removeListener(_updateUI);
     super.dispose();
   }
 
