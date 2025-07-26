@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:planner/screens/category_screen.dart';
 import 'package:planner/screens/myplan_screen.dart';
+import 'package:planner/widgets/my_drawer.dart';
 
 class TabScreen extends StatefulWidget {
   const TabScreen({super.key});
@@ -33,6 +34,7 @@ class _TabScreenState extends State<TabScreen> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Scaffold(
+      drawer: const MyDrawer(),
       appBar: AppBar(
         title: Text(
           _pages![_selectedPageIndex]['title'] as String,
