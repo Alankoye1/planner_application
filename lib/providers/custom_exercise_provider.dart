@@ -84,6 +84,7 @@ class CustomExerciseProvider extends ChangeNotifier {
                           builder: (context) => ExerciseDetailScreen(
                             imageUrl: exercise.excerciseImage,
                             title: exercise.excerciseTitle,
+                            id: exercise.id,
                           ),
                         ),
                       );
@@ -159,6 +160,7 @@ class CustomExerciseProvider extends ChangeNotifier {
                           builder: (context) => ExerciseDetailScreen(
                             imageUrl: exercise.excerciseImage,
                             title: exercise.excerciseTitle,
+                            id: exercise.id,
                           ),
                         ),
                       );
@@ -184,7 +186,9 @@ class CustomExerciseProvider extends ChangeNotifier {
   }
 
   void deleteExerciseFromCustom(Excercise exercise, String category) {
-    customExercises[category]?.removeWhere((existingExercise) => existingExercise.id == exercise.id);
+    customExercises[category]?.removeWhere(
+      (existingExercise) => existingExercise.id == exercise.id,
+    );
     notifyListeners(); // Notify widgets to rebuild
   }
 }

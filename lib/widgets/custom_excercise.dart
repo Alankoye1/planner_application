@@ -106,7 +106,10 @@ class CustomExercise extends StatelessWidget {
                                     color: Colors.red,
                                   ),
                                   onPressed: () {
-                                    provider.deleteExerciseFromCustom(exercise, category);
+                                    provider.deleteExerciseFromCustom(
+                                      exercise,
+                                      category,
+                                    );
                                   },
                                 ),
                               ],
@@ -118,6 +121,7 @@ class CustomExercise extends StatelessWidget {
                                 builder: (context) => ExerciseDetailScreen(
                                   imageUrl: exercise.excerciseImage,
                                   title: exercise.excerciseTitle,
+                                  id: exercise.id,
                                 ),
                               ),
                             );

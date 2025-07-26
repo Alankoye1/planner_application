@@ -1,35 +1,45 @@
 import 'package:flutter/material.dart';
+import 'package:planner/providers/exercise_provider.dart';
+import 'package:provider/provider.dart';
 
-class ExerciseDetailScreen extends StatelessWidget {
+class ExerciseDetailScreen extends StatefulWidget {
   const ExerciseDetailScreen({
     super.key,
     required this.imageUrl,
     required this.title,
-    this.isCustomExercise = false,
+    required this.id,
   });
   final String imageUrl;
   final String title;
-  final bool isCustomExercise;
+  final String id;
 
   @override
+  State<ExerciseDetailScreen> createState() => _ExerciseDetailScreenState();
+}
+
+class _ExerciseDetailScreenState extends State<ExerciseDetailScreen> {
+  @override
   Widget build(BuildContext context) {
+    final exerciseProvider = Provider.of<ExerciseProvider>(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text(title),
+        title: Text(widget.title),
         actions: [
-          if (isCustomExercise)
-            IconButton(
-              icon: const Icon(Icons.add, size: 30),
-              onPressed: () {
-                // TODO: Implement add functionality
-              },
-            ),
+          IconButton(
+            icon: exerciseProvider.isFavorite(widget.id)
+                ? const Icon(Icons.favorite, color: Colors.red)
+                : const Icon(Icons.favorite_border, color: Colors.red),
+            onPressed: () {
+              exerciseProvider.toggleFavorite(widget.id);
+            },
+          ),
+          SizedBox(width: 10),
         ],
       ),
       body: Container(
         width: double.infinity,
         padding: const EdgeInsets.all(16.0),
-        child: Image.asset(imageUrl, fit: BoxFit.fill),
+        child: Image.asset(widget.imageUrl, fit: BoxFit.fill),
       ),
     );
   }

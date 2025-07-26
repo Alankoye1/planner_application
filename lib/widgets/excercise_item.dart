@@ -2,9 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:planner/screens/excercise_detail_screen.dart';
 
 class ExcerciseItem extends StatelessWidget {
-  const ExcerciseItem({super.key, required this.imageUrl, required this.title});
+  const ExcerciseItem({
+    super.key,
+    required this.imageUrl,
+    required this.title,
+    required this.id,
+  });
   final String imageUrl;
   final String title;
+  final String id;
 
   @override
   Widget build(BuildContext context) {
@@ -42,8 +48,11 @@ class ExcerciseItem extends StatelessWidget {
           onTap: () {
             Navigator.of(context).push(
               MaterialPageRoute(
-                builder: (context) =>
-                    ExerciseDetailScreen(imageUrl: imageUrl, title: title),
+                builder: (context) => ExerciseDetailScreen(
+                  imageUrl: imageUrl,
+                  title: title,
+                  id: id,
+                ),
               ),
             );
           },

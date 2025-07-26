@@ -25,6 +25,7 @@ class Excercisescreen extends StatelessWidget {
           return ExcerciseItem(
             imageUrl: category.excercises[index].excerciseImage,
             title: category.excercises[index].excerciseTitle,
+            id: category.excercises[index].id,
           );
         },
         itemCount: category.excercises.length,
