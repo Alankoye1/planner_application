@@ -53,7 +53,11 @@ class CustomExercise extends StatelessWidget {
                           IconButton(
                             icon: const Icon(Icons.add, color: Colors.green),
                             onPressed: () {
-                              provider.addExcerciseToCustom(context, category, exercises);
+                              provider.addExcerciseToCustom(
+                                context,
+                                category,
+                                exercises,
+                              );
                             },
                           ),
                           const Icon(Icons.expand_more),
@@ -74,14 +78,39 @@ class CustomExercise extends StatelessWidget {
                             exercise.excerciseTitle,
                             style: const TextStyle(fontSize: 16),
                           ),
-                          trailing: IconButton(
-                            icon: const Icon(
-                              Icons.edit,
-                              color: Colors.blueAccent,
+                          trailing: SizedBox(
+                            width: 96, // Adjust width as needed
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                // Edit button to modify the exercise
+                                IconButton(
+                                  icon: const Icon(
+                                    Icons.edit,
+                                    color: Colors.blueAccent,
+                                  ),
+                                  onPressed: () {
+                                    provider.editExerciseInCustom(
+                                      context,
+                                      category,
+                                      exercises,
+                                      exercise,
+                                    );
+                                  },
+                                ),
+                                // Delete button to remove the exercise
+                                IconButton(
+                                  icon: const Icon(
+                                    Icons.delete,
+                                    color: Colors.red,
+                                  ),
+                                  onPressed: () {
+                                    provider.deleteExerciseFromCustom(exercise, category);
+                                  },
+                                ),
+                              ],
                             ),
-                            onPressed: () {
-                              provider.editExerciseInCustom(context, category, exercises, exercise);
-                            },
                           ),
                           onTap: () {
                             Navigator.of(context).push(

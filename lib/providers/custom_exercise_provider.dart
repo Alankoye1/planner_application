@@ -165,5 +165,8 @@ class CustomExerciseProvider extends ChangeNotifier {
     );
   }
 
-
+  void deleteExerciseFromCustom(Excercise exercise, String category) {
+    customExercises[category]?.removeWhere((existingExercise) => existingExercise.id == exercise.id);
+    notifyListeners(); // Notify widgets to rebuild
+  }
 }
