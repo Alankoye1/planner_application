@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:planner/screens/bmi_screen.dart';
 
 class MyDrawer extends StatelessWidget {
   const MyDrawer({super.key});
@@ -10,9 +11,7 @@ class MyDrawer extends StatelessWidget {
         padding: EdgeInsets.zero,
         children: [
           DrawerHeader(
-            decoration: const BoxDecoration(
-              color: Colors.blue,
-            ),
+            decoration: const BoxDecoration(color: Colors.blue),
             child: Column(
               children: const [
                 CircleAvatar(
@@ -43,7 +42,23 @@ class MyDrawer extends StatelessWidget {
             title: const Text('BMI Calculator'),
             onTap: () {
               // TODO: Navigate to BMI calculator screen
-              // Navigator.of(context).pushReplacementNamed('/bmi-calculator');
+              Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => const BmiScreen(),
+              ));
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.fastfood),
+            title: const Text('Calory Tracker'),
+            onTap: () {
+              // TODO: Navigate to calory tracker screen
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.favorite),
+            title: const Text('Favorites'),
+            onTap: () {
+              // TODO: Navigate to favorites screen
             },
           ),
           ListTile(
@@ -51,7 +66,6 @@ class MyDrawer extends StatelessWidget {
             title: const Text('Settings'),
             onTap: () {
               // TODO: Navigate to settings screen
-              // Navigator.of(context).pushReplacementNamed('/settings');
             },
           ),
         ],
