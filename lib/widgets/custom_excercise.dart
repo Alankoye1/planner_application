@@ -53,6 +53,7 @@ class CustomExercise extends StatelessWidget {
                             icon: const Icon(Icons.add, color: Colors.green),
                             onPressed: () {
                               // TODO: Implement adding exercise to category
+                              provider.addExcerciseToCustom(context, category);
                             },
                           ),
                           const Icon(Icons.expand_more),
