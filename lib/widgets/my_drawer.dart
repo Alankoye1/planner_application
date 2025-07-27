@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:planner/screens/bmi_screen.dart';
+import 'package:planner/screens/favorite_screen.dart';
 
 class MyDrawer extends StatelessWidget {
   const MyDrawer({super.key});
@@ -41,7 +42,6 @@ class MyDrawer extends StatelessWidget {
             leading: const Icon(Icons.calculate),
             title: const Text('BMI Calculator'),
             onTap: () {
-              // TODO: Navigate to BMI calculator screen
               Navigator.of(context).push(MaterialPageRoute(
                 builder: (context) => const BmiScreen(),
               ));
@@ -58,7 +58,7 @@ class MyDrawer extends StatelessWidget {
             leading: const Icon(Icons.favorite),
             title: const Text('Favorites'),
             onTap: () {
-              // TODO: Navigate to favorites screen
+              Navigator.of(context).push(MaterialPageRoute(builder: (context) => const FavoriteScreen()));
             },
           ),
           ListTile(
