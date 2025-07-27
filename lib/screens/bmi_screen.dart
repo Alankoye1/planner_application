@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:planner/widgets/custom_scrollable.dart';
+import 'package:planner/widgets/gender_switch.dart';
 
 class BmiScreen extends StatefulWidget {
   const BmiScreen({super.key});
@@ -14,6 +16,18 @@ class _BmiScreenState extends State<BmiScreen> {
   bool isMale = true; // true for male, false for female
   double result = 0.0; // Placeholder for BMI result
 
+  String _textResult(double bmi) {
+    if (bmi < 18.5) {
+      return 'You are Underweight';
+    } else if (bmi < 25) {
+      return 'You are Normal weight';
+    } else if (bmi < 30) {
+      return 'You are Overweight';
+    } else {
+      return 'You are Obese';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,45 +39,26 @@ class _BmiScreenState extends State<BmiScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                CustomTextField(
+                CustomScrollable(
                   labelText: 'Height (cm)',
                   controller: heightController,
                 ),
-                CustomTextField(
+                CustomScrollable(
                   labelText: 'Weight (kg)',
                   controller: weightController,
                 ),
               ],
             ),
             SizedBox(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                CustomTextField(labelText: 'Age', controller: ageController),
-                GenderSwitch(
-                  isMale: isMale,
-                  onGenderChanged: (bool value) {
-                    setState(() {
-                      isMale = value;
-                    });
-                  },
-                ),
-              ],
-            ),
             SizedBox(height: 60),
             ElevatedButton(
               onPressed: () {
-                // TODO: Implement BMI calculation
                 double height = double.tryParse(heightController.text) ?? 0;
                 double weight = double.tryParse(weightController.text) ?? 0;
-                double age = double.tryParse(ageController.text) ?? 0;
+                height = height / 100; // Convert height to meters
                 double bmi = weight / (height * height);
                 setState(() {
-                  if (isMale) {
-                    result = ((1.2 * bmi) + (0.23 * age)) - 16.2;
-                  } else {
-                    result = ((1.2 * bmi) + (0.23 * age)) - 5.4;
-                  }
+                  result = bmi;
                 });
               },
               child: const Text('Calculate BMI'),
@@ -73,76 +68,13 @@ class _BmiScreenState extends State<BmiScreen> {
               'Your BMI is: ${result.toStringAsFixed(2)}',
               style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
+            SizedBox(height: 20),
+            Text(
+              _textResult(result),
+              style: const TextStyle(fontSize: 22,),
+            ),
           ],
         ),
-      ),
-    );
-  }
-}
-
-class CustomTextField extends StatelessWidget {
-  const CustomTextField({
-    super.key,
-    required this.labelText,
-    required this.controller,
-  });
-
-  final String labelText;
-  final TextEditingController controller;
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      width: 90,
-      child: TextField(
-        decoration: InputDecoration(labelText: labelText),
-        keyboardType: TextInputType.number,
-        controller: controller,
-        textInputAction: TextInputAction.next,
-      ),
-    );
-  }
-}
-
-class GenderSwitch extends StatelessWidget {
-  const GenderSwitch({
-    super.key,
-    required this.isMale,
-    required this.onGenderChanged,
-  });
-
-  final bool isMale;
-  final ValueChanged<bool> onGenderChanged;
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: () {
-        if (isMale) {
-          onGenderChanged(false);
-        } else {
-          onGenderChanged(true);
-        }
-      },
-      child: Row(
-        children: [
-          Icon(
-            Icons.man_rounded,
-            color: isMale ? Colors.blueAccent : Colors.grey,
-            size: 50,
-          ),
-          Container(
-            height: 50,
-            decoration: BoxDecoration(
-              border: Border.all(width: 1, color: Colors.grey),
-            ),
-          ),
-          Icon(
-            Icons.woman_rounded,
-            color: isMale ? Colors.grey : Colors.pink,
-            size: 50,
-          ),
-        ],
       ),
     );
   }
