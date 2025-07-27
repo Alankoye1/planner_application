@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:planner/widgets/custom_scrollable.dart';
-import 'package:planner/widgets/gender_switch.dart';
 
 class BmiScreen extends StatefulWidget {
   const BmiScreen({super.key});
@@ -42,15 +41,20 @@ class _BmiScreenState extends State<BmiScreen> {
                 CustomScrollable(
                   labelText: 'Height (cm)',
                   controller: heightController,
+                  minValue: 100,
+                  maxValue: 250,
+                  initialValue: 170,
                 ),
                 CustomScrollable(
                   labelText: 'Weight (kg)',
                   controller: weightController,
+                  minValue: 30,
+                  maxValue: 200,
+                  initialValue: 70,
                 ),
               ],
             ),
-            SizedBox(height: 20),
-            SizedBox(height: 60),
+            SizedBox(height: 80),
             ElevatedButton(
               onPressed: () {
                 double height = double.tryParse(heightController.text) ?? 0;

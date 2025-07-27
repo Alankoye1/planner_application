@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:planner/screens/bmi_screen.dart';
+import 'package:planner/screens/calory_calculate_screen.dart';
 import 'package:planner/screens/favorite_screen.dart';
 
 class MyDrawer extends StatelessWidget {
@@ -17,7 +18,12 @@ class MyDrawer extends StatelessWidget {
               children: const [
                 CircleAvatar(
                   radius: 40,
-                  backgroundImage: AssetImage('assets/images/profile.jpg'),
+                  backgroundColor: Colors.orange,
+                  child: Icon(
+                    Icons.person,
+                    size: 50,
+                    color: Colors.white,
+                  ),
                 ),
                 SizedBox(height: 10),
                 Text(
@@ -51,7 +57,7 @@ class MyDrawer extends StatelessWidget {
             leading: const Icon(Icons.fastfood),
             title: const Text('Calory Tracker'),
             onTap: () {
-              // TODO: Navigate to calory tracker screen
+              Navigator.of(context).push(MaterialPageRoute(builder: (context) => const CaloryCalculateScreen()));
             },
           ),
           ListTile(
