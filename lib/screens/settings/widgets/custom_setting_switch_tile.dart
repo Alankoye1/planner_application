@@ -1,26 +1,26 @@
 import 'package:flutter/material.dart';
 
-class CustomSettingListTile extends StatelessWidget {
-  const CustomSettingListTile({
+class CustomSettingSwitchTile extends StatelessWidget {
+  const CustomSettingSwitchTile({
     super.key,
     required this.title,
     required this.subtitle,
-    required this.icon,
-    required this.onTap,
+    required this.value,
+    required this.onChanged,
   });
 
   final String title;
   final String subtitle;
-  final IconData icon;
-  final VoidCallback onTap;
+  final bool value;
+  final ValueChanged<bool> onChanged;
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      leading: Icon(icon),
+    return SwitchListTile(
       title: Text(title),
       subtitle: Text(subtitle),
-      onTap: onTap,
+      value: value,
+      onChanged: onChanged,
     );
   }
 }

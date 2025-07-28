@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:planner/screens/bmi_screen.dart';
 import 'package:planner/screens/calory_calculate_screen.dart';
 import 'package:planner/screens/favorite_screen.dart';
-import 'package:planner/screens/setting_screen.dart';
+import 'package:planner/screens/settings/screens/setting_screen.dart';
 
 class MyDrawer extends StatelessWidget {
   const MyDrawer({super.key});

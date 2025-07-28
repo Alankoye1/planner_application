@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 // TODO: Responsive design for different screen sizes
 // TODO: Add user authentication and profiles
 // TODO: Implement data persistence (e.g., local storage, cloud)
+// TODO: Add Animations for transitions
 
 void main() {
   runApp(const MyApp());
