@@ -59,7 +59,7 @@ class _MyplanScreenState extends State<MyplanScreen> {
               builder: (context, provider, child) {
                 return FloatingActionButton(
                   onPressed: () {
-                    provider.addingExercise(context);
+                    provider.addingCustom(context);
                   },
                   child: const Icon(Icons.add),
                 );

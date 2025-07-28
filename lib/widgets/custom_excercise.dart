@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:planner/data.dart';
 import 'package:planner/models/excersice.dart';
@@ -16,7 +17,7 @@ class CustomExercise extends StatelessWidget {
             ? Center(
                 child: InkWell(
                   onTap: () {
-                    provider.addingExercise(context);
+                    provider.addingCustom(context);
                   },
                   child: Container(
                     padding: const EdgeInsets.all(30),
@@ -50,17 +51,32 @@ class CustomExercise extends StatelessWidget {
                       trailing: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          IconButton(
-                            icon: const Icon(Icons.add, color: Colors.green),
-                            onPressed: () {
-                              provider.addExcerciseToCustom(
-                                context,
-                                category,
-                                exercises,
-                              );
+                          Icon(Icons.expand_more),
+                          const SizedBox(width: 8),
+                          PopupMenuButton<int>(
+                            icon: const Icon(Icons.more_vert),
+                            onSelected: (int value) {
+                              if (value == 0) {
+                                provider.addExcerciseToCustom(
+                                  context,
+                                  category,
+                                  exercises,
+                                );
+                              } else if (value == 1) {
+                                provider.deleteCustom(category);
+                              }
                             },
+                            itemBuilder: (context) => [
+                              const PopupMenuItem(
+                                value: 0,
+                                child: Text('Add Exercise'),
+                              ),
+                              const PopupMenuItem(
+                                value: 1,
+                                child: Text('Remove Category'),
+                              ),
+                            ],
                           ),
-                          const Icon(Icons.expand_more),
                         ],
                       ),
                       children: exercises.map((exercise) {
@@ -79,12 +95,11 @@ class CustomExercise extends StatelessWidget {
                             style: const TextStyle(fontSize: 16),
                           ),
                           trailing: SizedBox(
-                            width: 96, // Adjust width as needed
+                            width: 96,
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.end,
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                // Edit button to modify the exercise
                                 IconButton(
                                   icon: const Icon(
                                     Icons.edit,

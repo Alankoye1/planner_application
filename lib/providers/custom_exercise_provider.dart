@@ -5,7 +5,7 @@ import 'package:planner/screens/excercise_detail_screen.dart';
 
 class CustomExerciseProvider extends ChangeNotifier {
   // Method to add a new custom exercise category
-  Future<void> addingExercise(BuildContext context) async {
+  Future<void> addingCustom(BuildContext context) async {
     final TextEditingController name = TextEditingController();
     await showDialog(
       context: context,
@@ -33,6 +33,11 @@ class CustomExerciseProvider extends ChangeNotifier {
         );
       },
     );
+  }
+
+  void deleteCustom(String category) {
+    customExercises.remove(category);
+    notifyListeners();
   }
 
   void addExcerciseToCustom(
