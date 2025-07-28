@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:planner/screens/bmi_screen.dart';
 import 'package:planner/screens/calory_calculate_screen.dart';
 import 'package:planner/screens/favorite_screen.dart';
+import 'package:planner/screens/setting_screen.dart';
 
 class MyDrawer extends StatelessWidget {
   const MyDrawer({super.key});
@@ -19,11 +20,7 @@ class MyDrawer extends StatelessWidget {
                 CircleAvatar(
                   radius: 40,
                   backgroundColor: Colors.orange,
-                  child: Icon(
-                    Icons.person,
-                    size: 50,
-                    color: Colors.white,
-                  ),
+                  child: Icon(Icons.person, size: 50, color: Colors.white),
                 ),
                 SizedBox(height: 10),
                 Text(
@@ -48,30 +45,38 @@ class MyDrawer extends StatelessWidget {
             leading: const Icon(Icons.calculate),
             title: const Text('BMI Calculator'),
             onTap: () {
-              Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => const BmiScreen(),
-              ));
+              Navigator.of(context).push(
+                MaterialPageRoute(builder: (context) => const BmiScreen()),
+              );
             },
           ),
           ListTile(
             leading: const Icon(Icons.fastfood),
             title: const Text('Calory Tracker'),
             onTap: () {
-              Navigator.of(context).push(MaterialPageRoute(builder: (context) => const CaloryCalculateScreen()));
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => const CaloryCalculateScreen(),
+                ),
+              );
             },
           ),
           ListTile(
             leading: const Icon(Icons.favorite),
             title: const Text('Favorites'),
             onTap: () {
-              Navigator.of(context).push(MaterialPageRoute(builder: (context) => const FavoriteScreen()));
+              Navigator.of(context).push(
+                MaterialPageRoute(builder: (context) => const FavoriteScreen()),
+              );
             },
           ),
           ListTile(
             leading: const Icon(Icons.settings),
             title: const Text('Settings'),
             onTap: () {
-              // TODO: Navigate to settings screen
+              Navigator.of(context).push(
+                MaterialPageRoute(builder: (context) => const SettingScreen()),
+              );
             },
           ),
         ],
