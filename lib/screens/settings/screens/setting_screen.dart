@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:planner/screens/settings/screens/about_screen.dart';
 import 'package:planner/screens/settings/screens/account_screen.dart';
+import 'package:planner/screens/settings/screens/appearance_screen.dart';
 import 'package:planner/screens/settings/screens/notification_setting_screen.dart';
 import 'package:planner/screens/settings/screens/privacy_screen.dart';
 import 'package:planner/screens/settings/widgets/custom_setting_list_tile.dart';
@@ -55,7 +57,11 @@ class SettingScreen extends StatelessWidget {
             subtitle: 'Theme and display',
             icon: Icons.palette,
             onTap: () {
-              // TODO: Navigate to appearance settings
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => const AppearanceScreen(),
+                ),
+              );
             },
           ),
           Divider(),
@@ -64,7 +70,11 @@ class SettingScreen extends StatelessWidget {
             subtitle: 'App information',
             icon: Icons.info,
             onTap: () {
-              // TODO: Navigate to about settings
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => const AboutScreen(),
+                ),
+              );
             },
           ),
         ],
