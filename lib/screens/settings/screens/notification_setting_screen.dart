@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:planner/screens/settings/widgets/custom_setting_switch_tile.dart';
 
+// TODO: Implement notification settings functionality after implementing user authentication and data persistence
 class NotificationSettingScreen extends StatefulWidget {
   const NotificationSettingScreen({super.key});
 

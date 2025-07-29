@@ -3,7 +3,6 @@ import 'package:planner/providers/exercise_provider.dart';
 import 'package:planner/screens/tab_screen.dart';
 import 'package:planner/providers/custom_exercise_provider.dart';
 import 'package:provider/provider.dart';
-// TODO: Create UI for whole app
 // TODO: Implement whole app functionality
 // TODO: Responsive design for different screen sizes
 // TODO: Add user authentication and profiles

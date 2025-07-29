@@ -3,6 +3,7 @@ class Excercise {
   final String excerciseTitle;
   final String excerciseImage;
   final String categoryId;
+  final String videoUrl; 
   bool? isFavorite;
 
   Excercise({
@@ -10,6 +11,7 @@ class Excercise {
     required this.excerciseTitle,
     required this.excerciseImage,
     required this.categoryId,
+    required this.videoUrl,
     this.isFavorite,
   });
 }

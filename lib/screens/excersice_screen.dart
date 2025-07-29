@@ -26,6 +26,7 @@ class Excercisescreen extends StatelessWidget {
             imageUrl: category.excercises[index].excerciseImage,
             title: category.excercises[index].excerciseTitle,
             id: category.excercises[index].id,
+            videoUrl: category.excercises[index].videoUrl,
           );
         },
         itemCount: category.excercises.length,

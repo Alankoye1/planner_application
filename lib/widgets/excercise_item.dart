@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:planner/screens/excercise_detail_screen.dart';
+import 'package:planner/screens/video_player_screen.dart';
 
 class ExcerciseItem extends StatelessWidget {
   const ExcerciseItem({
@@ -7,10 +8,12 @@ class ExcerciseItem extends StatelessWidget {
     required this.imageUrl,
     required this.title,
     required this.id,
+    required this.videoUrl,
   });
   final String imageUrl;
   final String title;
   final String id;
+  final String videoUrl;
 
   @override
   Widget build(BuildContext context) {
@@ -40,6 +43,11 @@ class ExcerciseItem extends StatelessWidget {
             ),
             onPressed: () {
               // TODO: Implement play functionality
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => VideoPlayerScreen(videoUrl: videoUrl),
+                ),
+              );
             },
           ),
         ),

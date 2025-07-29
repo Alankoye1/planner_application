@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:planner/screens/settings/widgets/custom_setting_switch_tile.dart';
 
+// TODO: Implement privacy settings functionality after implementing user authentication and data persistence
 class PrivacyScreen extends StatefulWidget {
   const PrivacyScreen({super.key});
 

@@ -35,6 +35,10 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
   provider: ^6.1.5
+  video_player: ^2.10.0
+  youtube_player_flutter: ^9.1.1
+  flutter_inappwebview: ^6.1.5
+  url_launcher: ^6.1.10 # Use the latest version available
 
 dev_dependencies:
   flutter_test:
