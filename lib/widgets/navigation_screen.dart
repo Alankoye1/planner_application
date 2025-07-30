@@ -28,7 +28,7 @@ class _NavigationScreenState extends State<NavigationScreen> {
             bottomLeft: Radius.circular(25),
           ),
           child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
+            padding: const EdgeInsets.symmetric(horizontal: 14),
             width: 110,
             height: 50,
             decoration: BoxDecoration(

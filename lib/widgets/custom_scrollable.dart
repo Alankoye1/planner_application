@@ -72,8 +72,7 @@ class _CustomScrollableState extends State<CustomScrollable> {
           children: [
             Text(
               widget.labelText,
-              style: const TextStyle(
-                fontSize: 16,
+              style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                 fontWeight: FontWeight.w600,
                 color: Colors.black87,
               ),
@@ -110,11 +109,12 @@ class _CustomScrollableState extends State<CustomScrollable> {
                           alignment: Alignment.center,
                           child: Text(
                             value.toString(),
-                            style: const TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.normal,
-                              color: Colors.black87,
-                            ),
+                            style: Theme.of(context).textTheme.headlineSmall
+                                ?.copyWith(
+                                  color: selectedIndex == values.indexOf(value)
+                                      ? Colors.deepOrange
+                                      : Colors.black87,
+                                ),
                           ),
                         );
                       }).toList(),

@@ -57,15 +57,11 @@ class CategoryItem extends StatelessWidget {
               children: [
                 Text(
                   categoryTitle,
-                  style: TextStyle(
-                    fontSize: 20,
+                  style: theme.textTheme.headlineMedium?.copyWith(
                     color: theme.colorScheme.primary,
                   ),
                 ),
-                Text(
-                  categoryexcerciseCount,
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
+                Text(categoryexcerciseCount, style: theme.textTheme.bodyLarge),
               ],
             ),
             Spacer(),

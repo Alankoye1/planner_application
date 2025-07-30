@@ -45,9 +45,7 @@ class SettingScreen extends StatelessWidget {
             subtitle: 'Privacy settings',
             onTap: () {
               Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => const PrivacyScreen(),
-                ),
+                MaterialPageRoute(builder: (context) => const PrivacyScreen()),
               );
             },
           ),
@@ -71,9 +69,7 @@ class SettingScreen extends StatelessWidget {
             icon: Icons.info,
             onTap: () {
               Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => const AboutScreen(),
-                ),
+                MaterialPageRoute(builder: (context) => const AboutScreen()),
               );
             },
           ),

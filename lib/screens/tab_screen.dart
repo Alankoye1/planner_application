@@ -38,10 +38,9 @@ class _TabScreenState extends State<TabScreen> {
       appBar: AppBar(
         title: Text(
           _pages![_selectedPageIndex]['title'] as String,
-          style: TextStyle(
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
+          style: theme.textTheme.headlineLarge?.copyWith(
             color: theme.colorScheme.primary,
+            fontWeight: FontWeight.bold,
           ),
         ),
       ),

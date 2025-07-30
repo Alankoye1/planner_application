@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:planner/providers/exercise_provider.dart';
+import 'package:planner/providers/font_provider.dart';
 import 'package:planner/providers/theme_provider.dart';
 import 'package:planner/screens/tab_screen.dart';
 import 'package:planner/providers/custom_exercise_provider.dart';
@@ -13,22 +14,28 @@ import 'package:provider/provider.dart';
 void main() async {
   // Ensure Flutter is initialized before accessing platform features
   WidgetsFlutterBinding.ensureInitialized();
-  
+
   // Initialize the theme provider (without waiting)
   final themeProvider = ThemeProvider();
-  
+  final fontProvider = FontProvider();
+
   // Start the app without waiting for theme to load
   // The theme will be applied once loaded
-  runApp(MyApp(themeProvider: themeProvider));
-  
+  runApp(MyApp(themeProvider: themeProvider, fontProvider: fontProvider));
+
   // Initialize theme in the background
   themeProvider.initializeTheme();
 }
 
 class MyApp extends StatelessWidget {
   final ThemeProvider themeProvider;
-  
-  const MyApp({super.key, required this.themeProvider});
+  final FontProvider fontProvider;
+
+  const MyApp({
+    super.key,
+    required this.themeProvider,
+    required this.fontProvider,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -37,28 +44,48 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider.value(value: CustomExerciseProvider()),
         ChangeNotifierProvider.value(value: ExerciseProvider()),
         ChangeNotifierProvider.value(value: themeProvider),
+        ChangeNotifierProvider.value(value: fontProvider),
       ],
       child: Consumer<ThemeProvider>(
-        builder: (context, themeProvider, _) => MaterialApp(
-          debugShowCheckedModeBanner: false,
-          theme: ThemeData(
-            primaryColor: Colors.deepOrange,
-            colorScheme: ColorScheme.light(
-              primary: Colors.deepOrange,
-              secondary: Colors.orangeAccent,
+        builder: (context, themeProvider, _) => Consumer<FontProvider>(
+          builder: (context, fontProvider, _) => MaterialApp(
+            debugShowCheckedModeBanner: false,
+            theme: ThemeData(
+              primaryColor: Colors.deepOrange,
+              colorScheme: ColorScheme.light(
+                primary: Colors.deepOrange,
+                secondary: Colors.orangeAccent,
+              ),
+              textTheme: Typography.material2021().black.copyWith(
+                bodyLarge: TextStyle(fontSize: fontProvider.fontSize),
+                bodyMedium: TextStyle(fontSize: fontProvider.fontSize),
+                titleMedium: TextStyle(fontSize: fontProvider.fontSize + 2),
+                titleLarge: TextStyle(fontSize: fontProvider.fontSize + 4),
+                headlineSmall: TextStyle(fontSize: fontProvider.fontSize + 6),
+                headlineMedium: TextStyle(fontSize: fontProvider.fontSize + 8),
+              ),
+              useMaterial3: true,
             ),
-            useMaterial3: true,
-          ),
-          darkTheme: ThemeData(
-            brightness: Brightness.dark,
-            colorScheme: ColorScheme.dark(
-              primary: Colors.blue.shade700,
-              secondary: Colors.blueAccent,
+            darkTheme: ThemeData(
+              brightness: Brightness.dark,
+              colorScheme: ColorScheme.dark(
+                primary: Colors.blue.shade700,
+                secondary: Colors.blueAccent,
+              ),
+              textTheme: Typography.material2021().white.copyWith(
+                bodyLarge: TextStyle(fontSize: fontProvider.fontSize),
+                bodyMedium: TextStyle(fontSize: fontProvider.fontSize),
+                titleMedium: TextStyle(fontSize: fontProvider.fontSize + 2),
+                titleLarge: TextStyle(fontSize: fontProvider.fontSize + 4),
+                headlineSmall: TextStyle(fontSize: fontProvider.fontSize + 6),
+                headlineMedium: TextStyle(fontSize: fontProvider.fontSize + 8),
+                headlineLarge: TextStyle(fontSize: fontProvider.fontSize + 10),
+              ),
+              useMaterial3: true,
             ),
-            useMaterial3: true,
+            themeMode: themeProvider.themeMode,
+            home: TabScreen(),
           ),
-          themeMode: themeProvider.themeMode,
-          home: TabScreen(),
         ),
       ),
     );

@@ -3,7 +3,7 @@ class Excercise {
   final String excerciseTitle;
   final String excerciseImage;
   final String categoryId;
-  final String videoUrl; 
+  final String videoUrl;
   bool? isFavorite;
 
   Excercise({

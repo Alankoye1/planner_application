@@ -19,10 +19,7 @@ class Schedule extends StatelessWidget {
             child: ExpansionTile(
               title: Text(
                 day,
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 18,
-                ),
+                style: Theme.of(context).textTheme.headlineMedium,
               ),
               subtitle: Text('${exercises.length} exercises'),
               children: exercises.isEmpty

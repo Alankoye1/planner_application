@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:planner/data.dart';
 import 'package:planner/models/excersice.dart';
@@ -43,10 +42,9 @@ class CustomExercise extends StatelessWidget {
                     child: ExpansionTile(
                       title: Text(
                         category,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 18,
-                        ),
+                        style:
+                            Theme.of(context).textTheme.headlineMedium ??
+                            const TextStyle(fontWeight: FontWeight.bold),
                       ),
                       trailing: Row(
                         mainAxisSize: MainAxisSize.min,
@@ -92,7 +90,8 @@ class CustomExercise extends StatelessWidget {
                           ),
                           title: Text(
                             exercise.excerciseTitle,
-                            style: const TextStyle(fontSize: 16),
+                            style: Theme.of(context).textTheme.titleMedium
+                                ?.copyWith(fontWeight: FontWeight.w500),
                           ),
                           trailing: SizedBox(
                             width: 96,

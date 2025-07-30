@@ -8,7 +8,9 @@ class ExerciseProvider with ChangeNotifier {
   }
 
   List get favoriteExercises {
-    return allExercises.where((exercise) => exercise.isFavorite ?? false).toList();
+    return allExercises
+        .where((exercise) => exercise.isFavorite ?? false)
+        .toList();
   }
 
   void toggleFavorite(String id) {

@@ -12,9 +12,14 @@ class FavoriteScreen extends StatelessWidget {
     final favoriteExercises = exerciseProvider.favoriteExercises;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Favorites')),
+      appBar: AppBar(
+        title: Text(
+          'Favorites',
+          style: Theme.of(context).textTheme.headlineMedium,
+        ),
+      ),
       body: favoriteExercises.isEmpty
-          ? const Center(
+          ? Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -22,7 +27,9 @@ class FavoriteScreen extends StatelessWidget {
                   SizedBox(height: 16),
                   Text(
                     'No favorite exercises yet',
-                    style: TextStyle(fontSize: 18, color: Colors.grey),
+                    style: Theme.of(
+                      context,
+                    ).textTheme.headlineMedium?.copyWith(color: Colors.grey),
                   ),
                 ],
               ),

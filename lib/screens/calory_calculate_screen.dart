@@ -62,7 +62,12 @@ class _CaloryCalculateScreenState extends State<CaloryCalculateScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Calory Calculator')),
+      appBar: AppBar(
+        title: Text(
+          'Calory Calculator',
+          style: Theme.of(context).textTheme.headlineMedium,
+        ),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: SingleChildScrollView(
@@ -114,9 +119,11 @@ class _CaloryCalculateScreenState extends State<CaloryCalculateScreen> {
               // Activity Level Dropdown
               Row(
                 children: [
-                  const Text(
+                  Text(
                     'Activity Level:',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                    style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
                   const SizedBox(width: 16),
                   Expanded(
@@ -143,7 +150,7 @@ class _CaloryCalculateScreenState extends State<CaloryCalculateScreen> {
                 onPressed: calculateCalory,
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 16),
-                  textStyle: const TextStyle(fontSize: 18),
+                  textStyle: Theme.of(context).textTheme.headlineSmall,
                 ),
                 child: const Text('Calculate'),
               ),
@@ -151,21 +158,20 @@ class _CaloryCalculateScreenState extends State<CaloryCalculateScreen> {
               if (result != null && caloryTable != null)
                 Column(
                   children: [
-                    const Text(
+                    Text(
                       'Your daily calorie need:',
-                      style: TextStyle(
-                        fontSize: 18,
+                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
                         fontWeight: FontWeight.w500,
                       ),
                     ),
                     const SizedBox(height: 12),
                     Text(
                       '${result!.toStringAsFixed(0)} kcal',
-                      style: const TextStyle(
-                        fontSize: 32,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.blueAccent,
-                      ),
+                      style: Theme.of(context).textTheme.headlineLarge
+                          ?.copyWith(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.blueAccent,
+                          ),
                     ),
                     const SizedBox(height: 32),
                     // Calorie Table

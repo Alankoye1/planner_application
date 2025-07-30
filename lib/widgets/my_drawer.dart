@@ -16,7 +16,7 @@ class MyDrawer extends StatelessWidget {
           DrawerHeader(
             decoration: const BoxDecoration(color: Colors.blue),
             child: Column(
-              children: const [
+              children: [
                 CircleAvatar(
                   radius: 40,
                   backgroundColor: Colors.orange,
@@ -25,11 +25,9 @@ class MyDrawer extends StatelessWidget {
                 SizedBox(height: 10),
                 Text(
                   'User Name',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.headlineSmall?.copyWith(color: Colors.white),
                 ),
               ],
             ),

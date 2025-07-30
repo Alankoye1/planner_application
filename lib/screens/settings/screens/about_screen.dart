@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 
 class AboutScreen extends StatelessWidget {
@@ -16,20 +15,24 @@ class AboutScreen extends StatelessWidget {
             const SizedBox(height: 32),
             const Icon(Icons.info_outline, size: 64, color: Colors.blueAccent),
             const SizedBox(height: 24),
-            const Text(
+            Text(
               'Planner App',
-              style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+              style: Theme.of(
+                context,
+              ).textTheme.headlineLarge?.copyWith(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 12),
-            const Text(
+            Text(
               'Version 1.0.0',
-              style: TextStyle(fontSize: 18, color: Colors.grey),
+              style: Theme.of(
+                context,
+              ).textTheme.headlineMedium?.copyWith(color: Colors.grey),
             ),
             const SizedBox(height: 32),
-            const Text(
+            Text(
               'Planner helps you organize your workouts, track calories, and manage your fitness journey with ease.',
               textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 16),
+              style: Theme.of(context).textTheme.titleMedium,
             ),
             const Spacer(),
             const Text('© 2025 Planner App'),

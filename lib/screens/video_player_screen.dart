@@ -16,14 +16,11 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
     setState(() {
       _isLoading = true;
     });
-    
+
     try {
       final Uri url = Uri.parse(widget.videoUrl);
       if (await canLaunchUrl(url)) {
-        await launchUrl(
-          url,
-          mode: LaunchMode.externalApplication,
-        );
+        await launchUrl(url, mode: LaunchMode.externalApplication);
       } else {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -68,9 +65,9 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
             else
               Column(
                 children: [
-                  const Text(
+                  Text(
                     'Watch exercise video',
-                    style: TextStyle(fontSize: 18),
+                    style: Theme.of(context).textTheme.headlineMedium,
                   ),
                   const SizedBox(height: 20),
                   ElevatedButton(

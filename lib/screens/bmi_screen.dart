@@ -70,12 +70,16 @@ class _BmiScreenState extends State<BmiScreen> {
             SizedBox(height: 20),
             Text(
               'Your BMI is: ${result.toStringAsFixed(2)}',
-              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              style: Theme.of(
+                context,
+              ).textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.bold),
             ),
             SizedBox(height: 20),
             Text(
               _textResult(result),
-              style: const TextStyle(fontSize: 22,),
+              style: Theme.of(
+                context,
+              ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
             ),
           ],
         ),
