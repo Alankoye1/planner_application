@@ -1,6 +1,6 @@
-
 import 'package:flutter/material.dart';
 import 'package:planner/screens/settings/widgets/custom_setting_switch_tile.dart';
+import 'package:planner/screens/settings/widgets/show_privacy.dart';
 
 // TODO: Implement privacy settings functionality after implementing user authentication and data persistence
 class PrivacyScreen extends StatefulWidget {
@@ -52,9 +52,10 @@ class _PrivacyScreenState extends State<PrivacyScreen> {
             leading: const Icon(Icons.info_outline, color: Colors.blueAccent),
             title: const Text('Privacy Policy'),
             subtitle: const Text('Read our privacy policy'),
-            onTap: () {
-              // TODO: Open privacy policy
-            },
+            onTap: () => showDialog(
+              context: context,
+              builder: (context) => const ShowPrivacy(),
+            ),
           ),
         ],
       ),

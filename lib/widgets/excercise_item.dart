@@ -42,7 +42,6 @@ class ExcerciseItem extends StatelessWidget {
               size: 24,
             ),
             onPressed: () {
-              // TODO: Implement play functionality
               Navigator.of(context).push(
                 MaterialPageRoute(
                   builder: (context) => VideoPlayerScreen(videoUrl: videoUrl),
