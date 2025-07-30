@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:planner/providers/theme_provider.dart';
 import 'package:planner/screens/settings/widgets/custom_setting_switch_tile.dart';
 
 class AppearanceScreen extends StatefulWidget {
@@ -9,11 +11,12 @@ class AppearanceScreen extends StatefulWidget {
 }
 
 class _AppearanceScreenState extends State<AppearanceScreen> {
-  bool isDarkMode = false;
   double fontSize = 16;
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
+    
     return Scaffold(
       appBar: AppBar(title: const Text('Appearance Settings')),
       body: ListView(
@@ -21,10 +24,12 @@ class _AppearanceScreenState extends State<AppearanceScreen> {
           CustomSettingSwitchTile(
             title: 'Dark Mode',
             subtitle: 'Enable dark theme',
-            value: isDarkMode,
-            // TODO: Implement dark mode functionality
-            onChanged: (val) {
-              setState(() => isDarkMode = val);
+            value: themeProvider.isDarkMode,
+            onChanged: (val) async {
+              // Use await to ensure the theme is fully toggled
+              await themeProvider.toggleTheme(val);
+              // Force a rebuild of this widget after theme changes
+              if (mounted) setState(() {});
             },
           ),
           const Divider(),

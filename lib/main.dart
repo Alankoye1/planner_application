@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:planner/providers/exercise_provider.dart';
+import 'package:planner/providers/theme_provider.dart';
 import 'package:planner/screens/tab_screen.dart';
 import 'package:planner/providers/custom_exercise_provider.dart';
 import 'package:provider/provider.dart';
@@ -9,12 +10,25 @@ import 'package:provider/provider.dart';
 // TODO: Implement data persistence (e.g., local storage, cloud)
 // TODO: Add Animations for transitions
 
-void main() {
-  runApp(const MyApp());
+void main() async {
+  // Ensure Flutter is initialized before accessing platform features
+  WidgetsFlutterBinding.ensureInitialized();
+  
+  // Initialize the theme provider (without waiting)
+  final themeProvider = ThemeProvider();
+  
+  // Start the app without waiting for theme to load
+  // The theme will be applied once loaded
+  runApp(MyApp(themeProvider: themeProvider));
+  
+  // Initialize theme in the background
+  themeProvider.initializeTheme();
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final ThemeProvider themeProvider;
+  
+  const MyApp({super.key, required this.themeProvider});
 
   @override
   Widget build(BuildContext context) {
@@ -22,18 +36,30 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider.value(value: CustomExerciseProvider()),
         ChangeNotifierProvider.value(value: ExerciseProvider()),
+        ChangeNotifierProvider.value(value: themeProvider),
       ],
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          primaryColor: Colors.deepOrange,
-          colorScheme: ColorScheme.fromSeed(
-            seedColor: Colors.red,
-            primary: Colors.deepOrange,
-            secondary: Colors.orangeAccent,
+      child: Consumer<ThemeProvider>(
+        builder: (context, themeProvider, _) => MaterialApp(
+          debugShowCheckedModeBanner: false,
+          theme: ThemeData(
+            primaryColor: Colors.deepOrange,
+            colorScheme: ColorScheme.light(
+              primary: Colors.deepOrange,
+              secondary: Colors.orangeAccent,
+            ),
+            useMaterial3: true,
           ),
+          darkTheme: ThemeData(
+            brightness: Brightness.dark,
+            colorScheme: ColorScheme.dark(
+              primary: Colors.blue.shade700,
+              secondary: Colors.blueAccent,
+            ),
+            useMaterial3: true,
+          ),
+          themeMode: themeProvider.themeMode,
+          home: TabScreen(),
         ),
-        home: TabScreen(),
       ),
     );
   }
