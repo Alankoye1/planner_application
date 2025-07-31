@@ -5,7 +5,6 @@ import 'package:planner/providers/theme_provider.dart';
 import 'package:planner/screens/tab_screen.dart';
 import 'package:planner/providers/custom_exercise_provider.dart';
 import 'package:provider/provider.dart';
-// TODO: Implement whole app functionality
 // TODO: Responsive design for different screen sizes
 // TODO: Add user authentication and profiles
 // TODO: Implement data persistence (e.g., local storage, cloud)
@@ -64,6 +63,10 @@ class MyApp extends StatelessWidget {
                 headlineSmall: TextStyle(fontSize: fontProvider.fontSize + 6),
                 headlineMedium: TextStyle(fontSize: fontProvider.fontSize + 8),
               ),
+              appBarTheme: AppBarTheme(
+                backgroundColor: Colors.white,
+                foregroundColor: Colors.black,
+              ),
               useMaterial3: true,
             ),
             darkTheme: ThemeData(
@@ -80,6 +83,11 @@ class MyApp extends StatelessWidget {
                 headlineSmall: TextStyle(fontSize: fontProvider.fontSize + 6),
                 headlineMedium: TextStyle(fontSize: fontProvider.fontSize + 8),
                 headlineLarge: TextStyle(fontSize: fontProvider.fontSize + 10),
+              ),
+              shadowColor: Colors.white38,
+              appBarTheme: AppBarTheme(
+                backgroundColor: Colors.blueGrey.shade900,
+                foregroundColor: Colors.white,
               ),
               useMaterial3: true,
             ),

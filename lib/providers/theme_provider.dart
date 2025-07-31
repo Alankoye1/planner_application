@@ -22,7 +22,6 @@ class ThemeProvider with ChangeNotifier {
       _isDarkMode = prefs.getBool('isDarkMode') ?? false;
       notifyListeners();
     } catch (e) {
-      print('Error loading theme preferences: $e');
       // Default to light theme on error
       _isDarkMode = false;
     }
@@ -39,7 +38,7 @@ class ThemeProvider with ChangeNotifier {
       final prefs = await SharedPreferences.getInstance();
       await prefs.setBool('isDarkMode', value);
     } catch (e) {
-      print('Error saving theme preference: $e');
+      return;
     }
   }
 

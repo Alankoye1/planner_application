@@ -111,8 +111,9 @@ class _CustomScrollableState extends State<CustomScrollable> {
                             value.toString(),
                             style: Theme.of(context).textTheme.headlineSmall
                                 ?.copyWith(
+                                  fontWeight: FontWeight.bold,
                                   color: selectedIndex == values.indexOf(value)
-                                      ? Colors.deepOrange
+                                      ? Theme.of(context).colorScheme.primary
                                       : Colors.black87,
                                 ),
                           ),
@@ -130,10 +131,10 @@ class _CustomScrollableState extends State<CustomScrollable> {
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(8),
                             border: Border.all(
-                              color: Colors.blue.withOpacity(0.5),
+                              color: Theme.of(context).colorScheme.primary,
                               width: 2,
                             ),
-                            color: Colors.blue.withOpacity(0.1),
+                            color: Colors.grey.withOpacity(0.3),
                           ),
                         ),
                       ),

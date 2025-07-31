@@ -33,7 +33,6 @@ class FontProvider with ChangeNotifier {
     if (size >= 12 && size <= 24) {
       _fontSize = size;
       await _saveFontSize(size);
-      print('Font size set to $size');
       notifyListeners();
     }
   }

@@ -50,7 +50,15 @@ class FavoriteScreen extends StatelessWidget {
                     );
                   },
                   child: Card(
+                    shape: RoundedRectangleBorder(
+                      side: BorderSide(
+                        color: Theme.of(context).colorScheme.primary,
+                        width: 1,
+                      ),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
                     elevation: 4,
+                    shadowColor: Theme.of(context).shadowColor,
                     margin: const EdgeInsets.symmetric(
                       horizontal: 16,
                       vertical: 8,

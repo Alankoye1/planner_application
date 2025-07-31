@@ -56,6 +56,10 @@ class _BmiScreenState extends State<BmiScreen> {
             ),
             SizedBox(height: 80),
             ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                shadowColor: Theme.of(context).colorScheme.primary,
+                elevation: 3
+              ),
               onPressed: () {
                 double height = double.tryParse(heightController.text) ?? 0;
                 double weight = double.tryParse(weightController.text) ?? 0;
@@ -65,7 +69,9 @@ class _BmiScreenState extends State<BmiScreen> {
                   result = bmi;
                 });
               },
-              child: const Text('Calculate BMI'),
+              child: Text('Calculate BMI', style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.bold,
+              )),
             ),
             SizedBox(height: 20),
             Text(

@@ -36,9 +36,9 @@ class ExcerciseItem extends StatelessWidget {
             overflow: TextOverflow.ellipsis,
           ),
           trailing: IconButton(
-            icon: const Icon(
+            icon: Icon(
               Icons.play_circle_fill,
-              color: Colors.red,
+              color: Theme.of(context).colorScheme.primary,
               size: 24,
             ),
             onPressed: () {

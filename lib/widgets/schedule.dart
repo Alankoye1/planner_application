@@ -2,9 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:planner/data.dart';
 import 'package:planner/models/excersice.dart';
 
-class Schedule extends StatelessWidget {
+class Schedule extends StatefulWidget {
   const Schedule({super.key});
 
+  @override
+  State<Schedule> createState() => _ScheduleState();
+}
+
+class _ScheduleState extends State<Schedule> {
+  final Map<String, bool> _completionStatus = {};
+  
+  // Helper method to create a unique key for each exercise based on day and ID
+  String _getExerciseKey(String day, String exerciseId) {
+    return '$day-$exerciseId';
+  }
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -45,9 +57,12 @@ class Schedule extends StatelessWidget {
                             ),
                             title: Text(exercise.excerciseTitle),
                             trailing: Checkbox(
-                              value: false, // You can add state tracking here
+                              value: _completionStatus[_getExerciseKey(day, exercise.id)] ?? false,
                               onChanged: (value) {
                                 // Handle exercise completion
+                                setState(() {
+                                  _completionStatus[_getExerciseKey(day, exercise.id)] = value!;
+                                });
                               },
                             ),
                           ),
