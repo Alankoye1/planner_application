@@ -14,13 +14,13 @@ class MyDrawer extends StatelessWidget {
         padding: EdgeInsets.zero,
         children: [
           DrawerHeader(
-            decoration: const BoxDecoration(color: Colors.blue),
+            decoration: BoxDecoration(color: Theme.of(context).colorScheme.primary),
             child: Column(
               children: [
                 CircleAvatar(
                   radius: 40,
-                  backgroundColor: Colors.orange,
-                  child: Icon(Icons.person, size: 50, color: Colors.white),
+                  backgroundColor: Theme.of(context).brightness == Brightness.light ? Colors.white : Colors.orange,
+                  child: Icon(Icons.person, size: 50, color: Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black),
                 ),
                 SizedBox(height: 10),
                 Text(

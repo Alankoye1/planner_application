@@ -149,12 +149,16 @@ class _CaloryCalculateScreenState extends State<CaloryCalculateScreen> {
               ElevatedButton(
                 onPressed: calculateCalory,
                 style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  textStyle: Theme.of(context).textTheme.headlineSmall,
+                  shadowColor: Theme.of(context).colorScheme.primary,
+                  elevation: Theme.of(context).brightness == Brightness.light
+                      ? 1
+                      : 5,
                 ),
                 child: const Text('Calculate'),
               ),
               const SizedBox(height: 32),
+              // padding: const EdgeInsets.symmetric(vertical: 16),
+              // textStyle: Theme.of(context).textTheme.headlineSmall,
               if (result != null && caloryTable != null)
                 Column(
                   children: [
@@ -170,7 +174,7 @@ class _CaloryCalculateScreenState extends State<CaloryCalculateScreen> {
                       style: Theme.of(context).textTheme.headlineLarge
                           ?.copyWith(
                             fontWeight: FontWeight.bold,
-                            color: Colors.blueAccent,
+                            color: Theme.of(context).colorScheme.primary,
                           ),
                     ),
                     const SizedBox(height: 32),

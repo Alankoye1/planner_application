@@ -58,7 +58,7 @@ class _BmiScreenState extends State<BmiScreen> {
             ElevatedButton(
               style: ElevatedButton.styleFrom(
                 shadowColor: Theme.of(context).colorScheme.primary,
-                elevation: 3
+                elevation: Theme.of(context).brightness == Brightness.light ? 1 : 5,
               ),
               onPressed: () {
                 double height = double.tryParse(heightController.text) ?? 0;

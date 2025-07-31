@@ -5,6 +5,7 @@ import 'package:planner/providers/theme_provider.dart';
 import 'package:planner/screens/tab_screen.dart';
 import 'package:planner/providers/custom_exercise_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter/services.dart';
 // TODO: Responsive design for different screen sizes
 // TODO: Add user authentication and profiles
 // TODO: Implement data persistence (e.g., local storage, cloud)
@@ -13,6 +14,13 @@ import 'package:provider/provider.dart';
 void main() async {
   // Ensure Flutter is initialized before accessing platform features
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Lock device orientation to portrait mode
+  
+  await SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
 
   // Initialize the theme provider (without waiting)
   final themeProvider = ThemeProvider();
@@ -84,7 +92,6 @@ class MyApp extends StatelessWidget {
                 headlineMedium: TextStyle(fontSize: fontProvider.fontSize + 8),
                 headlineLarge: TextStyle(fontSize: fontProvider.fontSize + 10),
               ),
-              shadowColor: Colors.white38,
               appBarTheme: AppBarTheme(
                 backgroundColor: Colors.blueGrey.shade900,
                 foregroundColor: Colors.white,
