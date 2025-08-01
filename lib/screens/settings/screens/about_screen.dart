@@ -26,13 +26,13 @@ class AboutScreen extends StatelessWidget {
               'Version 1.0.0',
               style: Theme.of(
                 context,
-              ).textTheme.headlineMedium?.copyWith(color: Colors.grey),
+              ).textTheme.headlineSmall?.copyWith(color: Colors.grey),
             ),
             const SizedBox(height: 32),
             Text(
               'Planner helps you organize your workouts, track calories, and manage your fitness journey with ease.',
               textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.titleMedium,
+              style: Theme.of(context).textTheme.titleSmall,
             ),
             const Spacer(),
             const Text('© 2025 Planner App'),

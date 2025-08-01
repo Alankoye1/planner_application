@@ -26,6 +26,9 @@ class CategoryItem extends StatelessWidget {
         );
       },
       child: Card(
+        shadowColor: Theme.of(context).brightness == Brightness.dark
+            ? Theme.of(context).colorScheme.primary
+            : Colors.grey.withOpacity(0.5),
         elevation: 4,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
