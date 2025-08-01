@@ -70,12 +70,41 @@ class _CustomScrollableState extends State<CustomScrollable> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              widget.labelText,
-              style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                fontWeight: FontWeight.w600,
-                color: Colors.black87,
-              ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  widget.labelText,
+                  overflow: TextOverflow.ellipsis,
+                  style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                    fontWeight: FontWeight.w600,
+                    color: Colors.black87,
+                  ),
+                ),
+                (widget.labelText == 'Height' || widget.labelText == 'Weight')
+                    ? IconButton(
+                        onPressed: () {
+                          showDialog(
+                            context: context,
+                            builder: (context) => AlertDialog(
+                              title: Text('Info'),
+                              content: Text(
+                                'Set your ${widget.labelText.toLowerCase()} in ${widget.labelText == 'Height' ? 'cm' : 'kg'}.',
+                              ),
+                              actions: [
+                                TextButton(
+                                  onPressed: () => Navigator.of(context).pop(),
+                                  child: const Text('OK'),
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                        icon: Icon(Icons.info_outline, color: Colors.grey[600]),
+                        iconSize: 16,
+                      )
+                    : Container(),
+              ],
             ),
             const SizedBox(height: 16),
             Container(

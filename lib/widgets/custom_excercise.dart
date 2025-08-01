@@ -21,7 +21,9 @@ class CustomExercise extends StatelessWidget {
                   child: Container(
                     padding: const EdgeInsets.all(30),
                     decoration: BoxDecoration(
-                      color: Colors.grey[300],
+                      color: Theme.of(context).brightness == Brightness.dark
+                          ? Theme.of(context).colorScheme.primary
+                          : Colors.grey[400],
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: const Icon(Icons.add),

@@ -76,29 +76,41 @@ class _CaloryCalculateScreenState extends State<CaloryCalculateScreen> {
             children: [
               // Gender Switch
               Center(
-                child: GenderSwitch(
-                  isMale: isMale,
-                  onGenderChanged: (val) {
-                    setState(() {
-                      isMale = val;
-                    });
-                  },
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    GenderSwitch(
+                      isMale: isMale,
+                      onGenderChanged: (val) {
+                        setState(() {
+                          isMale = val;
+                        });
+                      },
+                    ),
+                    SizedBox(
+                      width: 100,
+                      child: TextField(
+                        controller: ageController,
+                        keyboardType: TextInputType.number,
+                        decoration: InputDecoration(
+                          labelText: 'Age',
+                        ),
+                        onChanged: (val) {
+                          setState(() {
+                            age = int.tryParse(val) ?? age;
+                          });
+                        },
+                      ),
+                    ),
+                  ],
                 ),
               ),
               const SizedBox(height: 24),
-              // Scrollables for Age, Height, Weight
+              // Scrollables for Height, Weight
               Row(
                 children: [
                   CustomScrollable(
-                    labelText: 'Age',
-                    controller: ageController,
-                    minValue: 10,
-                    maxValue: 100,
-                    initialValue: age,
-                    step: 1,
-                  ),
-                  CustomScrollable(
-                    labelText: 'Height (cm)',
+                    labelText: 'Height',
                     controller: heightController,
                     minValue: 100,
                     maxValue: 220,
@@ -106,9 +118,9 @@ class _CaloryCalculateScreenState extends State<CaloryCalculateScreen> {
                     step: 1,
                   ),
                   CustomScrollable(
-                    labelText: 'Weight (kg)',
+                    labelText: 'Weight',
                     controller: weightController,
-                    minValue: 30,
+                    minValue: 20,
                     maxValue: 200,
                     initialValue: weight,
                     step: 1,

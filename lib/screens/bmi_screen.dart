@@ -39,16 +39,16 @@ class _BmiScreenState extends State<BmiScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 CustomScrollable(
-                  labelText: 'Height (cm)',
+                  labelText: 'Height',
                   controller: heightController,
                   minValue: 100,
                   maxValue: 250,
                   initialValue: 170,
                 ),
                 CustomScrollable(
-                  labelText: 'Weight (kg)',
+                  labelText: 'Weight',
                   controller: weightController,
-                  minValue: 30,
+                  minValue: 20,
                   maxValue: 200,
                   initialValue: 70,
                 ),
