@@ -2,11 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:planner/providers/exercise_provider.dart';
 import 'package:planner/providers/font_provider.dart';
 import 'package:planner/providers/theme_provider.dart';
-import 'package:planner/screens/tab_screen.dart';
+import 'package:planner/screens/auth_screen.dart';
 import 'package:planner/providers/custom_exercise_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/services.dart';
-// TODO: Responsive design for different screen sizes
 // TODO: Add user authentication and profiles
 // TODO: Implement data persistence (e.g., local storage, cloud)
 // TODO: Add Animations for transitions
@@ -99,7 +98,7 @@ class MyApp extends StatelessWidget {
               useMaterial3: true,
             ),
             themeMode: themeProvider.themeMode,
-            home: TabScreen(),
+            home: AuthScreen(),
           ),
         ),
       ),
