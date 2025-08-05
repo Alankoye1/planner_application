@@ -6,9 +6,11 @@ class AnimatedInputField extends StatelessWidget {
   final bool obscureText;
   final TextInputType keyboardType;
   final int delay;
+  final TextEditingController controller;
 
   const AnimatedInputField({
     super.key,
+    required this.controller,
     required this.label,
     required this.icon,
     this.obscureText = false,
@@ -31,6 +33,7 @@ class AnimatedInputField extends StatelessWidget {
       ),
       child: TextField(
         obscureText: obscureText,
+        controller: controller,
         keyboardType: keyboardType,
         textInputAction: TextInputAction.next,
         decoration: InputDecoration(

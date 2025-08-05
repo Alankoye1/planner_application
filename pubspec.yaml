@@ -40,6 +40,9 @@ dependencies:
   flutter_inappwebview: ^6.1.5
   url_launcher: ^6.1.10 # Use the latest version available
   shared_preferences: ^2.5.3
+  firebase_auth: ^6.0.0
+  firebase_core: ^4.0.0
+  http: ^1.4.0
 
 dev_dependencies:
   flutter_test:

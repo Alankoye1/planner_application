@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:planner/providers/exercise_provider.dart';
 import 'package:planner/providers/font_provider.dart';
 import 'package:planner/providers/theme_provider.dart';
+import 'package:planner/providers/user_provider.dart';
 import 'package:planner/screens/auth_screen.dart';
 import 'package:planner/providers/custom_exercise_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/services.dart';
-// TODO: Add user authentication and profiles
 // TODO: Implement data persistence (e.g., local storage, cloud)
 // TODO: Add Animations for transitions
 
@@ -15,7 +15,6 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // Lock device orientation to portrait mode
-  
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
@@ -51,6 +50,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider.value(value: ExerciseProvider()),
         ChangeNotifierProvider.value(value: themeProvider),
         ChangeNotifierProvider.value(value: fontProvider),
+        ChangeNotifierProvider.value(value: UserProvider()),
       ],
       child: Consumer<ThemeProvider>(
         builder: (context, themeProvider, _) => Consumer<FontProvider>(

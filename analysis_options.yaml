@@ -12,6 +12,8 @@ analyzer:
     unnecessary_string_interpolations: ignore
     deprecated_member_use: ignore
     constant_identifier_names: ignore
+    avoid_print: ignore
+    use_build_context_synchronously: ignore
 include: package:flutter_lints/flutter.yaml
 
 linter:
