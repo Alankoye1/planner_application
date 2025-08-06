@@ -108,6 +108,8 @@ class MyApp extends StatelessWidget {
 }
 
 class HomeWrapper extends StatefulWidget {
+  const HomeWrapper({super.key});
+
   @override
   _HomeWrapperState createState() => _HomeWrapperState();
 }

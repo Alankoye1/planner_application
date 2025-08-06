@@ -189,4 +189,207 @@ class UserProvider with ChangeNotifier {
     }
     notifyListeners();
   }
+
+  // Update user profile (username and email)
+  Future<void> updateProfile({required String username, required String email}) async {
+    if (_currentUser == null) {
+      throw Exception('No user logged in');
+    }
+
+    try {
+      // Update Firebase display name
+      final updateProfileUrl = 
+          'https://identitytoolkit.googleapis.com/v1/accounts:update?key=AIzaSyCwA05SgEDJ2SRgFiehPZzAC4sm7w2x_eM';
+      
+      final response = await http.post(
+        Uri.parse(updateProfileUrl),
+        body: json.encode({
+          'idToken': _currentUser!.token,
+          'displayName': username,
+          'email': email,
+          'returnSecureToken': true,
+        }),
+      );
+
+      final responseData = json.decode(response.body);
+
+      if (response.statusCode != 200) {
+        String errorMessage = 'Profile update failed';
+        if (responseData['error'] != null) {
+          switch (responseData['error']['message']) {
+            case 'EMAIL_EXISTS':
+              errorMessage = 'This email is already in use';
+              break;
+            case 'INVALID_EMAIL':
+              errorMessage = 'Invalid email address';
+              break;
+            default:
+              errorMessage = 'Update failed: ${responseData['error']['message']}';
+          }
+        }
+        throw Exception(errorMessage);
+      }
+
+      // Update local user data
+      _currentUser = User(
+        id: _currentUser!.id,
+        email: email,
+        password: _currentUser!.password,
+        username: username,
+        token: responseData['idToken'] ?? _currentUser!.token,
+        createdAt: _currentUser!.createdAt,
+      );
+
+      // Save updated data
+      await _saveUserData();
+      notifyListeners();
+    } catch (error) {
+      rethrow;
+    }
+  }
+
+  // Change user password
+  Future<void> changePassword({required String currentPassword, required String newPassword}) async {
+    if (_currentUser == null) {
+      throw Exception('No user logged in');
+    }
+
+    try {
+      // First verify current password by signing in
+      final signInUrl = 
+          'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyCwA05SgEDJ2SRgFiehPZzAC4sm7w2x_eM';
+      
+      final verifyResponse = await http.post(
+        Uri.parse(signInUrl),
+        body: json.encode({
+          'email': _currentUser!.email,
+          'password': currentPassword,
+          'returnSecureToken': true,
+        }),
+      );
+
+      if (verifyResponse.statusCode != 200) {
+        throw Exception('Current password is incorrect');
+      }
+
+      // Change password
+      final changePasswordUrl = 
+          'https://identitytoolkit.googleapis.com/v1/accounts:update?key=AIzaSyCwA05SgEDJ2SRgFiehPZzAC4sm7w2x_eM';
+      
+      final response = await http.post(
+        Uri.parse(changePasswordUrl),
+        body: json.encode({
+          'idToken': _currentUser!.token,
+          'password': newPassword,
+          'returnSecureToken': true,
+        }),
+      );
+
+      final responseData = json.decode(response.body);
+
+      if (response.statusCode != 200) {
+        String errorMessage = 'Password change failed';
+        if (responseData['error'] != null) {
+          switch (responseData['error']['message']) {
+            case 'WEAK_PASSWORD':
+              errorMessage = 'Password is too weak';
+              break;
+            default:
+              errorMessage = 'Password change failed: ${responseData['error']['message']}';
+          }
+        }
+        throw Exception(errorMessage);
+      }
+
+      // Update local user data
+      _currentUser = User(
+        id: _currentUser!.id,
+        email: _currentUser!.email,
+        password: newPassword,
+        username: _currentUser!.username,
+        token: responseData['idToken'] ?? _currentUser!.token,
+        createdAt: _currentUser!.createdAt,
+      );
+
+      // Save updated data
+      await _saveUserData();
+      notifyListeners();
+    } catch (error) {
+      rethrow;
+    }
+  }
+
+  // Change user email
+  Future<void> changeEmail({required String newEmail, required String currentPassword}) async {
+    if (_currentUser == null) {
+      throw Exception('No user logged in');
+    }
+
+    try {
+      // First verify current password by signing in
+      final signInUrl = 
+          'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyCwA05SgEDJ2SRgFiehPZzAC4sm7w2x_eM';
+      
+      final verifyResponse = await http.post(
+        Uri.parse(signInUrl),
+        body: json.encode({
+          'email': _currentUser!.email,
+          'password': currentPassword,
+          'returnSecureToken': true,
+        }),
+      );
+
+      if (verifyResponse.statusCode != 200) {
+        throw Exception('Current password is incorrect');
+      }
+
+      // Change email
+      final changeEmailUrl = 
+          'https://identitytoolkit.googleapis.com/v1/accounts:update?key=AIzaSyCwA05SgEDJ2SRgFiehPZzAC4sm7w2x_eM';
+      
+      final response = await http.post(
+        Uri.parse(changeEmailUrl),
+        body: json.encode({
+          'idToken': _currentUser!.token,
+          'email': newEmail,
+          'returnSecureToken': true,
+        }),
+      );
+
+      final responseData = json.decode(response.body);
+
+      if (response.statusCode != 200) {
+        String errorMessage = 'Email change failed';
+        if (responseData['error'] != null) {
+          switch (responseData['error']['message']) {
+            case 'EMAIL_EXISTS':
+              errorMessage = 'This email is already in use';
+              break;
+            case 'INVALID_EMAIL':
+              errorMessage = 'Invalid email address';
+              break;
+            default:
+              errorMessage = 'Email change failed: ${responseData['error']['message']}';
+          }
+        }
+        throw Exception(errorMessage);
+      }
+
+      // Update local user data
+      _currentUser = User(
+        id: _currentUser!.id,
+        email: newEmail,
+        password: _currentUser!.password,
+        username: _currentUser!.username,
+        token: responseData['idToken'] ?? _currentUser!.token,
+        createdAt: _currentUser!.createdAt,
+      );
+
+      // Save updated data
+      await _saveUserData();
+      notifyListeners();
+    } catch (error) {
+      rethrow;
+    }
+  }
 }
