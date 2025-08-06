@@ -4,6 +4,7 @@ import 'package:planner/providers/font_provider.dart';
 import 'package:planner/providers/theme_provider.dart';
 import 'package:planner/providers/user_provider.dart';
 import 'package:planner/screens/auth_screen.dart';
+import 'package:planner/screens/tab_screen.dart';
 import 'package:planner/providers/custom_exercise_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/services.dart';
@@ -98,10 +99,54 @@ class MyApp extends StatelessWidget {
               useMaterial3: true,
             ),
             themeMode: themeProvider.themeMode,
-            home: AuthScreen(),
+            home: HomeWrapper(),
           ),
         ),
       ),
+    );
+  }
+}
+
+class HomeWrapper extends StatefulWidget {
+  @override
+  _HomeWrapperState createState() => _HomeWrapperState();
+}
+
+class _HomeWrapperState extends State<HomeWrapper> {
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkAutoLogin();
+  }
+
+  Future<void> _checkAutoLogin() async {
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
+    await userProvider.autoLogin();
+    setState(() {
+      _isLoading = false;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (_isLoading) {
+      return Scaffold(
+        body: Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
+
+    return Consumer<UserProvider>(
+      builder: (context, userProvider, _) {
+        if (userProvider.currentUser != null) {
+          return TabScreen();
+        } else {
+          return AuthScreen();
+        }
+      },
     );
   }
 }

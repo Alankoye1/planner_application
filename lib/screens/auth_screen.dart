@@ -49,13 +49,13 @@ class _AuthScreenState extends State<AuthScreen> {
             end: Alignment.bottomRight,
           ),
         ),
-        child: SafeArea(
+        child: SingleChildScrollView(
           child: Padding(
             padding: EdgeInsets.only(
-              top: deviceSize.height * 0.02,
-              left: deviceSize.width * 0.02,
-              right: deviceSize.width * 0.02,
-              bottom: 16.0, // Extra bottom padding to prevent overflow
+              top: deviceSize.height * 0.10,
+              left: deviceSize.width * 0.04,
+              right: deviceSize.width * 0.04,
+              bottom: deviceSize.height * 0.20,
             ),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
@@ -83,7 +83,7 @@ class _AuthScreenState extends State<AuthScreen> {
                       ? deviceSize.height * 0.04
                       : deviceSize.height * 0.02,
                 ),
-
+                
                 // ✅ Scrollable Auth Card
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 24.0),
@@ -201,7 +201,7 @@ class _AuthScreenState extends State<AuthScreen> {
                                 onPressed: () async {
                                   bool isValid = true;
                                   String errorMessage = '';
-
+                
                                   if (_emailController.text.isEmpty ||
                                       !_emailController.text.contains('@')) {
                                     isValid = false;
@@ -226,7 +226,7 @@ class _AuthScreenState extends State<AuthScreen> {
                                       errorMessage = 'Passwords do not match!';
                                     }
                                   }
-
+                
                                   if (!isValid) {
                                     ScaffoldMessenger.of(context).showSnackBar(
                                       SnackBar(
@@ -236,7 +236,7 @@ class _AuthScreenState extends State<AuthScreen> {
                                     );
                                     return;
                                   }
-
+                
                                   showDialog(
                                     context: context,
                                     barrierDismissible: false,
@@ -244,7 +244,7 @@ class _AuthScreenState extends State<AuthScreen> {
                                       child: CircularProgressIndicator(),
                                     ),
                                   );
-
+                
                                   try {
                                     if (_authMode == AuthMode.signUp) {
                                       await Provider.of<UserProvider>(
@@ -264,7 +264,7 @@ class _AuthScreenState extends State<AuthScreen> {
                                         _passwordController.text,
                                       );
                                     }
-
+                
                                     Navigator.of(context).pop();
                                     Navigator.pushReplacement(
                                       context,

@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:planner/providers/user_provider.dart';
 import 'package:planner/screens/bmi_screen.dart';
 import 'package:planner/screens/calory_calculate_screen.dart';
 import 'package:planner/screens/favorite_screen.dart';
 import 'package:planner/screens/settings/screens/setting_screen.dart';
+import 'package:provider/provider.dart';
 
 class MyDrawer extends StatelessWidget {
   const MyDrawer({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final userProvider = Provider.of<UserProvider>(context);
     return Drawer(
       child: ListView(
         padding: EdgeInsets.zero,
@@ -24,7 +27,7 @@ class MyDrawer extends StatelessWidget {
                 ),
                 SizedBox(height: 10),
                 Text(
-                  'User Name',
+                  userProvider.currentUser?.username ?? 'Guest',
                   style: Theme.of(
                     context,
                   ).textTheme.headlineSmall?.copyWith(color: Colors.white),

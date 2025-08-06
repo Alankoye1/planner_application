@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:planner/providers/user_provider.dart';
+import 'package:planner/screens/auth_screen.dart';
 import 'package:planner/screens/settings/widgets/custom_setting_list_tile.dart';
+import 'package:provider/provider.dart';
 
 class AccountScreen extends StatelessWidget {
   const AccountScreen({super.key});
@@ -7,6 +10,7 @@ class AccountScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final userProvider = Provider.of<UserProvider>(context);
     return Scaffold(
       appBar: AppBar(title: const Text('Account Settings')),
       body: ListView(
@@ -53,9 +57,10 @@ class AccountScreen extends StatelessWidget {
             subtitle: 'Log out of your account',
             icon: Icons.logout,
             onTap: () {
-              Navigator.of(
-                context,
-              ).push(MaterialPageRoute(builder: (_) => const LogoutScreen()));
+              showDialog(
+                context: context,
+                builder: (_) => LogoutScreen(onLogout: userProvider.signOut),
+              );
             },
             iconColor: Colors.redAccent,
           ),
@@ -99,12 +104,26 @@ class PasswordScreen extends StatelessWidget {
 }
 
 class LogoutScreen extends StatelessWidget {
-  const LogoutScreen({super.key});
+  const LogoutScreen({super.key, required this.onLogout});
+  final VoidCallback onLogout;
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Logout')),
-      body: const Center(child: Text('Logout Screen')),
+    return AlertDialog(
+      title: const Text('Logout'),
+      content: const Text('Are you sure you want to log out?'),
+      actions: [
+      TextButton(
+        onPressed: () => Navigator.of(context).pop(),
+        child: const Text('Cancel'),
+      ),
+      ElevatedButton(
+        onPressed: () {
+          onLogout();
+          Navigator.of(context).push(MaterialPageRoute(builder: (_) => const AuthScreen()));
+        },
+        child: const Text('Logout'),
+      ),
+      ],
     );
   }
 }
