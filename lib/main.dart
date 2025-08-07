@@ -125,7 +125,20 @@ class _HomeWrapperState extends State<HomeWrapper> {
 
   Future<void> _checkAutoLogin() async {
     final userProvider = Provider.of<UserProvider>(context, listen: false);
+    final customExerciseProvider = Provider.of<CustomExerciseProvider>(context, listen: false);
+    
     await userProvider.autoLogin();
+    
+    // Load custom exercises if user is logged in
+    if (userProvider.currentUser != null && 
+        userProvider.currentUser!.id != null && 
+        userProvider.currentUser!.token != null) {
+      await customExerciseProvider.fetchAndSetCustom(
+        userProvider.currentUser!.id!, 
+        userProvider.currentUser!.token!
+      );
+    }
+    
     setState(() {
       _isLoading = false;
     });

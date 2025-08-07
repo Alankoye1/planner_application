@@ -1,12 +1,21 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:planner/data.dart';
 import 'package:planner/models/excersice.dart';
+import 'package:planner/providers/user_provider.dart';
 import 'package:planner/screens/excercise_detail_screen.dart';
+import 'package:provider/provider.dart';
 
 class CustomExerciseProvider extends ChangeNotifier {
   // Method to add a new custom exercise category
   Future<void> addingCustom(BuildContext context) async {
     final TextEditingController name = TextEditingController();
+    final currentUser = Provider.of<UserProvider>(
+      context,
+      listen: false,
+    ).currentUser;
     await showDialog(
       context: context,
       builder: (context) {
@@ -18,10 +27,19 @@ class CustomExerciseProvider extends ChangeNotifier {
           ),
           actions: [
             TextButton(
-              onPressed: () {
-                if (name.text.trim().isNotEmpty) {
-                  customExercises[name.text.trim()] = <Excercise>[];
-                  notifyListeners(); // Notify widgets to rebuild
+              onPressed: () async {
+                final categoryName = name.text.trim();
+                if (categoryName.isNotEmpty) {
+                  customExercises[categoryName] = <Excercise>[];
+                  final url =
+                    'https://fit-planner-de29a-default-rtdb.firebaseio.com/users/${currentUser?.id}/customExercises/$categoryName.json?auth=${currentUser!.token}';
+                  await http.post(
+                    Uri.parse(url),
+                    body: json.encode({
+                      'categoryName': categoryName,
+                    }), // empty list for new category
+                  );
+                  notifyListeners();
                 }
                 if (context.mounted) {
                   Navigator.of(context).pop();
@@ -33,6 +51,59 @@ class CustomExerciseProvider extends ChangeNotifier {
         );
       },
     );
+  }
+
+  Future<void> fetchAndSetCustom(String id, String token) async {
+    try {
+      final url =
+          'https://fit-planner-de29a-default-rtdb.firebaseio.com/users/$id/customExercises.json?auth=$token';
+
+      print('Fetching custom exercises from: $url');
+
+      final response = await http.get(Uri.parse(url));
+
+      print('Response status: ${response.statusCode}');
+      print('Response body: ${response.body}');
+
+      if (response.statusCode == 200) {
+        final responseBody = response.body;
+
+        if (responseBody == 'null' || responseBody.isEmpty) {
+          print('No custom exercises found');
+          customExercises.clear();
+          notifyListeners();
+          return;
+        }
+
+        final data = json.decode(responseBody, reviver: (key, value) {
+          if (key == 'categoryName') {
+            print('Category name: $value');
+          }
+          return value;
+        }) as Map<String, dynamic>;
+        customExercises.clear();
+
+        data.forEach((categoryName, exerciseList) {
+            print('Category name: $categoryName');
+          if (exerciseList != null && exerciseList is List) {
+            customExercises[categoryName] = exerciseList
+                .map((item) => Excercise.fromJson(item as Map<String, dynamic>))
+                .toList();
+          } else {
+            customExercises[categoryName] = [];
+          }
+        });
+
+        print('Loaded custom exercises: ${customExercises.keys.toList()}');
+        notifyListeners();
+      } else {
+        print(
+          'Failed to fetch custom exercises. Status: ${response.statusCode}',
+        );
+      }
+    } catch (e) {
+      print('Error fetching custom exercises: $e');
+    }
   }
 
   void deleteCustom(String category) {
