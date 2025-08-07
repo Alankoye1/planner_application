@@ -63,7 +63,7 @@ class CustomExercise extends StatelessWidget {
                                   exercises,
                                 );
                               } else if (value == 1) {
-                                provider.deleteCustom(category);
+                                provider.deleteCustom(category, context);
                               }
                             },
                             itemBuilder: (context) => [
@@ -125,6 +125,7 @@ class CustomExercise extends StatelessWidget {
                                     provider.deleteExerciseFromCustom(
                                       exercise,
                                       category,
+                                      context
                                     );
                                   },
                                 ),

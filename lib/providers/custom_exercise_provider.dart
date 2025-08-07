@@ -32,7 +32,7 @@ class CustomExerciseProvider extends ChangeNotifier {
                 if (categoryName.isNotEmpty) {
                   customExercises[categoryName] = <Excercise>[];
                   final url =
-                    'https://fit-planner-de29a-default-rtdb.firebaseio.com/users/${currentUser?.id}/customExercises/$categoryName.json?auth=${currentUser!.token}';
+                      'https://fit-planner-de29a-default-rtdb.firebaseio.com/users/${currentUser?.id}/customExercises/$categoryName.json?auth=${currentUser!.token}';
                   await http.post(
                     Uri.parse(url),
                     body: json.encode({
@@ -58,10 +58,7 @@ class CustomExerciseProvider extends ChangeNotifier {
       final url =
           'https://fit-planner-de29a-default-rtdb.firebaseio.com/users/$id/customExercises.json?auth=$token';
 
-      print('Fetching custom exercises from: $url');
-
       final response = await http.get(Uri.parse(url));
-
       print('Response status: ${response.statusCode}');
       print('Response body: ${response.body}');
 
@@ -75,26 +72,31 @@ class CustomExerciseProvider extends ChangeNotifier {
           return;
         }
 
-        final data = json.decode(responseBody, reviver: (key, value) {
-          if (key == 'categoryName') {
-            print('Category name: $value');
-          }
-          return value;
-        }) as Map<String, dynamic>;
+        final data = json.decode(responseBody) as Map<String, dynamic>;
         customExercises.clear();
 
-        data.forEach((categoryName, exerciseList) {
-            print('Category name: $categoryName');
-          if (exerciseList != null && exerciseList is List) {
-            customExercises[categoryName] = exerciseList
+        data.forEach((categoryName, value) {
+          // If you save as: {categoryName: [exercise, exercise, ...]}
+          if (value is List) {
+            customExercises[categoryName] = value
+                .map((item) => Excercise.fromJson(item as Map<String, dynamic>))
+                .toList();
+          }
+          // If you save as: {categoryName: {exercises: [...]}
+          else if (value is Map<String, dynamic> &&
+              value['exercises'] is List) {
+            customExercises[categoryName] = (value['exercises'] as List)
                 .map((item) => Excercise.fromJson(item as Map<String, dynamic>))
                 .toList();
           } else {
             customExercises[categoryName] = [];
           }
+          print(
+            'Fetched category: $categoryName, exercises: ${customExercises[categoryName]}',
+          );
         });
 
-        print('Loaded custom exercises: ${customExercises.keys.toList()}');
+        print('Loaded categories: ${customExercises.keys.toList()}');
         notifyListeners();
       } else {
         print(
@@ -106,8 +108,15 @@ class CustomExerciseProvider extends ChangeNotifier {
     }
   }
 
-  void deleteCustom(String category) {
+  void deleteCustom(String category, BuildContext context) async {
     customExercises.remove(category);
+    final currentUser = Provider.of<UserProvider>(
+      context,
+      listen: false,
+    ).currentUser;
+    final url =
+        'https://fit-planner-de29a-default-rtdb.firebaseio.com/users/${currentUser?.id}/customExercises/$category.json?auth=${currentUser!.token}';
+    await http.delete(Uri.parse(url));
     notifyListeners();
   }
 
@@ -116,6 +125,10 @@ class CustomExerciseProvider extends ChangeNotifier {
     String category,
     List<Excercise> exercises,
   ) {
+    final currentUser = Provider.of<UserProvider>(
+      context,
+      listen: false,
+    ).currentUser;
     showDialog(
       context: context,
       builder: (context) {
@@ -141,8 +154,19 @@ class CustomExerciseProvider extends ChangeNotifier {
                   trailing: IconButton(
                     onPressed: isAlreadyAdded
                         ? null
-                        : () {
+                        : () async {
                             customExercises[category]!.add(exercise);
+                            final url =
+                                'https://fit-planner-de29a-default-rtdb.firebaseio.com/users/${currentUser?.id}/customExercises/$category.json?auth=${currentUser!.token}';
+                            await http.put(
+                              Uri.parse(url),
+                              body: json.encode({
+                                'categoryName': category,
+                                'exercises': customExercises[category]!
+                                    .map((e) => e.toJson())
+                                    .toList(),
+                              }),
+                            );
                             notifyListeners();
                             if (context.mounted) {
                               Navigator.of(context).pop();
@@ -219,6 +243,11 @@ class CustomExerciseProvider extends ChangeNotifier {
                         : () {
                             customExercises[category]!.remove(removeExercise);
                             customExercises[category]!.add(exercise);
+                            updateExerciseInCustom(
+                              category: category,
+                              updatedExercise: exercise,
+                              context: context,
+                            );
                             notifyListeners();
                             if (context.mounted) {
                               Navigator.of(context).pop();
@@ -261,10 +290,66 @@ class CustomExerciseProvider extends ChangeNotifier {
     );
   }
 
-  void deleteExerciseFromCustom(Excercise exercise, String category) {
+  Future<void> deleteExerciseFromCustom(
+    Excercise exercise,
+    String category,
+    BuildContext context,
+  ) async {
+    final currentUser = Provider.of<UserProvider>(
+      context,
+      listen: false,
+    ).currentUser;
+
+    // Remove the exercise locally
     customExercises[category]?.removeWhere(
       (existingExercise) => existingExercise.id == exercise.id,
     );
+
+    // Update the exercises array in Firebase
+    final url =
+        'https://fit-planner-de29a-default-rtdb.firebaseio.com/users/${currentUser?.id}/customExercises/$category/exercises.json?auth=${currentUser!.token}';
+
+    await http.put(
+      Uri.parse(url),
+      body: json.encode(
+        customExercises[category]!.map((e) => e.toJson()).toList(),
+      ),
+    );
+
     notifyListeners(); // Notify widgets to rebuild
+  }
+
+  Future<void> updateExerciseInCustom({
+    required String category,
+    required Excercise updatedExercise,
+    required BuildContext context,
+  }) async {
+    final currentUser = Provider.of<UserProvider>(
+      context,
+      listen: false,
+    ).currentUser;
+
+    // Find index of the exercise to update
+    final index = customExercises[category]?.indexWhere(
+      (e) => e.id == updatedExercise.id,
+    );
+
+    if (index != null && index != -1) {
+      // Update locally
+      customExercises[category]![index] = updatedExercise;
+
+      // Update in Firebase (update the whole exercises array for the category)
+      final url =
+          'https://fit-planner-de29a-default-rtdb.firebaseio.com/users/${currentUser?.id}/customExercises/$category/exercises.json?auth=${currentUser!.token}';
+
+      await http.put(
+        Uri.parse(url),
+        body: json.encode(
+          customExercises[category]!.map((e) => e.toJson()).toList(),
+        ),
+      );
+
+      notifyListeners();
+    }
   }
 }
