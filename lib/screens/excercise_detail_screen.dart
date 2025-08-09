@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:planner/providers/exercise_provider.dart';
+import 'package:planner/providers/user_provider.dart';
 import 'package:provider/provider.dart';
 
 class ExerciseDetailScreen extends StatefulWidget {
@@ -21,6 +22,7 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen> {
   @override
   Widget build(BuildContext context) {
     final exerciseProvider = Provider.of<ExerciseProvider>(context);
+    final userProvider = Provider.of<UserProvider>(context);
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
@@ -30,7 +32,7 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen> {
                 ? const Icon(Icons.favorite, color: Colors.red)
                 : const Icon(Icons.favorite_border, color: Colors.red),
             onPressed: () {
-              exerciseProvider.toggleFavorite(widget.id);
+              exerciseProvider.toggleFavorite(widget.id, userProvider);
             },
           ),
           SizedBox(width: 10),

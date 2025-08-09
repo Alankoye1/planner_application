@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:planner/providers/exercise_provider.dart';
+import 'package:planner/providers/user_provider.dart';
 import 'package:planner/screens/excercise_detail_screen.dart';
 import 'package:provider/provider.dart';
 
@@ -10,6 +11,7 @@ class FavoriteScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final exerciseProvider = Provider.of<ExerciseProvider>(context);
     final favoriteExercises = exerciseProvider.favoriteExercises;
+    final userProvider = Provider.of<UserProvider>(context);
 
     return Scaffold(
       appBar: AppBar(
@@ -65,7 +67,7 @@ class FavoriteScreen extends StatelessWidget {
                       title: Text(exercise.excerciseTitle),
                       trailing: IconButton(
                         onPressed: () {
-                          exerciseProvider.toggleFavorite(exercise.id);
+                          exerciseProvider.toggleFavorite(exercise.id, userProvider);
                         },
                         icon: const Icon(Icons.favorite, color: Colors.red),
                       ),

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:planner/providers/user_provider.dart';
-import 'package:planner/screens/tab_screen.dart';
 import 'package:provider/provider.dart';
 
 enum AuthMode { signIn, signUp }
@@ -83,7 +82,7 @@ class _AuthScreenState extends State<AuthScreen> {
                       ? deviceSize.height * 0.04
                       : deviceSize.height * 0.02,
                 ),
-                
+
                 // ✅ Scrollable Auth Card
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 24.0),
@@ -201,7 +200,7 @@ class _AuthScreenState extends State<AuthScreen> {
                                 onPressed: () async {
                                   bool isValid = true;
                                   String errorMessage = '';
-                
+
                                   if (_emailController.text.isEmpty ||
                                       !_emailController.text.contains('@')) {
                                     isValid = false;
@@ -226,7 +225,7 @@ class _AuthScreenState extends State<AuthScreen> {
                                       errorMessage = 'Passwords do not match!';
                                     }
                                   }
-                
+
                                   if (!isValid) {
                                     ScaffoldMessenger.of(context).showSnackBar(
                                       SnackBar(
@@ -236,7 +235,7 @@ class _AuthScreenState extends State<AuthScreen> {
                                     );
                                     return;
                                   }
-                
+
                                   showDialog(
                                     context: context,
                                     barrierDismissible: false,
@@ -244,7 +243,7 @@ class _AuthScreenState extends State<AuthScreen> {
                                       child: CircularProgressIndicator(),
                                     ),
                                   );
-                
+
                                   try {
                                     if (_authMode == AuthMode.signUp) {
                                       await Provider.of<UserProvider>(
@@ -264,24 +263,32 @@ class _AuthScreenState extends State<AuthScreen> {
                                         _passwordController.text,
                                       );
                                     }
-                
-                                    Navigator.of(context).pop();
-                                    Navigator.pushReplacement(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => TabScreen(),
-                                      ),
-                                    );
+                                    
+                                    // Check if the context is still valid before proceeding
+                                    if (!mounted) return;
+                                    
+                                    // Safely dismiss the dialog with a check
+                                    if (Navigator.canPop(context)) {
+                                      Navigator.of(context).pop();
+                                    }
+                                    
+                                    // Don't manually navigate to TabScreen - let HomeWrapper handle it
                                   } catch (e) {
-                                    Navigator.of(context).pop();
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                        content: Text(
-                                          'Authentication failed: ${e.toString()}',
+                                    // Safely dismiss the dialog with a check
+                                    if (mounted && Navigator.canPop(context)) {
+                                      Navigator.of(context).pop();
+                                    }
+                                    
+                                    if (mounted) {
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        SnackBar(
+                                          content: Text(
+                                            'Authentication failed: ${e.toString()}',
+                                          ),
+                                          backgroundColor: Colors.red,
                                         ),
-                                        backgroundColor: Colors.red,
-                                      ),
-                                    );
+                                      );
+                                    }
                                   }
                                 },
                                 style: ElevatedButton.styleFrom(

@@ -47,11 +47,11 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider.value(value: CustomExerciseProvider()),
-        ChangeNotifierProvider.value(value: ExerciseProvider()),
-        ChangeNotifierProvider.value(value: themeProvider),
-        ChangeNotifierProvider.value(value: fontProvider),
-        ChangeNotifierProvider.value(value: UserProvider()),
+        ChangeNotifierProvider(create: (_) => CustomExerciseProvider()),
+        ChangeNotifierProvider(create: (_) => ExerciseProvider()),
+        ChangeNotifierProvider(create: (_) => themeProvider),
+        ChangeNotifierProvider(create: (_) => fontProvider),
+        ChangeNotifierProvider(create: (_) => UserProvider()),
       ],
       child: Consumer<ThemeProvider>(
         builder: (context, themeProvider, _) => Consumer<FontProvider>(
@@ -116,6 +116,7 @@ class HomeWrapper extends StatefulWidget {
 
 class _HomeWrapperState extends State<HomeWrapper> {
   bool _isLoading = true;
+  String? _previousUserId;
 
   @override
   void initState() {
@@ -123,35 +124,71 @@ class _HomeWrapperState extends State<HomeWrapper> {
     _checkAutoLogin();
   }
 
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    
+    // Listen for auth state changes
+    final userProvider = Provider.of<UserProvider>(context, listen: true);
+    final currentUserId = userProvider.currentUser?.id;
+    
+    // Load data when user is new or changed
+    if (currentUserId != null && currentUserId != _previousUserId) {
+      setState(() {
+        _isLoading = true;  // Set loading to true when user changes
+      });
+      _previousUserId = currentUserId;
+      _loadUserData(userProvider);
+    }
+  }
+
+  Future<void> _loadUserData(UserProvider userProvider) async {
+    if (userProvider.currentUser != null &&
+        userProvider.currentUser!.id != null &&
+        userProvider.currentUser!.token != null) {
+      
+      final customExerciseProvider = Provider.of<CustomExerciseProvider>(
+        context, 
+        listen: false,
+      );
+      final exerciseProvider = Provider.of<ExerciseProvider>(
+        context,
+        listen: false,
+      );
+      
+      await customExerciseProvider.fetchAndSetCustom(
+        userProvider.currentUser!.id!,
+        userProvider.currentUser!.token!,
+      );
+      await exerciseProvider.fetchAndSetFavorite(
+        userProvider.currentUser!.id!,
+        userProvider.currentUser!.token!,
+      );
+
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    }
+  }
+
   Future<void> _checkAutoLogin() async {
     final userProvider = Provider.of<UserProvider>(context, listen: false);
-    final customExerciseProvider = Provider.of<CustomExerciseProvider>(context, listen: false);
-    
     await userProvider.autoLogin();
-    
-    // Load custom exercises if user is logged in
-    if (userProvider.currentUser != null && 
-        userProvider.currentUser!.id != null && 
-        userProvider.currentUser!.token != null) {
-      await customExerciseProvider.fetchAndSetCustom(
-        userProvider.currentUser!.id!, 
-        userProvider.currentUser!.token!
-      );
+
+    if (userProvider.currentUser == null && mounted) {
+      setState(() {
+        _isLoading = false;
+      });
     }
-    
-    setState(() {
-      _isLoading = false;
-    });
+    // If user is logged in, _loadUserData will be called from didChangeDependencies
   }
 
   @override
   Widget build(BuildContext context) {
     if (_isLoading) {
-      return Scaffold(
-        body: Center(
-          child: CircularProgressIndicator(),
-        ),
-      );
+      return Scaffold(body: Center(child: CircularProgressIndicator()));
     }
 
     return Consumer<UserProvider>(
