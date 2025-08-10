@@ -2,22 +2,24 @@ import 'dart:ui';
 
 class User {
   final String? id;
-  final String? username;
-  final String password;
   final String email;
-  final DateTime createdAt;
+  final String password;
+  final String? username;
   final String? token;
+  final String? refreshToken; // Add this field
+  final DateTime? createdAt;
   final Image? profileImage;
   final String? profileBio;
 
   User({
+    this.createdAt,
     this.id,
     required this.email,
     required this.password,
     this.username,
     this.profileImage,
     this.profileBio,
-    DateTime? createdAt,
     this.token,
-  }) : createdAt = createdAt ?? DateTime.now();
+    this.refreshToken,
+  });
 }

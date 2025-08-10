@@ -56,6 +56,7 @@ class UserProvider with ChangeNotifier {
         password: password,
         username: username,
         token: responseData['idToken'],
+        refreshToken: responseData['refreshToken'], // <-- Add this line
       );
 
       // Save user data for auto-login
@@ -132,6 +133,7 @@ class UserProvider with ChangeNotifier {
         password: password,
         username: username,
         token: responseData['idToken'],
+        refreshToken: responseData['refreshToken'], // Store refresh token
       );
 
       // Save user data for auto-login
@@ -152,6 +154,7 @@ class UserProvider with ChangeNotifier {
     await prefs.remove('userEmail');
     await prefs.remove('userPassword');
     await prefs.remove('username');
+    await prefs.remove('userRefreshToken'); // Add this line
 
     notifyListeners();
   }
@@ -167,6 +170,10 @@ class UserProvider with ChangeNotifier {
       if (_currentUser!.username != null) {
         await prefs.setString('username', _currentUser!.username!);
       }
+      // Save refresh token
+      if (_currentUser!.refreshToken != null) {
+        await prefs.setString('userRefreshToken', _currentUser!.refreshToken!);
+      }
     }
   }
 
@@ -177,6 +184,7 @@ class UserProvider with ChangeNotifier {
     final email = prefs.getString('userEmail');
     final password = prefs.getString('userPassword');
     final username = prefs.getString('username');
+    final refreshToken = prefs.getString('userRefreshToken'); // <-- Add this line
 
     if (token != null && userId != null && email != null && password != null) {
       _currentUser = User(
@@ -185,6 +193,7 @@ class UserProvider with ChangeNotifier {
         password: password,
         username: username,
         token: token,
+        refreshToken: refreshToken, // <-- Add this line
       );
     }
     notifyListeners();
@@ -237,6 +246,7 @@ class UserProvider with ChangeNotifier {
         password: _currentUser!.password,
         username: username,
         token: responseData['idToken'] ?? _currentUser!.token,
+        refreshToken: responseData['refreshToken'] ?? _currentUser!.refreshToken, // <-- Add this line
         createdAt: _currentUser!.createdAt,
       );
 
@@ -382,6 +392,7 @@ class UserProvider with ChangeNotifier {
         password: _currentUser!.password,
         username: _currentUser!.username,
         token: responseData['idToken'] ?? _currentUser!.token,
+        refreshToken: responseData['refreshToken'] ?? _currentUser!.refreshToken, // <-- Add this line
         createdAt: _currentUser!.createdAt,
       );
 
@@ -391,5 +402,96 @@ class UserProvider with ChangeNotifier {
     } catch (error) {
       rethrow;
     }
+  }
+
+  Future<bool> refreshToken() async {
+    final prefs = await SharedPreferences.getInstance();
+    final refreshToken = prefs.getString('userRefreshToken');
+    
+    if (refreshToken == null || _currentUser == null) {
+      return false;
+    }
+    
+    final url = 'https://securetoken.googleapis.com/v1/token?key=AIzaSyCwA05SgEDJ2SRgFiehPZzAC4sm7w2x_eM';
+    
+    try {
+      final response = await http.post(
+        Uri.parse(url),
+        body: json.encode({
+          'grant_type': 'refresh_token',
+          'refresh_token': refreshToken,
+        }),
+      );
+      
+      final responseData = json.decode(response.body);
+      
+      if (response.statusCode != 200) {
+        // If refresh token is invalid, force logout
+        if (responseData['error'] != null && 
+            (responseData['error']['message'] == 'TOKEN_EXPIRED' || 
+            responseData['error']['message'] == 'INVALID_REFRESH_TOKEN')) {
+          await signOut();
+        }
+        return false;
+      }
+      
+      // Update user with new token
+      _currentUser = User(
+        id: _currentUser!.id,
+        email: _currentUser!.email,
+        password: _currentUser!.password,
+        username: _currentUser!.username,
+        token: responseData['id_token'],
+        refreshToken: responseData['refresh_token'],
+        createdAt: _currentUser!.createdAt,
+      );
+      
+      // Save updated tokens
+      await prefs.setString('userToken', responseData['id_token']);
+      await prefs.setString('userRefreshToken', responseData['refresh_token']);
+      
+      print('New token: ${responseData['id_token']}'); // Print token
+      
+      notifyListeners();
+      return true;
+    } catch (error) {
+      print('Token refresh failed: $error');
+      return false;
+    }
+  }
+
+  Future<String?> getValidToken() async {
+    if (_currentUser == null || _currentUser!.token == null) {
+      return null;
+    }
+    
+    // For simplicity, we'll refresh the token before every API call
+    // In production, you might want to check if the token is actually close to expiring
+    final refreshed = await refreshToken();
+    if (refreshed) {
+      return _currentUser!.token;
+    }
+    
+    // If refresh failed but we still have a token, return it
+    // (it might still be valid)
+    return _currentUser!.token;
+  }
+
+  // Example of using the valid token in an API call
+  Future<void> fetchUserData() async {
+    final token = await getValidToken();
+    if (token == null) {
+      throw Exception('Not authenticated');
+    }
+    
+    final response = await http.get(
+      Uri.parse('https://your-api-endpoint.com'),
+      headers: {'Authorization': 'Bearer $token'},
+    );
+    if (response.statusCode != 200) {
+      throw Exception('Failed to fetch user data');
+    }
+    
+    // Process response...
   }
 }

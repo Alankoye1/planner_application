@@ -169,7 +169,7 @@ class ProfileScreen extends StatelessWidget {
                       context,
                       icon: Icons.calendar_today,
                       label: 'Member since',
-                      value: _formatDate(currentUser.createdAt),
+                      value: _formatDate(currentUser.createdAt!),
                     ),
                   ],
                 ),
