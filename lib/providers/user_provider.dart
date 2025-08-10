@@ -184,7 +184,7 @@ class UserProvider with ChangeNotifier {
     final email = prefs.getString('userEmail');
     final password = prefs.getString('userPassword');
     final username = prefs.getString('username');
-    final refreshToken = prefs.getString('userRefreshToken'); // <-- Add this line
+    final refreshToken = prefs.getString('userRefreshToken');
 
     if (token != null && userId != null && email != null && password != null) {
       _currentUser = User(
@@ -193,8 +193,10 @@ class UserProvider with ChangeNotifier {
         password: password,
         username: username,
         token: token,
-        refreshToken: refreshToken, // <-- Add this line
+        refreshToken: refreshToken,
       );
+      // Immediately refresh token after auto-login
+      await this.refreshToken();
     }
     notifyListeners();
   }
@@ -318,6 +320,7 @@ class UserProvider with ChangeNotifier {
         password: newPassword,
         username: _currentUser!.username,
         token: responseData['idToken'] ?? _currentUser!.token,
+        refreshToken: responseData['refreshToken'] ?? _currentUser!.refreshToken, // <-- Add this line
         createdAt: _currentUser!.createdAt,
       );
 
@@ -479,15 +482,36 @@ class UserProvider with ChangeNotifier {
 
   // Example of using the valid token in an API call
   Future<void> fetchUserData() async {
-    final token = await getValidToken();
+    String? token = await getValidToken();
     if (token == null) {
       throw Exception('Not authenticated');
     }
-    
+
     final response = await http.get(
       Uri.parse('https://your-api-endpoint.com'),
       headers: {'Authorization': 'Bearer $token'},
     );
+
+    if (response.statusCode == 401) {
+      // Try refreshing token and retry once
+      final refreshed = await refreshToken();
+      if (refreshed) {
+        // Always get the latest token after refresh!
+        token = _currentUser!.token;
+        final retryResponse = await http.get(
+          Uri.parse('https://your-api-endpoint.com'),
+          headers: {'Authorization': 'Bearer $token'},
+        );
+        if (retryResponse.statusCode != 200) {
+          throw Exception('Failed to fetch user data after token refresh');
+        }
+        // Process retryResponse...
+        return;
+      } else {
+        throw Exception('Session expired. Please login again.');
+      }
+    }
+
     if (response.statusCode != 200) {
       throw Exception('Failed to fetch user data');
     }
