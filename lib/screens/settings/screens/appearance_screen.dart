@@ -18,7 +18,7 @@ class _AppearanceScreenState extends State<AppearanceScreen> {
     final themeProvider = Provider.of<ThemeProvider>(context);
     final fontProvider = Provider.of<FontProvider>(context);
     return Scaffold(
-      appBar: AppBar(title: const Text('Appearance Settings')),
+  appBar: AppBar(title: const Text('Appearance Settings')),
       body: ListView(
         children: [
           CustomSettingSwitchTile(

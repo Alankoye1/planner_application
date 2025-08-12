@@ -35,7 +35,7 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen> {
               exerciseProvider.toggleFavorite(widget.id, userProvider);
             },
           ),
-          SizedBox(width: 10),
+          const SizedBox(width: 10),
         ],
       ),
       body: Container(

@@ -54,7 +54,7 @@ class _BmiScreenState extends State<BmiScreen> {
                 ),
               ],
             ),
-            SizedBox(height: 80),
+            const SizedBox(height: 80),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
                 shadowColor: Theme.of(context).colorScheme.primary,
@@ -73,14 +73,14 @@ class _BmiScreenState extends State<BmiScreen> {
                 fontWeight: FontWeight.bold,
               )),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             Text(
               'Your BMI is: ${result.toStringAsFixed(2)}',
               style: Theme.of(
                 context,
               ).textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.bold),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             Text(
               _textResult(result),
               style: Theme.of(

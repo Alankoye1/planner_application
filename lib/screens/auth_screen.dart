@@ -41,8 +41,8 @@ class _AuthScreenState extends State<AuthScreen> {
         decoration: BoxDecoration(
           gradient: LinearGradient(
             colors: [
-              theme.colorScheme.primary.withOpacity(0.5),
-              theme.colorScheme.secondary.withOpacity(0.9),
+              theme.colorScheme.primary.withValues(alpha: 0.5),
+              theme.colorScheme.secondary.withValues(alpha: 0.9),
             ],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
@@ -82,250 +82,230 @@ class _AuthScreenState extends State<AuthScreen> {
                       ? deviceSize.height * 0.04
                       : deviceSize.height * 0.02,
                 ),
-
-                // ✅ Scrollable Auth Card
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                  child: Card(
-                    elevation: 8,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(24),
-                    ),
-                    child: ConstrainedBox(
-                      constraints: BoxConstraints(
-                        maxHeight: mediaQuery.size.height * 0.7,
+                Form(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        _authMode == AuthMode.signIn
+                            ? 'Sign In'
+                            : 'Create Account',
+                        style: theme.textTheme.titleLarge?.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: theme.colorScheme.primary,
+                        ),
                       ),
-                      child: Container(
-                        width: deviceSize.width * 0.9,
-                        padding: const EdgeInsets.all(16.0),
-                        child: Form(
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Text(
-                                _authMode == AuthMode.signIn
-                                    ? 'Sign In'
-                                    : 'Create Account',
-                                style: theme.textTheme.titleLarge?.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                  color: theme.colorScheme.primary,
-                                ),
-                              ),
-                              SizedBox(height: deviceSize.height * 0.03),
-                              TextField(
-                                controller: _emailController,
-                                keyboardType: TextInputType.emailAddress,
-                                textInputAction: TextInputAction.next,
-                                decoration: InputDecoration(
-                                  labelText: 'Email',
-                                  prefixIcon: Icon(Icons.email_outlined),
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(12),
-                                  ),
-                                ),
-                              ),
-                              SizedBox(height: deviceSize.height * 0.02),
-                              _authMode == AuthMode.signUp
-                                  ? TextField(
-                                      controller: _usernameController,
-                                      keyboardType: TextInputType.text,
-                                      textInputAction: TextInputAction.next,
-                                      decoration: InputDecoration(
-                                        labelText: 'Username',
-                                        prefixIcon: Icon(Icons.person_outline),
-                                        border: OutlineInputBorder(
-                                          borderRadius: BorderRadius.circular(
-                                            12,
-                                          ),
-                                        ),
-                                      ),
-                                    )
-                                  : TextField(
-                                      controller: _passwordController,
-                                      obscureText: true,
-                                      textInputAction: TextInputAction.next,
-                                      decoration: InputDecoration(
-                                        labelText: 'Password',
-                                        prefixIcon: Icon(Icons.lock_outline),
-                                        border: OutlineInputBorder(
-                                          borderRadius: BorderRadius.circular(
-                                            12,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                              SizedBox(
-                                height: _authMode == AuthMode.signIn
-                                    ? deviceSize.height * 0.03
-                                    : deviceSize.height * 0.02,
-                              ),
-                              if (_authMode == AuthMode.signUp) ...[
-                                Padding(
-                                  padding: const EdgeInsets.only(top: 16),
-                                  child: TextField(
-                                    controller: _passwordController,
-                                    obscureText: true,
-                                    textInputAction: TextInputAction.next,
-                                    decoration: InputDecoration(
-                                      labelText: 'Password',
-                                      prefixIcon: Icon(Icons.lock_outline),
-                                      border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(12),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(top: 16),
-                                  child: TextField(
-                                    controller: _confirmPasswordController,
-                                    obscureText: true,
-                                    textInputAction: TextInputAction.done,
-                                    decoration: InputDecoration(
-                                      labelText: 'Confirm Password',
-                                      prefixIcon: Icon(Icons.lock),
-                                      border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(12),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                              SizedBox(
-                                height: _authMode == AuthMode.signIn
-                                    ? deviceSize.height * 0.02
-                                    : deviceSize.height * 0.01,
-                              ),
-                              ElevatedButton(
-                                onPressed: () async {
-                                  bool isValid = true;
-                                  String errorMessage = '';
-
-                                  if (_emailController.text.isEmpty ||
-                                      !_emailController.text.contains('@')) {
-                                    isValid = false;
-                                    errorMessage =
-                                        'Please enter a valid email address';
-                                  } else if (_usernameController.text.isEmpty &&
-                                      _authMode == AuthMode.signUp) {
-                                    isValid = false;
-                                    errorMessage = 'Username cannot be empty';
-                                  } else if (_passwordController.text.isEmpty &&
-                                      _authMode == AuthMode.signIn) {
-                                    isValid = false;
-                                    errorMessage = 'Password cannot be empty';
-                                  } else if (_authMode == AuthMode.signUp) {
-                                    if (_passwordController.text.length < 8) {
-                                      isValid = false;
-                                      errorMessage =
-                                          'Password must be at least 8 characters long';
-                                    } else if (_passwordController.text !=
-                                        _confirmPasswordController.text) {
-                                      isValid = false;
-                                      errorMessage = 'Passwords do not match!';
-                                    }
-                                  }
-
-                                  if (!isValid) {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                        content: Text(errorMessage),
-                                        backgroundColor: Colors.red,
-                                      ),
-                                    );
-                                    return;
-                                  }
-
-                                  showDialog(
-                                    context: context,
-                                    barrierDismissible: false,
-                                    builder: (context) => const Center(
-                                      child: CircularProgressIndicator(),
-                                    ),
-                                  );
-
-                                  try {
-                                    if (_authMode == AuthMode.signUp) {
-                                      await Provider.of<UserProvider>(
-                                        context,
-                                        listen: false,
-                                      ).signUp(
-                                        _emailController.text,
-                                        _passwordController.text,
-                                        _usernameController.text,
-                                      );
-                                    } else {
-                                      await Provider.of<UserProvider>(
-                                        context,
-                                        listen: false,
-                                      ).signIn(
-                                        _emailController.text,
-                                        _passwordController.text,
-                                      );
-                                    }
-                                    
-                                    // Check if the context is still valid before proceeding
-                                    if (!mounted) return;
-                                    
-                                    // Safely dismiss the dialog with a check
-                                    if (Navigator.canPop(context)) {
-                                      Navigator.of(context).pop();
-                                    }
-                                    
-                                    // Don't manually navigate to TabScreen - let HomeWrapper handle it
-                                  } catch (e) {
-                                    // Safely dismiss the dialog with a check
-                                    if (mounted && Navigator.canPop(context)) {
-                                      Navigator.of(context).pop();
-                                    }
-                                    
-                                    if (mounted) {
-                                      ScaffoldMessenger.of(context).showSnackBar(
-                                        SnackBar(
-                                          content: Text(
-                                            'Authentication failed: ${e.toString()}',
-                                          ),
-                                          backgroundColor: Colors.red,
-                                        ),
-                                      );
-                                    }
-                                  }
-                                },
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: theme.colorScheme.primary,
-                                  foregroundColor: theme.colorScheme.onPrimary,
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 30,
-                                    vertical: 12,
-                                  ),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(20),
-                                  ),
-                                  elevation: theme.brightness == Brightness.dark
-                                      ? 8
-                                      : 4,
-                                  shadowColor:
-                                      theme.brightness == Brightness.dark
-                                      ? theme.colorScheme.primary
-                                      : null,
-                                ),
-                                child: Text(
-                                  _authMode == AuthMode.signIn
-                                      ? 'LOGIN'
-                                      : 'SIGN UP',
-                                  style: const TextStyle(fontSize: 16),
-                                ),
-                              ),
-                            ],
+                      SizedBox(height: deviceSize.height * 0.03),
+                      TextField(
+                        controller: _emailController,
+                        keyboardType: TextInputType.emailAddress,
+                        textInputAction: TextInputAction.next,
+                        decoration: InputDecoration(
+                          labelText: 'Email',
+                          prefixIcon: const Icon(Icons.email_outlined),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
                           ),
                         ),
                       ),
-                    ),
+                      SizedBox(height: deviceSize.height * 0.03),
+                      _authMode == AuthMode.signUp
+                          ? TextField(
+                              controller: _usernameController,
+                              keyboardType: TextInputType.text,
+                              textInputAction: TextInputAction.next,
+                              decoration: InputDecoration(
+                                labelText: 'Username',
+                                prefixIcon: const Icon(Icons.person_outline),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(
+                                    12,
+                                  ),
+                                ),
+                              ),
+                            )
+                          : TextField(
+                              controller: _passwordController,
+                              obscureText: true,
+                              textInputAction: TextInputAction.next,
+                              decoration: InputDecoration(
+                                labelText: 'Password',
+                                prefixIcon: const Icon(Icons.lock_outline),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(
+                                    12,
+                                  ),
+                                ),
+                              ),
+                            ),
+                      SizedBox(
+                        height: deviceSize.height * 0.03,
+                      ),
+                      if (_authMode == AuthMode.signUp) ...[
+                        const Padding(
+                          padding: EdgeInsets.only(top: 0),
+                          child: SizedBox.shrink(), // Placeholder for const
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 0),
+                          child: TextField(
+                            controller: _passwordController,
+                            obscureText: true,
+                            textInputAction: TextInputAction.next,
+                            decoration: InputDecoration(
+                              labelText: 'Password',
+                              prefixIcon: const Icon(Icons.lock_outline),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: deviceSize.height * 0.03),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 0),
+                          child: TextField(
+                            controller: _confirmPasswordController,
+                            obscureText: true,
+                            textInputAction: TextInputAction.done,
+                            decoration: InputDecoration(
+                              labelText: 'Confirm Password',
+                              prefixIcon: const Icon(Icons.lock),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                      SizedBox(
+                        height: deviceSize.height * 0.03,
+                      ),
+                      ElevatedButton(
+                        onPressed: () async {
+                          bool isValid = true;
+                          String errorMessage = '';
+
+                          if (_emailController.text.isEmpty ||
+                              !_emailController.text.contains('@')) {
+                            isValid = false;
+                            errorMessage =
+                                'Please enter a valid email address';
+                          } else if (_usernameController.text.isEmpty &&
+                              _authMode == AuthMode.signUp) {
+                            isValid = false;
+                            errorMessage = 'Username cannot be empty';
+                          } else if (_passwordController.text.isEmpty &&
+                              _authMode == AuthMode.signIn) {
+                            isValid = false;
+                            errorMessage = 'Password cannot be empty';
+                          } else if (_authMode == AuthMode.signUp) {
+                            if (_passwordController.text.length < 8) {
+                              isValid = false;
+                              errorMessage =
+                                  'Password must be at least 8 characters long';
+                            } else if (_passwordController.text !=
+                                _confirmPasswordController.text) {
+                              isValid = false;
+                              errorMessage = 'Passwords do not match!';
+                            }
+                          }
+
+                          if (!isValid) {
+                            if (mounted) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(errorMessage),
+                                  backgroundColor: Colors.red,
+                                ),
+                              );
+                            }
+                            return;
+                          }
+
+                          if (mounted) {
+                            showDialog(
+                              context: context,
+                              barrierDismissible: false,
+                              builder: (context) => const Center(
+                                child: CircularProgressIndicator(),
+                              ),
+                            );
+                          }
+
+                          try {
+                            if (_authMode == AuthMode.signUp) {
+                              await Provider.of<UserProvider>(
+                                context,
+                                listen: false,
+                              ).signUp(
+                                _emailController.text,
+                                _passwordController.text,
+                                _usernameController.text,
+                              );
+                            } else {
+                              await Provider.of<UserProvider>(
+                                context,
+                                listen: false,
+                              ).signIn(
+                                _emailController.text,
+                                _passwordController.text,
+                              );
+                            }
+
+                            if (!mounted) return;
+
+                            if (mounted && Navigator.canPop(context)) {
+                              Navigator.of(context).pop();
+                            }
+                          } catch (e) {
+                            if (mounted && Navigator.canPop(context)) {
+                              Navigator.of(context).pop();
+                            }
+
+                            if (mounted) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(
+                                    'Authentication failed: ${e.toString()}',
+                                  ),
+                                  backgroundColor: Colors.red,
+                                ),
+                              );
+                            }
+                          }
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: theme.colorScheme.primary,
+                          foregroundColor: theme.colorScheme.onPrimary,
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 30,
+                            vertical: 12,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          elevation: theme.brightness == Brightness.dark
+                              ? 8
+                              : 4,
+                          shadowColor:
+                              theme.brightness == Brightness.dark
+                              ? theme.colorScheme.primary
+                              : null,
+                        ),
+                        child: Text(
+                          _authMode == AuthMode.signIn
+                              ? 'LOGIN'
+                              : 'SIGN UP',
+                          style: const TextStyle(fontSize: 16),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
                 SizedBox(
                   height: _authMode == AuthMode.signIn
-                      ? deviceSize.height * 0.03
+                      ? deviceSize.height * 0.04
                       : deviceSize.height * 0.02,
                 ),
                 TextButton(
@@ -342,13 +322,13 @@ class _AuthScreenState extends State<AuthScreen> {
                 ),
                 Padding(
                   padding: EdgeInsets.only(
-                    top: deviceSize.height * 0.01,
+                    top: deviceSize.height * 0.02,
                     bottom: deviceSize.height * 0.005,
                   ),
                   child: Text(
                     '© ${DateTime.now().year} Fitness Planner',
                     style: TextStyle(
-                      color: theme.colorScheme.onPrimary.withOpacity(0.7),
+                      color: theme.colorScheme.onPrimary.withValues(alpha: 0.7),
                     ),
                   ),
                 ),

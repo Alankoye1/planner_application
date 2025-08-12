@@ -18,7 +18,6 @@ class ExerciseProvider with ChangeNotifier {
       final response = await http.get(Uri.parse(url));
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
-        print('Data structure: ${json.encode(data)}');
         if (data != null && data['exercises'] != null) {
           // Handle as Map instead of Iterable
           final exercises = data['exercises'] as Map<String, dynamic>;
@@ -35,7 +34,7 @@ class ExerciseProvider with ChangeNotifier {
         throw Exception('Failed to load favorite exercises');
       }
     } catch (error) {
-      print('Error fetching favorite exercises: $error');
+      throw Exception('Error fetching favorite exercises: $error');
     }
   }
 

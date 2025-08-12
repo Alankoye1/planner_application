@@ -59,14 +59,11 @@ class CustomExerciseProvider extends ChangeNotifier {
           'https://fit-planner-de29a-default-rtdb.firebaseio.com/users/$id/customExercises.json?auth=$token';
 
       final response = await http.get(Uri.parse(url));
-      print('Response status: ${response.statusCode}');
-      print('Response body: ${response.body}');
 
       if (response.statusCode == 200) {
         final responseBody = response.body;
 
         if (responseBody == 'null' || responseBody.isEmpty) {
-          print('No custom exercises found');
           customExercises.clear();
           notifyListeners();
           return;
@@ -91,20 +88,13 @@ class CustomExerciseProvider extends ChangeNotifier {
           } else {
             customExercises[categoryName] = [];
           }
-          print(
-            'Fetched category: $categoryName, exercises: ${customExercises[categoryName]}',
-          );
         });
 
-        print('Loaded categories: ${customExercises.keys.toList()}');
         notifyListeners();
       } else {
-        print(
-          'Failed to fetch custom exercises. Status: ${response.statusCode}',
-        );
       }
     } catch (e) {
-      print('Error fetching custom exercises: $e');
+      throw Exception('Error fetching custom exercises: $e');
     }
   }
 
@@ -117,7 +107,9 @@ class CustomExerciseProvider extends ChangeNotifier {
     final url =
         'https://fit-planner-de29a-default-rtdb.firebaseio.com/users/${currentUser?.id}/customExercises/$category.json?auth=${currentUser!.token}';
     await http.delete(Uri.parse(url));
-    notifyListeners();
+    if (context.mounted) {
+      notifyListeners();
+    }
   }
 
   void addExcerciseToCustom(
@@ -316,7 +308,9 @@ class CustomExerciseProvider extends ChangeNotifier {
       ),
     );
 
-    notifyListeners(); // Notify widgets to rebuild
+    if (context.mounted) {
+      notifyListeners(); // Notify widgets to rebuild
+    }
   }
 
   Future<void> updateExerciseInCustom({
@@ -349,7 +343,9 @@ class CustomExerciseProvider extends ChangeNotifier {
         ),
       );
 
-      notifyListeners();
+      if (context.mounted) {
+        notifyListeners();
+      }
     }
   }
 }

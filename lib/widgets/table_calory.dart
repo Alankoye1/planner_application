@@ -30,7 +30,7 @@ class TableCalory extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(vertical: 8),
                   child: Text(
                     ' To lose 1 kg in 1 week',
-                    style: TextStyle(color: Colors.blue),
+                    style: const TextStyle(color: Colors.blue),
                     textAlign: TextAlign.center,
                   ),
                 ),
@@ -50,7 +50,7 @@ class TableCalory extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(vertical: 8),
                 child: Text(
                   ' To lose 0.5 kg in 1 week',
-                  style: TextStyle(color: Colors.green),
+                  style: const TextStyle(color: Colors.green),
                   textAlign: TextAlign.center,
                 ),
               ),
@@ -70,7 +70,7 @@ class TableCalory extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(vertical: 8),
                 child: Text(
                   'To maintain weight',
-                  style: TextStyle(color: Colors.black),
+                  style: const TextStyle(color: Colors.black),
                   textAlign: TextAlign.center,
                 ),
               ),
@@ -90,7 +90,7 @@ class TableCalory extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(vertical: 8),
                 child: Text(
                   'To Gain 0.5 kg in 1 week',
-                  style: TextStyle(color: Colors.orange),
+                  style: const TextStyle(color: Colors.orange),
                   textAlign: TextAlign.center,
                 ),
               ),

@@ -8,7 +8,6 @@ import 'package:planner/screens/tab_screen.dart';
 import 'package:planner/providers/custom_exercise_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/services.dart';
-// TODO: Implement data persistence (e.g., local storage, cloud)
 // TODO: Add Animations for transitions
 
 void main() async {
@@ -188,7 +187,7 @@ class _HomeWrapperState extends State<HomeWrapper> {
   @override
   Widget build(BuildContext context) {
     if (_isLoading) {
-      return Scaffold(body: Center(child: CircularProgressIndicator()));
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
 
     return Consumer<UserProvider>(

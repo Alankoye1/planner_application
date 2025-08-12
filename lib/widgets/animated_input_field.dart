@@ -46,7 +46,7 @@ class AnimatedInputField extends StatelessWidget {
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12),
             borderSide: BorderSide(
-              color: theme.colorScheme.primary.withOpacity(0.3),
+              color: theme.colorScheme.primary.withValues(alpha: 0.3),
             ),
           ),
           focusedBorder: OutlineInputBorder(
@@ -54,7 +54,7 @@ class AnimatedInputField extends StatelessWidget {
             borderSide: BorderSide(color: theme.colorScheme.primary, width: 2),
           ),
           filled: true,
-          fillColor: theme.colorScheme.onPrimary.withOpacity(0.05),
+          fillColor: theme.colorScheme.onPrimary.withValues(alpha: 0.05),
         ),
       ),
     );

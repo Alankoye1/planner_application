@@ -25,7 +25,7 @@ class SettingScreen extends StatelessWidget {
               );
             },
           ),
-          Divider(),
+          const Divider(),
           CustomSettingListTile(
             icon: Icons.notifications,
             title: 'Notifications',
@@ -38,7 +38,7 @@ class SettingScreen extends StatelessWidget {
               );
             },
           ),
-          Divider(),
+          const Divider(),
           CustomSettingListTile(
             icon: Icons.lock,
             title: 'Privacy',
@@ -49,7 +49,7 @@ class SettingScreen extends StatelessWidget {
               );
             },
           ),
-          Divider(),
+          const Divider(),
           CustomSettingListTile(
             title: 'Appearance',
             subtitle: 'Theme and display',
@@ -62,7 +62,7 @@ class SettingScreen extends StatelessWidget {
               );
             },
           ),
-          Divider(),
+          const Divider(),
           CustomSettingListTile(
             title: 'About',
             subtitle: 'App information',

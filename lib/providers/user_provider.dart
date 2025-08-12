@@ -123,8 +123,7 @@ class UserProvider with ChangeNotifier {
           username = userInfoData['users'][0]['displayName'];
         }
       } catch (e) {
-        print('Error fetching user profile: $e');
-        // Continue anyway, username is optional
+        throw Exception('Error fetching user profile: $e');
       }
 
       _currentUser = User(
@@ -453,13 +452,11 @@ class UserProvider with ChangeNotifier {
       await prefs.setString('userToken', responseData['id_token']);
       await prefs.setString('userRefreshToken', responseData['refresh_token']);
       
-      print('New token: ${responseData['id_token']}'); // Print token
       
       notifyListeners();
       return true;
     } catch (error) {
-      print('Token refresh failed: $error');
-      return false;
+      throw Exception('Error refreshing token: $error');
     }
   }
 

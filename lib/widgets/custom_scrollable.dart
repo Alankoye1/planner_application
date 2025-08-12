@@ -60,8 +60,8 @@ class _CustomScrollableState extends State<CustomScrollable> {
   Widget build(BuildContext context) {
     return Expanded(
       child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 4),
-        padding: const EdgeInsets.all(10),
+  margin: const EdgeInsets.symmetric(horizontal: 4),
+  padding: const EdgeInsets.all(10),
         decoration: BoxDecoration(
           border: Border.all(color: Colors.grey[300]!),
           borderRadius: BorderRadius.circular(12),
@@ -163,7 +163,7 @@ class _CustomScrollableState extends State<CustomScrollable> {
                               color: Theme.of(context).colorScheme.primary,
                               width: 2,
                             ),
-                            color: Colors.grey.withOpacity(0.3),
+                            color: Colors.grey.withValues(alpha: 0.1),
                           ),
                         ),
                       ),

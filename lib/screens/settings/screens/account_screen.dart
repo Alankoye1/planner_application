@@ -10,9 +10,9 @@ class AccountScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final userProvider = Provider.of<UserProvider>(context);
     return Scaffold(
-      appBar: AppBar(title: const Text('Account Settings')),
+        appBar: AppBar(title: const Text('Account Settings')),
       body: ListView(
-        padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(16),
         children: [
           CustomSettingListTile(
             title: 'Profile',
@@ -29,7 +29,7 @@ class AccountScreen extends StatelessWidget {
           CustomSettingListTile(
             title: 'Email',
             subtitle: 'Change your email address',
-            icon: Icons.email,
+              icon: Icons.email,
             onTap: () {
               Navigator.of(
                 context,
@@ -41,7 +41,7 @@ class AccountScreen extends StatelessWidget {
           CustomSettingListTile(
             title: 'Password',
             subtitle: 'Change your password',
-            icon: Icons.lock,
+              icon: Icons.lock,
             onTap: () {
               Navigator.of(
                 context,
@@ -53,7 +53,7 @@ class AccountScreen extends StatelessWidget {
           CustomSettingListTile(
             title: 'Logout',
             subtitle: 'Log out of your account',
-            icon: Icons.logout,
+              icon: Icons.logout,
             onTap: () {
               showDialog(
                 context: context,
@@ -164,13 +164,6 @@ class ProfileScreen extends StatelessWidget {
                       label: 'Email',
                       value: currentUser.email,
                     ),
-                    const Divider(),
-                    _buildInfoRow(
-                      context,
-                      icon: Icons.calendar_today,
-                      label: 'Member since',
-                      value: _formatDate(currentUser.createdAt!),
-                    ),
                   ],
                 ),
                 const SizedBox(height: 16),
@@ -256,10 +249,6 @@ class ProfileScreen extends StatelessWidget {
         ],
       ),
     );
-  }
-
-  String _formatDate(DateTime date) {
-    return '${date.day}/${date.month}/${date.year}';
   }
 }
 

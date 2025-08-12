@@ -56,12 +56,12 @@ class _TabScreenState extends State<TabScreen> {
         items: [
           BottomNavigationBarItem(
             backgroundColor: theme.primaryColor,
-            icon: Icon(Icons.fitness_center),
+            icon: const Icon(Icons.fitness_center),
             label: 'Categories',
           ),
           BottomNavigationBarItem(
             backgroundColor: theme.primaryColor,
-            icon: Icon(Icons.playlist_add_check),
+            icon: const Icon(Icons.playlist_add_check),
             label: 'My Plan',
           ),
         ],

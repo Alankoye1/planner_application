@@ -51,7 +51,7 @@ class CustomExercise extends StatelessWidget {
                       trailing: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Icon(Icons.expand_more),
+                          const Icon(Icons.expand_more),
                           const SizedBox(width: 8),
                           PopupMenuButton<int>(
                             icon: const Icon(Icons.more_vert),

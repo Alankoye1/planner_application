@@ -28,7 +28,7 @@ class CategoryItem extends StatelessWidget {
       child: Card(
         shadowColor: Theme.of(context).brightness == Brightness.dark
             ? Theme.of(context).colorScheme.primary
-            : Colors.grey.withOpacity(0.5),
+            : Colors.grey.withValues(alpha: 0.5),
         elevation: 4,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -54,7 +54,7 @@ class CategoryItem extends StatelessWidget {
                 ),
               ),
             ),
-            SizedBox(width: 15),
+            const SizedBox(width: 15),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -68,8 +68,8 @@ class CategoryItem extends StatelessWidget {
               ],
             ),
             Spacer(),
-            Icon(Icons.navigate_next_outlined),
-            SizedBox(width: 15),
+            const Icon(Icons.navigate_next_outlined),
+            const SizedBox(width: 15),
           ],
         ),
       ),

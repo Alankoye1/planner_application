@@ -27,7 +27,7 @@ class ExcerciseItem extends StatelessWidget {
       elevation: 4,
       shadowColor: Theme.of(context).brightness == Brightness.dark
             ? Theme.of(context).colorScheme.primary
-            : Colors.grey.withOpacity(0.5),
+            : Colors.grey.withValues(alpha: 0.5),
       margin: const EdgeInsets.all(12.0),
       child: GridTile(
         footer: GridTileBar(
