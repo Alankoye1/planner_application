@@ -47,6 +47,24 @@ class _NotificationSettingScreenState extends State<NotificationSettingScreen> {
               setState(() => reminderNotifications = val);
             },
           ),
+          const Divider(),
+          if (reminderNotifications)
+            ListTile(
+              title: const Text('Reminder Time'),
+              subtitle: const Text('Set the time for daily reminders'),
+              onTap: () {
+                showTimePicker(context: context, initialTime: TimeOfDay.now());
+              },
+            )
+          else
+            IgnorePointer(
+              ignoring: true,
+              child: ListTile(
+                title: const Text('Reminder Time'),
+                subtitle: const Text('Set the time for daily reminders'),
+                enabled: false,
+              ),
+            )
         ],
       ),
     );

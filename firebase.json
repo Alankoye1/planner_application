@@ -1,0 +1,22 @@
+{
+    "flutter": {
+        "platforms": {
+            "android": {
+                "default": {
+                    "projectId": "fit-planner-de29a",
+                    "appId": "1:906862508246:android:15a9a85e04d7d49eff7177",
+                    "fileOutput": "android/app/google-services.json"
+                }
+            },
+            "dart": {
+                "lib/firebase_options.dart": {
+                    "projectId": "fit-planner-de29a",
+                    "configurations": {
+                        "android": "1:906862508246:android:15a9a85e04d7d49eff7177",
+                        "ios": "1:906862508246:ios:ff093dae06e90ba4ff7177"
+                    }
+                }
+            }
+        }
+    }
+}

@@ -1,6 +1,10 @@
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:planner/firebase_options.dart';
 import 'package:planner/providers/exercise_provider.dart';
 import 'package:planner/providers/font_provider.dart';
+import 'package:planner/providers/notification_api.dart';
 import 'package:planner/providers/theme_provider.dart';
 import 'package:planner/providers/user_provider.dart';
 import 'package:planner/screens/auth_screen.dart';
@@ -20,7 +24,12 @@ void main() async {
     DeviceOrientation.portraitDown,
   ]);
 
-  // Initialize the theme provider (without waiting)
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
+  NotificationApi().initNotification();
+
   final themeProvider = ThemeProvider();
   final fontProvider = FontProvider();
 
