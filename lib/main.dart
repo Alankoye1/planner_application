@@ -1,5 +1,4 @@
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:planner/firebase_options.dart';
 import 'package:planner/providers/exercise_provider.dart';
@@ -24,9 +23,7 @@ void main() async {
     DeviceOrientation.portraitDown,
   ]);
 
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   NotificationApi().initNotification();
 
@@ -135,15 +132,15 @@ class _HomeWrapperState extends State<HomeWrapper> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    
+
     // Listen for auth state changes
     final userProvider = Provider.of<UserProvider>(context, listen: true);
     final currentUserId = userProvider.currentUser?.id;
-    
+
     // Load data when user is new or changed
     if (currentUserId != null && currentUserId != _previousUserId) {
       setState(() {
-        _isLoading = true;  // Set loading to true when user changes
+        _isLoading = true; // Set loading to true when user changes
       });
       _previousUserId = currentUserId;
       _loadUserData(userProvider);
@@ -154,16 +151,15 @@ class _HomeWrapperState extends State<HomeWrapper> {
     if (userProvider.currentUser != null &&
         userProvider.currentUser!.id != null &&
         userProvider.currentUser!.token != null) {
-      
       final customExerciseProvider = Provider.of<CustomExerciseProvider>(
-        context, 
+        context,
         listen: false,
       );
       final exerciseProvider = Provider.of<ExerciseProvider>(
         context,
         listen: false,
       );
-      
+
       await customExerciseProvider.fetchAndSetCustom(
         userProvider.currentUser!.id!,
         userProvider.currentUser!.token!,
