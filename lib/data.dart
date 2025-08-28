@@ -241,160 +241,184 @@ final List<Excercise> allExercises = [
   ),
 
   // Full Body exercises
-  // Excercise(
-  //   id: 'e35',
-  //   excerciseTitle: 'Deadlifts',
-  //   excerciseImage: 'assets/images/lat.jpg',
-  //   categoryId: 'c9',
-  // ),
-  // Excercise(
-  //   id: 'e36',
-  //   excerciseTitle: 'Clean and Press',
-  //   excerciseImage: 'assets/images/shoulder.jpg',
-  //   categoryId: 'c9',
-  // ),
-  // Excercise(
-  //   id: 'e37',
-  //   excerciseTitle: 'Turkish Get-ups',
-  //   excerciseImage: 'assets/images/abs.jpg',
-  //   categoryId: 'c9',
-  // ),
-  // Excercise(
-  //   id: 'e38',
-  //   excerciseTitle: 'Man Makers',
-  //   excerciseImage: 'assets/images/chest.jpg',
-  //   categoryId: 'c9',
-  // ),
-  // Excercise(
-  //   id: 'e39',
-  //   excerciseTitle: 'Thrusters',
-  //   excerciseImage: 'assets/images/shoulder.jpg',
-  //   categoryId: 'c9',
-  // ),
+  Excercise(
+    id: 'e35',
+    excerciseTitle: 'Deadlifts',
+    excerciseImage: 'assets/images/lat.jpg',
+    categoryId: 'c9',
+  videoUrl: 'https://www.youtube.com/watch?v=op9kVnSso6Q',
+  ),
+  Excercise(
+    id: 'e36',
+    excerciseTitle: 'Clean and Press',
+    excerciseImage: 'assets/images/shoulder.jpg',
+    categoryId: 'c9',
+  videoUrl: 'https://www.youtube.com/watch?v=35n4C1EoYwI',
+  ),
+  Excercise(
+    id: 'e37',
+    excerciseTitle: 'Turkish Get-ups',
+    excerciseImage: 'assets/images/abs.jpg',
+    categoryId: 'c9',
+  videoUrl: 'https://www.youtube.com/watch?v=0vhJza-2xiI',
+  ),
+  Excercise(
+    id: 'e38',
+    excerciseTitle: 'Man Makers',
+    excerciseImage: 'assets/images/chest.jpg',
+    categoryId: 'c9',
+  videoUrl: 'https://www.youtube.com/watch?v=4tYJmQmZ-h0',
+  ),
+  Excercise(
+    id: 'e39',
+    excerciseTitle: 'Thrusters',
+    excerciseImage: 'assets/images/shoulder.jpg',
+    categoryId: 'c9',
+  videoUrl: 'https://www.youtube.com/watch?v=2SHsk9AzdjA',
+  ),
 
-  // // Yoga/Stretching exercises
-  // Excercise(
-  //   id: 'e40',
-  //   excerciseTitle: 'Downward Dog',
-  //   excerciseImage: 'assets/images/abs.jpg',
-  //   categoryId: 'c10',
-  // ),
-  // Excercise(
-  //   id: 'e41',
-  //   excerciseTitle: 'Warrior Pose',
-  //   excerciseImage: 'assets/images/leg.jpg',
-  //   categoryId: 'c10',
-  // ),
-  // Excercise(
-  //   id: 'e42',
-  //   excerciseTitle: 'Child Pose',
-  //   excerciseImage: 'assets/images/abs.jpg',
-  //   categoryId: 'c10',
-  // ),
-  // Excercise(
-  //   id: 'e43',
-  //   excerciseTitle: 'Cat Cow Stretch',
-  //   excerciseImage: 'assets/images/lat.jpg',
-  //   categoryId: 'c10',
-  // ),
-  // Excercise(
-  //   id: 'e44',
-  //   excerciseTitle: 'Cobra Pose',
-  //   excerciseImage: 'assets/images/lat.jpg',
-  //   categoryId: 'c10',
-  // ),
+  // Yoga/Stretching exercises
+  Excercise(
+    id: 'e40',
+    excerciseTitle: 'Downward Dog',
+    excerciseImage: 'assets/images/abs.jpg',
+    categoryId: 'c10',
+  videoUrl: 'https://www.youtube.com/watch?v=EC7RGJ3c8w8',
+  ),
+  Excercise(
+    id: 'e41',
+    excerciseTitle: 'Warrior Pose',
+    excerciseImage: 'assets/images/leg.jpg',
+    categoryId: 'c10',
+  videoUrl: 'https://www.youtube.com/watch?v=U9dAnYt81Vw',
+  ),
+  Excercise(
+    id: 'e42',
+    excerciseTitle: 'Child Pose',
+    excerciseImage: 'assets/images/abs.jpg',
+    categoryId: 'c10',
+  videoUrl: 'https://www.youtube.com/watch?v=ZC3wL4mNQz0',
+  ),
+  Excercise(
+    id: 'e43',
+    excerciseTitle: 'Cat Cow Stretch',
+    excerciseImage: 'assets/images/lat.jpg',
+    categoryId: 'c10',
+  videoUrl: 'https://www.youtube.com/watch?v=kqnua4rHVVA',
+  ),
+  Excercise(
+    id: 'e44',
+    excerciseTitle: 'Cobra Pose',
+    excerciseImage: 'assets/images/lat.jpg',
+    categoryId: 'c10',
+  videoUrl: 'https://www.youtube.com/watch?v=JDcdhTuycOI',
+  ),
 
-  // // Glutes exercises
-  // Excercise(
-  //   id: 'e45',
-  //   excerciseTitle: 'Glute Bridges',
-  //   excerciseImage: 'assets/images/leg.jpg',
-  //   categoryId: 'c11',
-  // ),
-  // Excercise(
-  //   id: 'e46',
-  //   excerciseTitle: 'Hip Thrusts',
-  //   excerciseImage: 'assets/images/leg.jpg',
-  //   categoryId: 'c11',
-  // ),
-  // Excercise(
-  //   id: 'e47',
-  //   excerciseTitle: 'Clamshells',
-  //   excerciseImage: 'assets/images/leg.jpg',
-  //   categoryId: 'c11',
-  // ),
-  // Excercise(
-  //   id: 'e48',
-  //   excerciseTitle: 'Fire Hydrants',
-  //   excerciseImage: 'assets/images/leg.jpg',
-  //   categoryId: 'c11',
-  // ),
+  // Glutes exercises
+  Excercise(
+    id: 'e45',
+    excerciseTitle: 'Glute Bridges',
+    excerciseImage: 'assets/images/leg.jpg',
+    categoryId: 'c11',
+  videoUrl: 'https://www.youtube.com/watch?v=8bbE64NuDTU',
+  ),
+  Excercise(
+    id: 'e46',
+    excerciseTitle: 'Hip Thrusts',
+    excerciseImage: 'assets/images/leg.jpg',
+    categoryId: 'c11',
+  videoUrl: 'https://www.youtube.com/watch?v=SEdqd1n0cvg',
+  ),
+  Excercise(
+    id: 'e47',
+    excerciseTitle: 'Clamshells',
+    excerciseImage: 'assets/images/leg.jpg',
+    categoryId: 'c11',
+  videoUrl: 'https://www.youtube.com/watch?v=FxHqHBO1C-4',
+  ),
+  Excercise(
+    id: 'e48',
+    excerciseTitle: 'Fire Hydrants',
+    excerciseImage: 'assets/images/leg.jpg',
+    categoryId: 'c11',
+  videoUrl: 'https://www.youtube.com/watch?v=J4hHyhK0-l8',
+  ),
 
-  // // HIIT exercises
-  // Excercise(
-  //   id: 'e49',
-  //   excerciseTitle: 'Tabata Squats',
-  //   excerciseImage: 'assets/images/leg.jpg',
-  //   categoryId: 'c12',
-  // ),
-  // Excercise(
-  //   id: 'e50',
-  //   excerciseTitle: 'Sprint Intervals',
-  //   excerciseImage: 'assets/images/leg.jpg',
-  //   categoryId: 'c12',
-  // ),
-  // Excercise(
-  //   id: 'e51',
-  //   excerciseTitle: 'Battle Ropes',
-  //   excerciseImage: 'assets/images/shoulder.jpg',
-  //   categoryId: 'c12',
-  // ),
-  // Excercise(
-  //   id: 'e52',
-  //   excerciseTitle: 'Kettlebell Swings',
-  //   excerciseImage: 'assets/images/leg.jpg',
-  //   categoryId: 'c12',
-  // ),
+  // HIIT exercises
+  Excercise(
+    id: 'e49',
+    excerciseTitle: 'Tabata Squats',
+    excerciseImage: 'assets/images/leg.jpg',
+    categoryId: 'c12',
+  videoUrl: 'https://www.youtube.com/watch?v=aclHkVaku9U',
+  ),
+  Excercise(
+    id: 'e50',
+    excerciseTitle: 'Sprint Intervals',
+    excerciseImage: 'assets/images/leg.jpg',
+    categoryId: 'c12',
+  videoUrl: 'https://www.youtube.com/watch?v=ZpdELZQ2l4s',
+  ),
+  Excercise(
+    id: 'e51',
+    excerciseTitle: 'Battle Ropes',
+    excerciseImage: 'assets/images/shoulder.jpg',
+    categoryId: 'c12',
+  videoUrl: 'https://www.youtube.com/watch?v=6JtP6ju0IMw',
+  ),
+  Excercise(
+    id: 'e52',
+    excerciseTitle: 'Kettlebell Swings',
+    excerciseImage: 'assets/images/leg.jpg',
+    categoryId: 'c12',
+  videoUrl: 'https://www.youtube.com/watch?v=YSxHifyI1JY',
+  ),
 
-  // // Forearms exercises
-  // Excercise(
-  //   id: 'e53',
-  //   excerciseTitle: 'Wrist Curls',
-  //   excerciseImage: 'assets/images/chest.jpg',
-  //   categoryId: 'c13',
-  // ),
-  // Excercise(
-  //   id: 'e54',
-  //   excerciseTitle: 'Farmer Walks',
-  //   excerciseImage: 'assets/images/chest.jpg',
-  //   categoryId: 'c13',
-  // ),
-  // Excercise(
-  //   id: 'e55',
-  //   excerciseTitle: 'Grip Squeezes',
-  //   excerciseImage: 'assets/images/chest.jpg',
-  //   categoryId: 'c13',
-  // ),
+  // Forearms exercises
+  Excercise(
+    id: 'e53',
+    excerciseTitle: 'Wrist Curls',
+    excerciseImage: 'assets/images/chest.jpg',
+    categoryId: 'c13',
+  videoUrl: 'https://www.youtube.com/watch?v=Oq6bFi3qJ2g',
+  ),
+  Excercise(
+    id: 'e54',
+    excerciseTitle: 'Farmer Walks',
+    excerciseImage: 'assets/images/chest.jpg',
+    categoryId: 'c13',
+  videoUrl: 'https://www.youtube.com/watch?v=1c1FSn4d0do',
+  ),
+  Excercise(
+    id: 'e55',
+    excerciseTitle: 'Grip Squeezes',
+    excerciseImage: 'assets/images/chest.jpg',
+    categoryId: 'c13',
+  videoUrl: 'https://www.youtube.com/watch?v=Y0mqsMgvjIc',
+  ),
 
-  // // Calves exercises
-  // Excercise(
-  //   id: 'e56',
-  //   excerciseTitle: 'Standing Calf Raises',
-  //   excerciseImage: 'assets/images/leg.jpg',
-  //   categoryId: 'c14',
-  // ),
-  // Excercise(
-  //   id: 'e57',
-  //   excerciseTitle: 'Seated Calf Raises',
-  //   excerciseImage: 'assets/images/leg.jpg',
-  //   categoryId: 'c14',
-  // ),
-  // Excercise(
-  //   id: 'e58',
-  //   excerciseTitle: 'Jump Calf Raises',
-  //   excerciseImage: 'assets/images/leg.jpg',
-  //   categoryId: 'c14',
-  // ),
+  // Calves exercises
+  Excercise(
+    id: 'e56',
+    excerciseTitle: 'Standing Calf Raises',
+    excerciseImage: 'assets/images/leg.jpg',
+    categoryId: 'c14',
+  videoUrl: 'https://www.youtube.com/watch?v=YMmgqO8Jo-k',
+  ),
+  Excercise(
+    id: 'e57',
+    excerciseTitle: 'Seated Calf Raises',
+    excerciseImage: 'assets/images/leg.jpg',
+    categoryId: 'c14',
+  videoUrl: 'https://www.youtube.com/watch?v=YuxGzdr1V10',
+  ),
+  Excercise(
+    id: 'e58',
+    excerciseTitle: 'Jump Calf Raises',
+    excerciseImage: 'assets/images/leg.jpg',
+    categoryId: 'c14',
+  videoUrl: 'https://www.youtube.com/watch?v=DNrwOx8sZJM',
+  ),
 ];
 
 final List<Category> categories = [
