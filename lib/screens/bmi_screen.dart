@@ -87,6 +87,60 @@ class _BmiScreenState extends State<BmiScreen> {
                 context,
               ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
             ),
+            const SizedBox(height: 20),
+            AnimatedBuilder(
+              animation: heightController,
+              builder: (context, _) {
+                final hCm = double.tryParse(heightController.text) ?? 0;
+                final hM = hCm > 0 ? hCm / 100 : 0;
+                double wForBmi(double bmi) => hM == 0 ? 0 : bmi * hM * hM;
+
+                final uwMax = wForBmi(18.5);
+                final nMin = wForBmi(18.5);
+                final nMax = wForBmi(24.9);
+                final owMin = wForBmi(25);
+                final owMax = wForBmi(29.9);
+                final obMin = wForBmi(30);
+
+                String kg(num v) => v == 0 ? '-' : v.toStringAsFixed(1);
+
+                return SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: DataTable(
+                    headingRowHeight: 36,
+                    dataRowMinHeight: 32,
+                    columnSpacing: 20,
+                    columns: const [
+                      DataColumn(label: Text('Category')),
+                      DataColumn(label: Text('BMI Range')),
+                      DataColumn(label: Text('Weight Range (kg)')),
+                    ],
+                    rows: [
+                      DataRow(cells: [
+                        const DataCell(Text('Underweight')),
+                        const DataCell(Text('< 18.5')),
+                        DataCell(Text('< ${kg(uwMax)}')),
+                      ]),
+                        DataRow(cells: [
+                        const DataCell(Text('Normal')),
+                        const DataCell(Text('18.5 - 24.9')),
+                        DataCell(Text('${kg(nMin)} - ${kg(nMax)}')),
+                      ]),
+                      DataRow(cells: [
+                        const DataCell(Text('Overweight')),
+                        const DataCell(Text('25 - 29.9')),
+                        DataCell(Text('${kg(owMin)} - ${kg(owMax)}')),
+                      ]),
+                      DataRow(cells: [
+                        const DataCell(Text('Obese')),
+                        const DataCell(Text('>= 30')),
+                        DataCell(Text('>= ${kg(obMin)}')),
+                      ]),
+                    ],
+                  ),
+                );
+              },
+            )
           ],
         ),
       ),
