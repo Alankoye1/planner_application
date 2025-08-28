@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:planner/models/user.dart';
+import 'package:planner/config/app_config.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class UserProvider with ChangeNotifier {
@@ -14,8 +15,7 @@ class UserProvider with ChangeNotifier {
   }
 
   Future<void> signUp(String email, String password, String username) async {
-    final url =
-        'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyCwA05SgEDJ2SRgFiehPZzAC4sm7w2x_eM';
+  final url = AppConfig.signUpUrl;
     try {
       final response = await http.post(
         Uri.parse(url),
@@ -68,8 +68,7 @@ class UserProvider with ChangeNotifier {
   }
 
   Future<void> signIn(String email, String password) async {
-    final url =
-        'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyCwA05SgEDJ2SRgFiehPZzAC4sm7w2x_eM';
+  final url = AppConfig.signInUrl;
     try {
       final response = await http.post(
         Uri.parse(url),
@@ -110,9 +109,7 @@ class UserProvider with ChangeNotifier {
       String? username;
       try {
         final userInfoResponse = await http.post(
-          Uri.parse(
-            'https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=AIzaSyCwA05SgEDJ2SRgFiehPZzAC4sm7w2x_eM',
-          ),
+          Uri.parse(AppConfig.lookupUrl),
           body: json.encode({'idToken': responseData['idToken']}),
         );
 
@@ -208,8 +205,7 @@ class UserProvider with ChangeNotifier {
 
     try {
       // Update Firebase display name
-      final updateProfileUrl = 
-          'https://identitytoolkit.googleapis.com/v1/accounts:update?key=AIzaSyCwA05SgEDJ2SRgFiehPZzAC4sm7w2x_eM';
+  final updateProfileUrl = AppConfig.updateAccountUrl;
       
       final response = await http.post(
         Uri.parse(updateProfileUrl),
@@ -267,8 +263,7 @@ class UserProvider with ChangeNotifier {
 
     try {
       // First verify current password by signing in
-      final signInUrl = 
-          'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyCwA05SgEDJ2SRgFiehPZzAC4sm7w2x_eM';
+  final signInUrl = AppConfig.signInUrl;
       
       final verifyResponse = await http.post(
         Uri.parse(signInUrl),
@@ -284,8 +279,7 @@ class UserProvider with ChangeNotifier {
       }
 
       // Change password
-      final changePasswordUrl = 
-          'https://identitytoolkit.googleapis.com/v1/accounts:update?key=AIzaSyCwA05SgEDJ2SRgFiehPZzAC4sm7w2x_eM';
+  final changePasswordUrl = AppConfig.updateAccountUrl;
       
       final response = await http.post(
         Uri.parse(changePasswordUrl),
@@ -339,8 +333,7 @@ class UserProvider with ChangeNotifier {
 
     try {
       // First verify current password by signing in
-      final signInUrl = 
-          'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyCwA05SgEDJ2SRgFiehPZzAC4sm7w2x_eM';
+  final signInUrl = AppConfig.signInUrl;
       
       final verifyResponse = await http.post(
         Uri.parse(signInUrl),
@@ -356,8 +349,7 @@ class UserProvider with ChangeNotifier {
       }
 
       // Change email
-      final changeEmailUrl = 
-          'https://identitytoolkit.googleapis.com/v1/accounts:update?key=AIzaSyCwA05SgEDJ2SRgFiehPZzAC4sm7w2x_eM';
+  final changeEmailUrl = AppConfig.updateAccountUrl;
       
       final response = await http.post(
         Uri.parse(changeEmailUrl),
@@ -414,7 +406,7 @@ class UserProvider with ChangeNotifier {
       return false;
     }
     
-    final url = 'https://securetoken.googleapis.com/v1/token?key=AIzaSyCwA05SgEDJ2SRgFiehPZzAC4sm7w2x_eM';
+  final url = AppConfig.refreshTokenUrl;
     
     try {
       final response = await http.post(

@@ -54,7 +54,6 @@ class DefaultFirebaseOptions {
     appId: '1:906862508246:android:15a9a85e04d7d49eff7177',
     messagingSenderId: '906862508246',
     projectId: 'fit-planner-de29a',
-    databaseURL: 'https://fit-planner-de29a-default-rtdb.firebaseio.com',
     storageBucket: 'fit-planner-de29a.firebasestorage.app',
   );
 
@@ -63,7 +62,6 @@ class DefaultFirebaseOptions {
     appId: '1:906862508246:ios:ff093dae06e90ba4ff7177',
     messagingSenderId: '906862508246',
     projectId: 'fit-planner-de29a',
-    databaseURL: 'https://fit-planner-de29a-default-rtdb.firebaseio.com',
     storageBucket: 'fit-planner-de29a.firebasestorage.app',
     iosBundleId: 'com.example.planner',
   );

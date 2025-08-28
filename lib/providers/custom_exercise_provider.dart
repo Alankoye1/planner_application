@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:planner/data.dart';
 import 'package:planner/models/excersice.dart';
+import 'package:planner/config/app_config.dart';
 import 'package:planner/providers/user_provider.dart';
 import 'package:planner/screens/excercise_detail_screen.dart';
 import 'package:provider/provider.dart';
@@ -31,8 +32,8 @@ class CustomExerciseProvider extends ChangeNotifier {
                 final categoryName = name.text.trim();
                 if (categoryName.isNotEmpty) {
                   customExercises[categoryName] = <Excercise>[];
-                  final url =
-                      'https://fit-planner-de29a-default-rtdb.firebaseio.com/users/${currentUser?.id}/customExercises/$categoryName.json?auth=${currentUser!.token}';
+          final url =
+            '${AppConfig.realtimeDbBase}/users/${currentUser?.id}/customExercises/$categoryName.json?auth=${currentUser!.token}';
                   await http.post(
                     Uri.parse(url),
                     body: json.encode({
@@ -55,8 +56,8 @@ class CustomExerciseProvider extends ChangeNotifier {
 
   Future<void> fetchAndSetCustom(String id, String token) async {
     try {
-      final url =
-          'https://fit-planner-de29a-default-rtdb.firebaseio.com/users/$id/customExercises.json?auth=$token';
+    final url =
+      '${AppConfig.realtimeDbBase}/users/$id/customExercises.json?auth=$token';
 
       final response = await http.get(Uri.parse(url));
 
@@ -104,8 +105,8 @@ class CustomExerciseProvider extends ChangeNotifier {
       context,
       listen: false,
     ).currentUser;
-    final url =
-        'https://fit-planner-de29a-default-rtdb.firebaseio.com/users/${currentUser?.id}/customExercises/$category.json?auth=${currentUser!.token}';
+  final url =
+    '${AppConfig.realtimeDbBase}/users/${currentUser?.id}/customExercises/$category.json?auth=${currentUser!.token}';
     await http.delete(Uri.parse(url));
     if (context.mounted) {
       notifyListeners();
@@ -148,8 +149,8 @@ class CustomExerciseProvider extends ChangeNotifier {
                         ? null
                         : () async {
                             customExercises[category]!.add(exercise);
-                            final url =
-                                'https://fit-planner-de29a-default-rtdb.firebaseio.com/users/${currentUser?.id}/customExercises/$category.json?auth=${currentUser!.token}';
+              final url =
+                '${AppConfig.realtimeDbBase}/users/${currentUser?.id}/customExercises/$category.json?auth=${currentUser!.token}';
                             await http.put(
                               Uri.parse(url),
                               body: json.encode({
@@ -298,8 +299,8 @@ class CustomExerciseProvider extends ChangeNotifier {
     );
 
     // Update the exercises array in Firebase
-    final url =
-        'https://fit-planner-de29a-default-rtdb.firebaseio.com/users/${currentUser?.id}/customExercises/$category/exercises.json?auth=${currentUser!.token}';
+  final url =
+    '${AppConfig.realtimeDbBase}/users/${currentUser?.id}/customExercises/$category/exercises.json?auth=${currentUser!.token}';
 
     await http.put(
       Uri.parse(url),
@@ -333,8 +334,8 @@ class CustomExerciseProvider extends ChangeNotifier {
       customExercises[category]![index] = updatedExercise;
 
       // Update in Firebase (update the whole exercises array for the category)
-      final url =
-          'https://fit-planner-de29a-default-rtdb.firebaseio.com/users/${currentUser?.id}/customExercises/$category/exercises.json?auth=${currentUser!.token}';
+    final url =
+      '${AppConfig.realtimeDbBase}/users/${currentUser?.id}/customExercises/$category/exercises.json?auth=${currentUser!.token}';
 
       await http.put(
         Uri.parse(url),

@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:planner/data.dart';
+import 'package:planner/config/app_config.dart';
 import 'package:planner/providers/user_provider.dart';
 
 class ExerciseProvider with ChangeNotifier {
@@ -12,8 +13,8 @@ class ExerciseProvider with ChangeNotifier {
   }
 
   Future<void> fetchAndSetFavorite(String userId, String token) async {
-    final url =
-        'https://fit-planner-de29a-default-rtdb.firebaseio.com/users/$userId/favoriteExercises.json?auth=$token';
+  final url =
+    '${AppConfig.realtimeDbBase}/users/$userId/favoriteExercises.json?auth=$token';
     try {
       final response = await http.get(Uri.parse(url));
       if (response.statusCode == 200) {
@@ -45,8 +46,8 @@ class ExerciseProvider with ChangeNotifier {
   }
 
   void toggleFavorite(String id, UserProvider userProvider) {
-    final url =
-        'https://fit-planner-de29a-default-rtdb.firebaseio.com/users/${userProvider.currentUser?.id}/favoriteExercises/exercises/$id.json?auth=${userProvider.currentUser?.token}';
+  final url =
+    '${AppConfig.realtimeDbBase}/users/${userProvider.currentUser?.id}/favoriteExercises/exercises/$id.json?auth=${userProvider.currentUser?.token}';
     final currentFavorite =
         allExercises.firstWhere((exercise) => exercise.id == id).isFavorite ??
         false;
