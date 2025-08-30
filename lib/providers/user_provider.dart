@@ -1,6 +1,8 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:firebase_auth/firebase_auth.dart' as fb_auth;
 import 'package:http/http.dart' as http;
 import 'package:planner/models/user.dart';
 import 'package:planner/config/app_config.dart';
@@ -15,7 +17,7 @@ class UserProvider with ChangeNotifier {
   }
 
   Future<void> signUp(String email, String password, String username) async {
-  final url = AppConfig.signUpUrl;
+    final url = AppConfig.signUpUrl;
     try {
       final response = await http.post(
         Uri.parse(url),
@@ -68,7 +70,7 @@ class UserProvider with ChangeNotifier {
   }
 
   Future<void> signIn(String email, String password) async {
-  final url = AppConfig.signInUrl;
+    final url = AppConfig.signInUrl;
     try {
       final response = await http.post(
         Uri.parse(url),
@@ -191,22 +193,27 @@ class UserProvider with ChangeNotifier {
         token: token,
         refreshToken: refreshToken,
       );
-      // Immediately refresh token after auto-login
-      await this.refreshToken();
+      // Refresh only if we have a refresh token (email/password accounts)
+      if (refreshToken != null) {
+        await this.refreshToken();
+      }
     }
     notifyListeners();
   }
 
   // Update user profile (username and email)
-  Future<void> updateProfile({required String username, required String email}) async {
+  Future<void> updateProfile({
+    required String username,
+    required String email,
+  }) async {
     if (_currentUser == null) {
       throw Exception('No user logged in');
     }
 
     try {
       // Update Firebase display name
-  final updateProfileUrl = AppConfig.updateAccountUrl;
-      
+      final updateProfileUrl = AppConfig.updateAccountUrl;
+
       final response = await http.post(
         Uri.parse(updateProfileUrl),
         body: json.encode({
@@ -230,7 +237,8 @@ class UserProvider with ChangeNotifier {
               errorMessage = 'Invalid email address';
               break;
             default:
-              errorMessage = 'Update failed: ${responseData['error']['message']}';
+              errorMessage =
+                  'Update failed: ${responseData['error']['message']}';
           }
         }
         throw Exception(errorMessage);
@@ -243,7 +251,9 @@ class UserProvider with ChangeNotifier {
         password: _currentUser!.password,
         username: username,
         token: responseData['idToken'] ?? _currentUser!.token,
-        refreshToken: responseData['refreshToken'] ?? _currentUser!.refreshToken, // <-- Add this line
+        refreshToken:
+            responseData['refreshToken'] ??
+            _currentUser!.refreshToken, // <-- Add this line
         createdAt: _currentUser!.createdAt,
       );
 
@@ -255,16 +265,85 @@ class UserProvider with ChangeNotifier {
     }
   }
 
+  // GOOGLE SIGN-IN (Firebase)
+  Future<void> signInWithGoogle() async {
+    try {
+      final GoogleSignIn googleSignIn = GoogleSignIn(
+        scopes: ['email', 'profile'],
+      );
+      
+      // Sign out of any previous Google account first
+      await googleSignIn.signOut();
+      
+      final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
+
+      if (googleUser == null) {
+        // User cancelled the sign-in
+        throw Exception('Google sign-in was cancelled');
+      }
+
+      final GoogleSignInAuthentication googleAuth =
+          await googleUser.authentication;
+
+      if (googleAuth.accessToken == null || googleAuth.idToken == null) {
+        throw Exception('Failed to get Google authentication tokens');
+      }
+
+      final credential = fb_auth.GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+
+      final userCredential =
+          await fb_auth.FirebaseAuth.instance.signInWithCredential(credential);
+
+      final fbUser = userCredential.user;
+      if (fbUser == null) {
+        throw Exception('Firebase authentication failed after Google sign-in');
+      }
+
+      // Use Firebase UID as user ID
+      _currentUser = User(
+        id: fbUser.uid,
+        email: fbUser.email ?? '',
+        password: '', // No password for Google accounts
+        username: fbUser.displayName ?? 'Google User',
+        token: await fbUser.getIdToken(),
+        refreshToken:
+            '', // Firebase handles refresh tokens internally for social logins
+      );
+
+      // Save user data for auto-login
+      await _saveUserData();
+      notifyListeners();
+    } catch (error) {
+      // More detailed error handling
+      if (error.toString().contains('DEVELOPER_ERROR')) {
+        throw Exception('Google Sign-In configuration error. Please check SHA-1 fingerprint in Firebase Console.');
+      } else if (error.toString().contains('SIGN_IN_REQUIRED')) {
+        throw Exception('Google Sign-In requires user interaction. Please try again.');
+      } else if (error.toString().contains('NETWORK_ERROR')) {
+        throw Exception('Network error. Please check your internet connection.');
+      } else {
+        print('Google sign-in failed: ${error.toString()}');
+        throw Exception('Google sign-in failed: ${error.toString()}');
+      }
+    }
+  }
+
   // Change user password
-  Future<void> changePassword({required String currentPassword, required String newPassword}) async {
+  Future<void> changePassword({
+    required String currentPassword,
+    required String newPassword,
+  }) async {
     if (_currentUser == null) {
       throw Exception('No user logged in');
     }
 
     try {
       // First verify current password by signing in
-  final signInUrl = AppConfig.signInUrl;
-      
+      final signInUrl = AppConfig.signInUrl;
+
       final verifyResponse = await http.post(
         Uri.parse(signInUrl),
         body: json.encode({
@@ -279,8 +358,8 @@ class UserProvider with ChangeNotifier {
       }
 
       // Change password
-  final changePasswordUrl = AppConfig.updateAccountUrl;
-      
+      final changePasswordUrl = AppConfig.updateAccountUrl;
+
       final response = await http.post(
         Uri.parse(changePasswordUrl),
         body: json.encode({
@@ -300,7 +379,8 @@ class UserProvider with ChangeNotifier {
               errorMessage = 'Password is too weak';
               break;
             default:
-              errorMessage = 'Password change failed: ${responseData['error']['message']}';
+              errorMessage =
+                  'Password change failed: ${responseData['error']['message']}';
           }
         }
         throw Exception(errorMessage);
@@ -313,7 +393,9 @@ class UserProvider with ChangeNotifier {
         password: newPassword,
         username: _currentUser!.username,
         token: responseData['idToken'] ?? _currentUser!.token,
-        refreshToken: responseData['refreshToken'] ?? _currentUser!.refreshToken, // <-- Add this line
+        refreshToken:
+            responseData['refreshToken'] ??
+            _currentUser!.refreshToken, // <-- Add this line
         createdAt: _currentUser!.createdAt,
       );
 
@@ -326,15 +408,18 @@ class UserProvider with ChangeNotifier {
   }
 
   // Change user email
-  Future<void> changeEmail({required String newEmail, required String currentPassword}) async {
+  Future<void> changeEmail({
+    required String newEmail,
+    required String currentPassword,
+  }) async {
     if (_currentUser == null) {
       throw Exception('No user logged in');
     }
 
     try {
       // First verify current password by signing in
-  final signInUrl = AppConfig.signInUrl;
-      
+      final signInUrl = AppConfig.signInUrl;
+
       final verifyResponse = await http.post(
         Uri.parse(signInUrl),
         body: json.encode({
@@ -349,8 +434,8 @@ class UserProvider with ChangeNotifier {
       }
 
       // Change email
-  final changeEmailUrl = AppConfig.updateAccountUrl;
-      
+      final changeEmailUrl = AppConfig.updateAccountUrl;
+
       final response = await http.post(
         Uri.parse(changeEmailUrl),
         body: json.encode({
@@ -373,7 +458,8 @@ class UserProvider with ChangeNotifier {
               errorMessage = 'Invalid email address';
               break;
             default:
-              errorMessage = 'Email change failed: ${responseData['error']['message']}';
+              errorMessage =
+                  'Email change failed: ${responseData['error']['message']}';
           }
         }
         throw Exception(errorMessage);
@@ -386,7 +472,9 @@ class UserProvider with ChangeNotifier {
         password: _currentUser!.password,
         username: _currentUser!.username,
         token: responseData['idToken'] ?? _currentUser!.token,
-        refreshToken: responseData['refreshToken'] ?? _currentUser!.refreshToken, // <-- Add this line
+        refreshToken:
+            responseData['refreshToken'] ??
+            _currentUser!.refreshToken, // <-- Add this line
         createdAt: _currentUser!.createdAt,
       );
 
@@ -401,13 +489,13 @@ class UserProvider with ChangeNotifier {
   Future<bool> refreshToken() async {
     final prefs = await SharedPreferences.getInstance();
     final refreshToken = prefs.getString('userRefreshToken');
-    
+
     if (refreshToken == null || _currentUser == null) {
       return false;
     }
-    
-  final url = AppConfig.refreshTokenUrl;
-    
+
+    final url = AppConfig.refreshTokenUrl;
+
     try {
       final response = await http.post(
         Uri.parse(url),
@@ -416,19 +504,19 @@ class UserProvider with ChangeNotifier {
           'refresh_token': refreshToken,
         }),
       );
-      
+
       final responseData = json.decode(response.body);
-      
+
       if (response.statusCode != 200) {
         // If refresh token is invalid, force logout
-        if (responseData['error'] != null && 
-            (responseData['error']['message'] == 'TOKEN_EXPIRED' || 
-            responseData['error']['message'] == 'INVALID_REFRESH_TOKEN')) {
+        if (responseData['error'] != null &&
+            (responseData['error']['message'] == 'TOKEN_EXPIRED' ||
+                responseData['error']['message'] == 'INVALID_REFRESH_TOKEN')) {
           await signOut();
         }
         return false;
       }
-      
+
       // Update user with new token
       _currentUser = User(
         id: _currentUser!.id,
@@ -439,12 +527,11 @@ class UserProvider with ChangeNotifier {
         refreshToken: responseData['refresh_token'],
         createdAt: _currentUser!.createdAt,
       );
-      
+
       // Save updated tokens
       await prefs.setString('userToken', responseData['id_token']);
       await prefs.setString('userRefreshToken', responseData['refresh_token']);
-      
-      
+
       notifyListeners();
       return true;
     } catch (error) {
@@ -456,14 +543,14 @@ class UserProvider with ChangeNotifier {
     if (_currentUser == null || _currentUser!.token == null) {
       return null;
     }
-    
+
     // For simplicity, we'll refresh the token before every API call
     // In production, you might want to check if the token is actually close to expiring
     final refreshed = await refreshToken();
     if (refreshed) {
       return _currentUser!.token;
     }
-    
+
     // If refresh failed but we still have a token, return it
     // (it might still be valid)
     return _currentUser!.token;
@@ -504,7 +591,7 @@ class UserProvider with ChangeNotifier {
     if (response.statusCode != 200) {
       throw Exception('Failed to fetch user data');
     }
-    
+
     // Process response...
   }
 }

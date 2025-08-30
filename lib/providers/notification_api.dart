@@ -37,7 +37,7 @@ class NotificationApi {
     await notificationPlugin.initialize(
       initSettings,
       onDidReceiveNotificationResponse: (resp) {
-        debugPrint('Notification tapped: ${resp.payload}');
+        print('Notification tapped: ${resp.payload}');
       },
     );
     _isInitialized = true;
@@ -146,15 +146,15 @@ class NotificationApi {
             : AndroidScheduleMode.inexactAllowWhileIdle,
         matchDateTimeComponents: DateTimeComponents.time,
       );
-      debugPrint(
+      print(
         'Daily reminder scheduled for ${scheduled.toLocal()} (exact=$exact)',
       );
       // Log pending to verify it's registered
       final pending = await notificationPlugin.pendingNotificationRequests();
       final daily = pending.where((p) => p.id == _dailyReminderId).isNotEmpty;
-      debugPrint('Pending count: ${pending.length}; daily present: $daily');
+      print('Pending count: ${pending.length}; daily present: $daily');
     } catch (e) {
-      debugPrint('Daily reminder scheduling failed: $e');
+      print('Daily reminder scheduling failed: $e');
     }
 
     final prefs = await SharedPreferences.getInstance();
@@ -222,7 +222,7 @@ class NotificationApi {
         body: "It's time for your daily workout!",
       );
       await prefs.setString(_lastFireKey, todayKey);
-      debugPrint('Fallback daily reminder fired at ${now.toLocal()}');
+      print('Fallback daily reminder fired at ${now.toLocal()}');
     });
   }
 
@@ -232,10 +232,10 @@ class NotificationApi {
   Future<void> logPending() async {
     final pending = await notificationPlugin.pendingNotificationRequests();
     if (pending.isEmpty) {
-      debugPrint('NotificationApi: No pending notifications');
+      print('NotificationApi: No pending notifications');
     } else {
       for (final p in pending) {
-        debugPrint(
+        print(
           'Pending -> id:${p.id} title:${p.title} body:${p.body} payload:${p.payload}',
         );
       }
@@ -259,11 +259,11 @@ class NotificationApi {
         notificationDetails(),
         androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
       );
-      debugPrint(
+      print(
         'Scheduled one-time test notification (id=$id) at ${scheduled.toLocal()}',
       );
     } catch (e) {
-      debugPrint(
+      print(
         'One-time zoned schedule failed ($e); falling back to immediate notification after delay',
       );
       // Fallback: manual delayed show

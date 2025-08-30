@@ -17,10 +17,7 @@ import 'package:flutter/foundation.dart'
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
-      throw UnsupportedError(
-        'DefaultFirebaseOptions have not been configured for web - '
-        'you can reconfigure this by running the FlutterFire CLI again.',
-      );
+      return web;
     }
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
@@ -28,15 +25,9 @@ class DefaultFirebaseOptions {
       case TargetPlatform.iOS:
         return ios;
       case TargetPlatform.macOS:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for macos - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return macos;
       case TargetPlatform.windows:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for windows - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return windows;
       case TargetPlatform.linux:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for linux - '
@@ -54,6 +45,7 @@ class DefaultFirebaseOptions {
     appId: '1:906862508246:android:15a9a85e04d7d49eff7177',
     messagingSenderId: '906862508246',
     projectId: 'fit-planner-de29a',
+    databaseURL: 'https://fit-planner-de29a-default-rtdb.firebaseio.com',
     storageBucket: 'fit-planner-de29a.firebasestorage.app',
   );
 
@@ -62,7 +54,45 @@ class DefaultFirebaseOptions {
     appId: '1:906862508246:ios:ff093dae06e90ba4ff7177',
     messagingSenderId: '906862508246',
     projectId: 'fit-planner-de29a',
+    databaseURL: 'https://fit-planner-de29a-default-rtdb.firebaseio.com',
     storageBucket: 'fit-planner-de29a.firebasestorage.app',
+    androidClientId: '906862508246-aae9282o1ie1arjdp4hgeus2926ov452.apps.googleusercontent.com',
+    iosClientId: '906862508246-b025p3mg51l6cvtsog4cqutj3td6rk3t.apps.googleusercontent.com',
     iosBundleId: 'com.example.planner',
   );
+
+  static const FirebaseOptions web = FirebaseOptions(
+    apiKey: 'AIzaSyCwA05SgEDJ2SRgFiehPZzAC4sm7w2x_eM',
+    appId: '1:906862508246:web:61ad6bd3e88ac156ff7177',
+    messagingSenderId: '906862508246',
+    projectId: 'fit-planner-de29a',
+    authDomain: 'fit-planner-de29a.firebaseapp.com',
+    databaseURL: 'https://fit-planner-de29a-default-rtdb.firebaseio.com',
+    storageBucket: 'fit-planner-de29a.firebasestorage.app',
+    measurementId: 'G-83ZVD7Z1MD',
+  );
+
+  static const FirebaseOptions macos = FirebaseOptions(
+    apiKey: 'AIzaSyDk7JIXo8lBXV9_NCwtYxeiDzAJlhOjsrE',
+    appId: '1:906862508246:ios:ff093dae06e90ba4ff7177',
+    messagingSenderId: '906862508246',
+    projectId: 'fit-planner-de29a',
+    databaseURL: 'https://fit-planner-de29a-default-rtdb.firebaseio.com',
+    storageBucket: 'fit-planner-de29a.firebasestorage.app',
+    androidClientId: '906862508246-aae9282o1ie1arjdp4hgeus2926ov452.apps.googleusercontent.com',
+    iosClientId: '906862508246-b025p3mg51l6cvtsog4cqutj3td6rk3t.apps.googleusercontent.com',
+    iosBundleId: 'com.example.planner',
+  );
+
+  static const FirebaseOptions windows = FirebaseOptions(
+    apiKey: 'AIzaSyCwA05SgEDJ2SRgFiehPZzAC4sm7w2x_eM',
+    appId: '1:906862508246:web:87ba9e76b0d8d16dff7177',
+    messagingSenderId: '906862508246',
+    projectId: 'fit-planner-de29a',
+    authDomain: 'fit-planner-de29a.firebaseapp.com',
+    databaseURL: 'https://fit-planner-de29a-default-rtdb.firebaseio.com',
+    storageBucket: 'fit-planner-de29a.firebasestorage.app',
+    measurementId: 'G-KYKFRKLD9V',
+  );
+
 }

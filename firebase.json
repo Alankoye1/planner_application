@@ -13,7 +13,10 @@
                     "projectId": "fit-planner-de29a",
                     "configurations": {
                         "android": "1:906862508246:android:15a9a85e04d7d49eff7177",
-                        "ios": "1:906862508246:ios:ff093dae06e90ba4ff7177"
+                        "ios": "1:906862508246:ios:ff093dae06e90ba4ff7177",
+                        "macos": "1:906862508246:ios:ff093dae06e90ba4ff7177",
+                        "web": "1:906862508246:web:61ad6bd3e88ac156ff7177",
+                        "windows": "1:906862508246:web:87ba9e76b0d8d16dff7177"
                     }
                 }
             }
