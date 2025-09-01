@@ -46,6 +46,20 @@ class _AuthScreenState extends State<AuthScreen>
     }
   }
 
+  Future<void> _handleFacebook() async {
+    try {
+      await Provider.of<UserProvider>(
+        context,
+        listen: false,
+      ).signInWithFacebook();
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(e.toString()), backgroundColor: Colors.red),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -366,7 +380,6 @@ class _AuthScreenState extends State<AuthScreen>
                                       label: 'Google',
                                       assetIcon: 'assets/icons/google_icon.png',
                                       color: Colors.white,
-                                      // TODO: implement Google sign-in
                                       onTap: _handleGoogle,
                                       foreground: Colors.black87,
                                     ),
@@ -377,15 +390,7 @@ class _AuthScreenState extends State<AuthScreen>
                                       color: const Color(0xff1778F2),
                                       // TODO: implement Facebook sign-in
                                       onTap: () {
-                                        ScaffoldMessenger.of(
-                                          context,
-                                        ).showSnackBar(
-                                          const SnackBar(
-                                            content: Text(
-                                              'Facebook sign-in coming soon',
-                                            ),
-                                          ),
-                                        );
+                                        _handleFacebook();
                                       },
                                     ),
                                   ],

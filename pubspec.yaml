@@ -45,10 +45,8 @@ dependencies:
   http: ^1.4.0
   flutter_local_notifications: ^19.4.1
   timezone: ^0.10.1
-  # (Optional) Uncomment when implementing real social auth flows
-  # google_sign_in: ^6.2.1
-  # flutter_facebook_auth: ^7.0.0
   google_sign_in: ^6.2.1
+  flutter_facebook_auth: ^6.1.2
 
 dev_dependencies:
   flutter_test:

@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:firebase_auth/firebase_auth.dart' as fb_auth;
 import 'package:http/http.dart' as http;
@@ -262,6 +263,60 @@ class UserProvider with ChangeNotifier {
       notifyListeners();
     } catch (error) {
       rethrow;
+    }
+  }
+
+  // FACEBOOK SIGN-IN (Firebase)
+  Future<void> signInWithFacebook() async {
+    try {
+      final LoginResult result = await FacebookAuth.instance.login();
+
+      if (result.status == LoginStatus.success) {
+        final AccessToken accessToken = result.accessToken!;
+
+        final credential = fb_auth.FacebookAuthProvider.credential(
+          accessToken.token,
+        );
+
+        final userCredential =
+            await fb_auth.FirebaseAuth.instance.signInWithCredential(credential);
+
+        final fbUser = userCredential.user;
+        if (fbUser == null) {
+          throw Exception('Firebase authentication failed after Facebook sign-in');
+        }
+
+        // Use Firebase UID as user ID
+        _currentUser = User(
+          id: fbUser.uid,
+          email: fbUser.email ?? '',
+          password: '', // No password for Facebook accounts
+          username: fbUser.displayName ?? 'Facebook User',
+          token: await fbUser.getIdToken(),
+          refreshToken:
+              '', // Firebase handles refresh tokens internally for social logins
+        );
+
+        // Save user data for auto-login
+        await _saveUserData();
+        notifyListeners();
+      } else {
+        throw Exception('Facebook sign-in failed: ${result.status}');
+      }
+    } catch (error) {
+      // More detailed error handling
+      if (error.toString().contains('Application has been deleted')) {
+        throw Exception('Facebook App configuration is invalid. Please contact support or use alternative sign-in methods.');
+      } else if (error.toString().contains('MissingPluginException')) {
+        throw Exception('Facebook Auth not properly configured. Please use Google sign-in or email/password authentication.');
+      } else if (error.toString().contains('ERROR_CANCELED')) {
+        throw Exception('Facebook sign-in was cancelled');
+      } else if (error.toString().contains('ERROR_NETWORK')) {
+        throw Exception('Network error. Please check your internet connection.');
+      } else {
+        print('Facebook sign-in failed: ${error.toString()}');
+        throw Exception('Facebook sign-in failed. Please try Google sign-in or email/password authentication.');
+      }
     }
   }
 
