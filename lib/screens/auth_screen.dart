@@ -388,10 +388,7 @@ class _AuthScreenState extends State<AuthScreen>
                                       label: 'Facebook',
                                       icon: Icons.facebook,
                                       color: const Color(0xff1778F2),
-                                      // TODO: implement Facebook sign-in
-                                      onTap: () {
-                                        _handleFacebook();
-                                      },
+                                      onTap: _handleFacebook,
                                     ),
                                   ],
                                 ),

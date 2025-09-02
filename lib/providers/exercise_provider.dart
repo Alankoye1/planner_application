@@ -13,30 +13,70 @@ class ExerciseProvider with ChangeNotifier {
   }
 
   Future<void> fetchAndSetFavorite(String userId, String token) async {
-  final url =
-    '${AppConfig.realtimeDbBase}/users/$userId/favoriteExercises.json?auth=$token';
+    final url =
+        '${AppConfig.realtimeDbBase}/users/$userId/favoriteExercises.json?auth=$token';
+    
     try {
+      print('Fetching favorites from: $url'); // Debug log
+      
       final response = await http.get(Uri.parse(url));
+      print('Response status: ${response.statusCode}'); // Debug log
+      print('Response body: ${response.body}'); // Debug log
+      
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
-        if (data != null && data['exercises'] != null) {
-          // Handle as Map instead of Iterable
-          final exercises = data['exercises'] as Map<String, dynamic>;
-          exercises.forEach((key, fav) {
-            final index = allExercises.indexWhere(
-                (e) => e.id == fav['id'] || e.id == key);
-            if (index != -1) {
-              allExercises[index].isFavorite = fav['isFavorite'] ?? false;
-            }
-          });
+        
+        // Handle null or empty response
+        if (data == null) {
+          print('No favorite exercises found for user');
+          notifyListeners();
+          return;
         }
+        
+        // Handle different data structures
+        if (data is Map<String, dynamic>) {
+          if (data.containsKey('exercises') && data['exercises'] != null) {
+            // Handle nested structure: data['exercises']
+            final exercises = data['exercises'] as Map<String, dynamic>;
+            _updateFavoriteExercises(exercises);
+          } else {
+            // Handle flat structure: data is directly the exercises map
+            _updateFavoriteExercises(data);
+          }
+        }
+        
+        notifyListeners();
+      } else if (response.statusCode == 404) {
+        // User has no favorite exercises yet - this is normal
+        print('No favorite exercises found (404) - this is normal for new users');
         notifyListeners();
       } else {
-        throw Exception('Failed to load favorite exercises');
+        print('HTTP Error: ${response.statusCode} - ${response.body}');
+        throw Exception('Failed to load favorite exercises: HTTP ${response.statusCode}');
       }
     } catch (error) {
-      throw Exception('Error fetching favorite exercises: $error');
+      print('Error in fetchAndSetFavorite: $error'); // Debug log
+      if (error is FormatException) {
+        throw Exception('Error parsing favorite exercises data: Invalid JSON format');
+      } else {
+        throw Exception('Error fetching favorite exercises: $error');
+      }
     }
+  }
+
+  // Helper method to update favorite exercises
+  void _updateFavoriteExercises(Map<String, dynamic> exercises) {
+    exercises.forEach((key, fav) {
+      if (fav is Map<String, dynamic>) {
+        final exerciseId = fav['id'] ?? key;
+        final isFavorite = fav['isFavorite'] ?? false;
+        
+        final index = allExercises.indexWhere((e) => e.id == exerciseId);
+        if (index != -1) {
+          allExercises[index].isFavorite = isFavorite;
+        }
+      }
+    });
   }
 
   List get favoriteExercises {

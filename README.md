@@ -10,12 +10,17 @@ Personal fitness & workout planning app built with Flutter.
 Planner helps users browse categorized exercises, mark favorites, create custom exercise categories, and receive a daily reminder notification to stay consistent. Firebase Authentication powers user accounts and favorites sync; all other logic is handled locally with Provider for state management.
 
 ## 🚀 Features
-- Email / password authentication via Firebase Auth
+- **Multi-platform Authentication** via Firebase Auth:
+  - Email / password authentication
+  - Google Sign-In integration
+  - Facebook Login support
+- **Beautiful Glassmorphic UI** with enhanced social authentication buttons
 - Exercise library with images & (external) video links
 - Favorites (persisted per user in Firebase Realtime Database endpoints via REST)
 - Custom exercise categories & user‑defined exercises
 - Daily reminder local notification (time selectable, exact alarm toggle, timezone aware, fallback safety timer)
 - Light / dark theme (via theme provider)
+- **Enhanced Error Handling** for network operations and authentication
 - Simple, maintainable Provider architecture
 
 ## 🧩 Architecture
@@ -58,9 +63,9 @@ Compliance note: Ensure you have rights to redistribute any hosted videos. For p
 ## 🛠️ Tech Stack
 | Concern | Package / Tool |
 |---------|----------------|
-| Core UI | Flutter (Material) |
+| Core UI | Flutter (Material) with Glassmorphic Design |
 | State | provider |
-| Auth | firebase_auth |
+| Auth | firebase_auth, google_sign_in, flutter_facebook_auth |
 | Backend Init | firebase_core |
 | HTTP | http |
 | Local Storage | shared_preferences |
@@ -74,12 +79,22 @@ Compliance note: Ensure you have rights to redistribute any hosted videos. For p
 	`git clone <your-fork-url>`
 3. Install dependencies:
 	`flutter pub get`
-4. Firebase setup:
+4. **Firebase setup:**
 	- Create Firebase project
 	- Enable Email/Password auth
+	- **Enable Google Sign-In** in Authentication > Sign-in method
+	- **Enable Facebook Login** in Authentication > Sign-in method
 	- Add Android app: download `google-services.json` into `android/app/`
 	- (If adding iOS) add `GoogleService-Info.plist` to `ios/Runner/`
-5. Run:
+5. **Google Sign-In setup:**
+	- Get SHA-1 fingerprint: `./gradlew signingReport` (from android folder)
+	- Add SHA-1 to Firebase Console > Project Settings > Your Apps
+6. **Facebook Login setup:**
+	- Create Facebook App in [Facebook Developers Console](https://developers.facebook.com/)
+	- Configure Facebook Login product with your package name and SHA-1
+	- Update `android/app/src/main/res/values/strings.xml` with your Facebook App ID and Client Token
+	- Add Facebook App ID and App Secret to Firebase Console
+7. Run:
 	`flutter run`
 
 ### Environment Notes
@@ -92,16 +107,22 @@ Add widget / provider tests under `test/`. (Currently minimal.) Suggested areas:
 - Custom exercise CRUD
 
 ## 🔐 Security & Privacy
-- Only authentication is handled by Firebase Auth.
-- Exercise and favorites data is lightweight; if adding sensitive data later, implement proper rules & secure transport.
+- **Multi-factor Authentication** supported via Firebase Auth with social providers
+- **Google Sign-In** uses secure OAuth 2.0 flow with SHA-1 fingerprint validation
+- **Facebook Login** implements secure OAuth with App Secret validation
+- Exercise and favorites data is lightweight; all sensitive authentication is handled by trusted providers
+- **Enhanced error handling** prevents exposure of internal system details
 
 ## 🚧 Roadmap / Future Ideas
 - In-app embedded video player screen (no external app jump)
 - Offline media cache / downloadable packs
+- **Apple Sign-In integration** for iOS users
 - Progress tracking & workout plans history
 - Multiple reminders & custom schedules
+- **Biometric authentication** support
 - Localization / i18n
 - Unit & widget test coverage expansion
+- **Enhanced UI animations** and micro-interactions
 - Dark mode refinements & adaptive layouts
 
 ## 🗂️ Repository Structure (excerpt)
@@ -131,14 +152,23 @@ MIT License © 2024 Your Name
 Maintain notable changes in a `CHANGELOG.md` once versioning begins.
 
 ## ❓ FAQ
-Q: Why are notifications local only?  
+**Q: Why are notifications local only?**  
 A: Simpler, privacy friendly, and reliable for a single daily reminder without server infrastructure.
 
-Q: How do I change the reminder time?  
+**Q: How do I change the reminder time?**  
 A: Open Notification Settings screen, tap the time picker, choose new time.
 
-Q: Videos open externally; can I embed them?  
+**Q: Videos open externally; can I embed them?**  
 A: Yes—replace the launcher screen with a `youtube_player_flutter` widget or host local MP4s and use `video_player`.
+
+**Q: I'm getting "Google Sign-In failed" errors. What should I do?**  
+A: Ensure you've added the correct SHA-1 fingerprint to Firebase Console. Run `./gradlew signingReport` from the android folder to get your fingerprint.
+
+**Q: Facebook Login shows "App not active" error?**  
+A: Your Facebook app is in development mode. Add yourself as a test user or developer in Facebook Developers Console, or make your app live for production use.
+
+**Q: How do I get my SHA-1 fingerprint?**  
+A: Navigate to the android folder and run `./gradlew signingReport`. Look for the SHA1 value in the output.
 
 ---
 Feel free to customize this README further to reflect branding or deployment specifics.

@@ -160,14 +160,25 @@ class _HomeWrapperState extends State<HomeWrapper> {
         listen: false,
       );
 
-      await customExerciseProvider.fetchAndSetCustom(
-        userProvider.currentUser!.id!,
-        userProvider.currentUser!.token!,
-      );
-      await exerciseProvider.fetchAndSetFavorite(
-        userProvider.currentUser!.id!,
-        userProvider.currentUser!.token!,
-      );
+      try {
+        await customExerciseProvider.fetchAndSetCustom(
+          userProvider.currentUser!.id!,
+          userProvider.currentUser!.token!,
+        );
+      } catch (error) {
+        print('Error fetching custom exercises: $error');
+        // Continue loading even if custom exercises fail
+      }
+
+      try {
+        await exerciseProvider.fetchAndSetFavorite(
+          userProvider.currentUser!.id!,
+          userProvider.currentUser!.token!,
+        );
+      } catch (error) {
+        print('Error fetching favorite exercises: $error');
+        // Continue loading even if favorites fail
+      }
 
       if (mounted) {
         setState(() {

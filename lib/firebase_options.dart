@@ -45,7 +45,6 @@ class DefaultFirebaseOptions {
     appId: '1:906862508246:android:15a9a85e04d7d49eff7177',
     messagingSenderId: '906862508246',
     projectId: 'fit-planner-de29a',
-    databaseURL: 'https://fit-planner-de29a-default-rtdb.firebaseio.com',
     storageBucket: 'fit-planner-de29a.firebasestorage.app',
   );
 
@@ -54,7 +53,6 @@ class DefaultFirebaseOptions {
     appId: '1:906862508246:ios:ff093dae06e90ba4ff7177',
     messagingSenderId: '906862508246',
     projectId: 'fit-planner-de29a',
-    databaseURL: 'https://fit-planner-de29a-default-rtdb.firebaseio.com',
     storageBucket: 'fit-planner-de29a.firebasestorage.app',
     androidClientId: '906862508246-aae9282o1ie1arjdp4hgeus2926ov452.apps.googleusercontent.com',
     iosClientId: '906862508246-b025p3mg51l6cvtsog4cqutj3td6rk3t.apps.googleusercontent.com',
@@ -67,7 +65,6 @@ class DefaultFirebaseOptions {
     messagingSenderId: '906862508246',
     projectId: 'fit-planner-de29a',
     authDomain: 'fit-planner-de29a.firebaseapp.com',
-    databaseURL: 'https://fit-planner-de29a-default-rtdb.firebaseio.com',
     storageBucket: 'fit-planner-de29a.firebasestorage.app',
     measurementId: 'G-83ZVD7Z1MD',
   );
@@ -77,7 +74,6 @@ class DefaultFirebaseOptions {
     appId: '1:906862508246:ios:ff093dae06e90ba4ff7177',
     messagingSenderId: '906862508246',
     projectId: 'fit-planner-de29a',
-    databaseURL: 'https://fit-planner-de29a-default-rtdb.firebaseio.com',
     storageBucket: 'fit-planner-de29a.firebasestorage.app',
     androidClientId: '906862508246-aae9282o1ie1arjdp4hgeus2926ov452.apps.googleusercontent.com',
     iosClientId: '906862508246-b025p3mg51l6cvtsog4cqutj3td6rk3t.apps.googleusercontent.com',
@@ -90,7 +86,6 @@ class DefaultFirebaseOptions {
     messagingSenderId: '906862508246',
     projectId: 'fit-planner-de29a',
     authDomain: 'fit-planner-de29a.firebaseapp.com',
-    databaseURL: 'https://fit-planner-de29a-default-rtdb.firebaseio.com',
     storageBucket: 'fit-planner-de29a.firebasestorage.app',
     measurementId: 'G-KYKFRKLD9V',
   );
