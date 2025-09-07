@@ -185,18 +185,27 @@ class UserProvider with ChangeNotifier {
     final username = prefs.getString('username');
     final refreshToken = prefs.getString('userRefreshToken');
 
-    if (token != null && userId != null && email != null && password != null) {
+    if (token != null && userId != null && email != null) {
       _currentUser = User(
         id: userId,
         email: email,
-        password: password,
+        password: password ?? '',
         username: username,
         token: token,
         refreshToken: refreshToken,
       );
-      // Refresh only if we have a refresh token (email/password accounts)
-      if (refreshToken != null) {
-        await this.refreshToken();
+      
+      // Determine authentication type and refresh accordingly
+      if (password != null && password.isNotEmpty) {
+        // Email/password account - use regular refresh token
+        if (refreshToken != null) {
+          await this.refreshToken();
+        }
+      } else {
+        // Social login account (Google/Facebook) - use Google refresh if available
+        if (email.isNotEmpty) {
+          await refreshTokenGoogle();
+        }
       }
     }
     notifyListeners();
@@ -278,12 +287,14 @@ class UserProvider with ChangeNotifier {
           accessToken.token,
         );
 
-        final userCredential =
-            await fb_auth.FirebaseAuth.instance.signInWithCredential(credential);
+        final userCredential = await fb_auth.FirebaseAuth.instance
+            .signInWithCredential(credential);
 
         final fbUser = userCredential.user;
         if (fbUser == null) {
-          throw Exception('Firebase authentication failed after Facebook sign-in');
+          throw Exception(
+            'Firebase authentication failed after Facebook sign-in',
+          );
         }
 
         // Use Firebase UID as user ID
@@ -306,16 +317,24 @@ class UserProvider with ChangeNotifier {
     } catch (error) {
       // More detailed error handling
       if (error.toString().contains('Application has been deleted')) {
-        throw Exception('Facebook App configuration is invalid. Please contact support or use alternative sign-in methods.');
+        throw Exception(
+          'Facebook App configuration is invalid. Please contact support or use alternative sign-in methods.',
+        );
       } else if (error.toString().contains('MissingPluginException')) {
-        throw Exception('Facebook Auth not properly configured. Please use Google sign-in or email/password authentication.');
+        throw Exception(
+          'Facebook Auth not properly configured. Please use Google sign-in or email/password authentication.',
+        );
       } else if (error.toString().contains('ERROR_CANCELED')) {
         throw Exception('Facebook sign-in was cancelled');
       } else if (error.toString().contains('ERROR_NETWORK')) {
-        throw Exception('Network error. Please check your internet connection.');
+        throw Exception(
+          'Network error. Please check your internet connection.',
+        );
       } else {
         print('Facebook sign-in failed: ${error.toString()}');
-        throw Exception('Facebook sign-in failed. Please try Google sign-in or email/password authentication.');
+        throw Exception(
+          'Facebook sign-in failed. Please try Google sign-in or email/password authentication.',
+        );
       }
     }
   }
@@ -326,10 +345,10 @@ class UserProvider with ChangeNotifier {
       final GoogleSignIn googleSignIn = GoogleSignIn(
         scopes: ['email', 'profile'],
       );
-      
+
       // Sign out of any previous Google account first
       await googleSignIn.signOut();
-      
+
       final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
 
       if (googleUser == null) {
@@ -349,8 +368,8 @@ class UserProvider with ChangeNotifier {
         idToken: googleAuth.idToken,
       );
 
-      final userCredential =
-          await fb_auth.FirebaseAuth.instance.signInWithCredential(credential);
+      final userCredential = await fb_auth.FirebaseAuth.instance
+          .signInWithCredential(credential);
 
       final fbUser = userCredential.user;
       if (fbUser == null) {
@@ -374,11 +393,17 @@ class UserProvider with ChangeNotifier {
     } catch (error) {
       // More detailed error handling
       if (error.toString().contains('DEVELOPER_ERROR')) {
-        throw Exception('Google Sign-In configuration error. Please check SHA-1 fingerprint in Firebase Console.');
+        throw Exception(
+          'Google Sign-In configuration error. Please check SHA-1 fingerprint in Firebase Console.',
+        );
       } else if (error.toString().contains('SIGN_IN_REQUIRED')) {
-        throw Exception('Google Sign-In requires user interaction. Please try again.');
+        throw Exception(
+          'Google Sign-In requires user interaction. Please try again.',
+        );
       } else if (error.toString().contains('NETWORK_ERROR')) {
-        throw Exception('Network error. Please check your internet connection.');
+        throw Exception(
+          'Network error. Please check your internet connection.',
+        );
       } else {
         print('Google sign-in failed: ${error.toString()}');
         throw Exception('Google sign-in failed: ${error.toString()}');
@@ -594,15 +619,63 @@ class UserProvider with ChangeNotifier {
     }
   }
 
+  Future<void> refreshTokenGoogle() async {
+    // Save updated token
+    final prefs = await SharedPreferences.getInstance();
+    final refreshToken = prefs.getString('userRefreshToken');
+
+    if (refreshToken == null || _currentUser == null) {
+      return;
+    }
+
+    try {
+      final googleSignIn = GoogleSignIn();
+      final googleUser = await googleSignIn.signInSilently();
+      if (googleUser == null) {
+        // User is not signed in
+        return;
+      }
+      final googleAuth = await googleUser.authentication;
+      if (googleAuth.idToken == null) {
+        // Unable to get idToken
+        return;
+      }
+
+      // Update user token
+      _currentUser = User(
+        id: _currentUser!.id,
+        email: _currentUser!.email,
+        password: _currentUser!.password,
+        username: _currentUser!.username,
+        token: googleAuth.idToken,
+        refreshToken: '', // Firebase handles refresh tokens internally
+        createdAt: _currentUser!.createdAt,
+      );
+
+      notifyListeners();
+    } on Exception catch (e) {
+      print('Error refreshing Google token: $e');
+    }
+  }
+
   Future<String?> getValidToken() async {
     if (_currentUser == null || _currentUser!.token == null) {
       return null;
     }
 
-    // For simplicity, we'll refresh the token before every API call
-    // In production, you might want to check if the token is actually close to expiring
-    final refreshed = await refreshToken();
-    if (refreshed) {
+    // Determine authentication type and refresh accordingly
+    bool refreshed = false;
+    
+    if (_currentUser!.password.isNotEmpty) {
+      // Email/password account - use regular refresh token
+      refreshed = await refreshToken();
+    } else {
+      // Social login account (Google/Facebook) - use Google refresh
+      await refreshTokenGoogle();
+      refreshed = true; // Google refresh doesn't return bool, assume success if no exception
+    }
+    
+    if (refreshed && _currentUser != null) {
       return _currentUser!.token;
     }
 
