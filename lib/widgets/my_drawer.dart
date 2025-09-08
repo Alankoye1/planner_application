@@ -17,13 +17,34 @@ class MyDrawer extends StatelessWidget {
         padding: EdgeInsets.zero,
         children: [
           DrawerHeader(
-            decoration: BoxDecoration(color: Theme.of(context).colorScheme.primary),
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.primary,
+            ),
             child: Column(
               children: [
-                CircleAvatar(
-                  radius: 40,
-                  backgroundColor: Theme.of(context).brightness == Brightness.light ? Colors.white : Colors.orange,
-                  child: Icon(Icons.person, size: 50, color: Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black),
+                Consumer<UserProvider>(
+                  builder: (context, userProvider, child) {
+                    return CircleAvatar(
+                      radius: 40,
+                      backgroundColor:
+                          Theme.of(context).brightness == Brightness.light
+                          ? Colors.white
+                          : Colors.orange,
+                      child: ClipOval(
+                        child: userProvider.getProfileImageWidget(
+                          width: 80.0,
+                          height: 80.0,
+                          fit: BoxFit.cover,
+                        ) ?? Icon(
+                          Icons.person,
+                          size: 50,
+                          color: Theme.of(context).brightness == Brightness.dark
+                              ? Colors.white
+                              : Colors.black,
+                        ),
+                      ),
+                    );
+                  },
                 ),
                 SizedBox(height: 10),
                 Text(

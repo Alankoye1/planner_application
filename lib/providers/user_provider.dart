@@ -1,10 +1,12 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:firebase_auth/firebase_auth.dart' as fb_auth;
 import 'package:http/http.dart' as http;
+import 'package:image_picker/image_picker.dart';
 import 'package:planner/models/user.dart';
 import 'package:planner/config/app_config.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -17,6 +19,7 @@ class UserProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  // Sign Up with Email and Password
   Future<void> signUp(String email, String password, String username) async {
     final url = AppConfig.signUpUrl;
     try {
@@ -70,6 +73,7 @@ class UserProvider with ChangeNotifier {
     }
   }
 
+  // Sign In with Email and Password
   Future<void> signIn(String email, String password) async {
     final url = AppConfig.signInUrl;
     try {
@@ -143,6 +147,7 @@ class UserProvider with ChangeNotifier {
     }
   }
 
+  // Sign out user and clear saved data
   Future<void> signOut() async {
     _currentUser = null;
 
@@ -169,6 +174,10 @@ class UserProvider with ChangeNotifier {
       if (_currentUser!.username != null) {
         await prefs.setString('username', _currentUser!.username!);
       }
+      if (_currentUser!.profileBio != null) {
+        await prefs.setString('userProfileBio', _currentUser!.profileBio!);
+      }
+      // Note: Profile image is saved separately as base64 in change methods
       // Save refresh token
       if (_currentUser!.refreshToken != null) {
         await prefs.setString('userRefreshToken', _currentUser!.refreshToken!);
@@ -176,6 +185,38 @@ class UserProvider with ChangeNotifier {
     }
   }
 
+  // Save file to local storage and store its path in SharedPreferences
+  static Future<File?> saveFile(File file) async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final bytes = await file.readAsBytes();
+      final base64String = base64Encode(bytes);
+      await prefs.setString('userProfileImage', base64String);
+      return file;
+    } catch (e) {
+      print('Error saving image file: $e');
+      throw Exception('Failed to save profile image. Please try again.');
+    }
+  }
+
+  // Retrieve File from SharedPreferences
+  static Future<File?> loadFile() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final base64String = prefs.getString('userProfileImage');
+      if (base64String != null) {
+        final bytes = base64Decode(base64String);
+        final file = File('${Directory.systemTemp.path}/profile_image.png');
+        await file.writeAsBytes(bytes);
+        return file;
+      }
+    } catch (e) {
+      print('Error loading image file: $e');
+    }
+    return null; // file not found
+  }
+
+  // Auto-login user if valid token exists
   Future<void> autoLogin() async {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('userToken');
@@ -184,6 +225,8 @@ class UserProvider with ChangeNotifier {
     final password = prefs.getString('userPassword');
     final username = prefs.getString('username');
     final refreshToken = prefs.getString('userRefreshToken');
+    final profileBio = prefs.getString('userProfileBio');
+    final profileImage = await loadFile();
 
     if (token != null && userId != null && email != null) {
       _currentUser = User(
@@ -193,8 +236,10 @@ class UserProvider with ChangeNotifier {
         username: username,
         token: token,
         refreshToken: refreshToken,
+        profileBio: profileBio,
+        profileImage: profileImage,
       );
-      
+
       // Determine authentication type and refresh accordingly
       if (password != null && password.isNotEmpty) {
         // Email/password account - use regular refresh token
@@ -272,6 +317,277 @@ class UserProvider with ChangeNotifier {
       notifyListeners();
     } catch (error) {
       rethrow;
+    }
+  }
+
+  // Change user Image with source selection
+  Future<void> changeUserImage({ImageSource? source}) async {
+    if (_currentUser == null) {
+      throw Exception('No user logged in');
+    }
+
+    try {
+      final ImagePicker picker = ImagePicker();
+
+      // If no source specified, default to gallery
+      final imageSource = source ?? ImageSource.gallery;
+
+      final XFile? pickedImage = await picker.pickImage(
+        source: imageSource,
+        maxWidth: 1024,
+        maxHeight: 1024,
+        imageQuality: 85,
+      );
+
+      if (pickedImage == null) {
+        // User cancelled image selection
+        print('Image selection cancelled by user');
+        return;
+      }
+
+      // Convert XFile to File
+      final File imageFile = File(pickedImage.path);
+
+      // Read image as bytes
+      final bytes = await imageFile.readAsBytes();
+      final base64Image = base64Encode(bytes);
+
+      // Store image data in SharedPreferences for persistence
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('userProfileImage', base64Image);
+
+      // Update local user data (profileImage stays null, we use SharedPreferences)
+      _currentUser = User(
+        id: _currentUser!.id,
+        email: _currentUser!.email,
+        password: _currentUser!.password,
+        username: _currentUser!.username,
+        token: _currentUser!.token,
+        refreshToken: _currentUser!.refreshToken,
+        createdAt: _currentUser!.createdAt,
+        profileImage: imageFile, // Store the File image in memory too
+        profileBio: _currentUser!.profileBio,
+      );
+
+      // Save updated data
+      await _saveUserData();
+      notifyListeners();
+
+    } catch (error) {
+      print('Error changing user image: $error');
+
+      // Handle specific image picker errors
+      if (error.toString().contains('camera_access_denied')) {
+        throw Exception(
+          'Camera access denied. Please enable camera permissions in settings.',
+        );
+      } else if (error.toString().contains('photo_access_denied')) {
+        throw Exception(
+          'Photo access denied. Please enable photo library permissions in settings.',
+        );
+      } else if (error.toString().contains('file_not_found')) {
+        throw Exception('Selected image file not found.');
+      } else {
+        throw Exception('Failed to update profile image. Please try again.');
+      }
+    }
+  }
+
+  // Convenience method for gallery selection
+  Future<void> changeUserImageFromGallery() async {
+    await changeUserImage(source: ImageSource.gallery);
+  }
+
+  // Helper method to get profile image from SharedPreferences
+  Future<String?> getProfileImageBase64() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString('userProfileImage');
+  }
+
+  // Helper method to get profile image widget from base64 data
+  Widget? getProfileImageWidget({double? width, double? height, BoxFit? fit}) {
+    // First check if current user has profileImage in memory
+    if (_currentUser?.profileImage != null) {
+      try {
+        if (_currentUser!.profileImage is File) {
+          // If profileImage is a File, use it directly
+          return Image.file(
+            _currentUser!.profileImage as File,
+            width: width,
+            height: height,
+            fit: fit ?? BoxFit.cover,
+            errorBuilder: (context, error, stackTrace) {
+              print('Error loading profile image: $error');
+              return Icon(Icons.person, size: width ?? height ?? 50);
+            },
+          );
+        } else if (_currentUser!.profileImage is XFile) {
+          // If profileImage is an XFile, convert to File
+          final file = File((_currentUser!.profileImage as XFile).path);
+          return Image.file(
+            file,
+            width: width,
+            height: height,
+            fit: fit ?? BoxFit.cover,
+            errorBuilder: (context, error, stackTrace) {
+              print('Error loading profile image: $error');
+              return Icon(Icons.person, size: width ?? height ?? 50);
+            },
+          );
+        } else if (_currentUser!.profileImage is String &&
+            (_currentUser!.profileImage as String).isNotEmpty) {
+          // If profileImage is a String (base64), decode it
+          final bytes = base64Decode(_currentUser!.profileImage as String);
+          return Image.memory(
+            bytes,
+            width: width,
+            height: height,
+            fit: fit ?? BoxFit.cover,
+            errorBuilder: (context, error, stackTrace) {
+              print('Error loading profile image: $error');
+              return Icon(Icons.person, size: width ?? height ?? 50);
+            },
+          );
+        }
+      } catch (e) {
+        print('Error handling profile image: $e');
+        return Icon(Icons.person, size: width ?? height ?? 50);
+      }
+    }
+    
+    // Fallback: try to load from SharedPreferences
+    return FutureBuilder<String?>(
+      future: getProfileImageBase64(),
+      builder: (context, snapshot) {
+        if (snapshot.hasData && snapshot.data != null && snapshot.data!.isNotEmpty) {
+          try {
+            final bytes = base64Decode(snapshot.data!);
+            return Image.memory(
+              bytes,
+              width: width,
+              height: height,
+              fit: fit ?? BoxFit.cover,
+              errorBuilder: (context, error, stackTrace) {
+                print('Error loading profile image from base64: $error');
+                return Icon(Icons.person, size: width ?? height ?? 50);
+              },
+            );
+          } catch (e) {
+            print('Error decoding base64 image: $e');
+            return Icon(Icons.person, size: width ?? height ?? 50);
+          }
+        }
+        return Icon(Icons.person, size: width ?? height ?? 50);
+      },
+    );
+  }
+
+  Future<bool> hasProfileImage() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.containsKey('userProfileImage');
+  }
+
+  // Helper method to remove profile image
+  Future<void> removeProfileImage() async {
+    if (_currentUser == null) {
+      throw Exception('No user logged in');
+    }
+
+    try {
+      // Update user data to remove profile image
+      _currentUser = User(
+        id: _currentUser!.id,
+        email: _currentUser!.email,
+        password: _currentUser!.password,
+        username: _currentUser!.username,
+        token: _currentUser!.token,
+        refreshToken: _currentUser!.refreshToken,
+        createdAt: _currentUser!.createdAt,
+        profileImage: null, // Remove the image
+        profileBio: _currentUser!.profileBio,
+      );
+
+      // Save updated data (this will remove the image from SharedPreferences too)
+      await _saveUserData();
+
+      // Also explicitly remove from SharedPreferences
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.remove('userProfileImage');
+
+      notifyListeners();
+
+      print('Profile image removed successfully');
+    } catch (error) {
+      print('Error removing profile image: $error');
+      throw Exception('Failed to remove profile image. Please try again.');
+    }
+  }
+
+  // Alternative method for camera
+  Future<void> changeUserImageFromCamera() async {
+    if (_currentUser == null) {
+      throw Exception('No user logged in');
+    }
+
+    try {
+      final ImagePicker picker = ImagePicker();
+
+      final XFile? pickedImage = await picker.pickImage(
+        source: ImageSource.camera,
+        maxWidth: 1024,
+        maxHeight: 1024,
+        imageQuality: 85,
+      );
+
+      if (pickedImage == null) {
+        // User cancelled image capture
+        print('Image capture cancelled by user');
+        return;
+      }
+
+      // Convert XFile to File
+      final File imageFile = File(pickedImage.path);
+
+      // Read image as bytes
+      final bytes = await imageFile.readAsBytes();
+      final base64Image = base64Encode(bytes);
+
+      // Store image data in SharedPreferences for persistence
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('userProfileImage', base64Image);
+      // Update local user data with the image
+      _currentUser = User(
+        id: _currentUser!.id,
+        email: _currentUser!.email,
+        password: _currentUser!.password,
+        username: _currentUser!.username,
+        token: _currentUser!.token,
+        refreshToken: _currentUser!.refreshToken,
+        createdAt: _currentUser!.createdAt,
+        profileImage: imageFile,
+        profileBio: _currentUser!.profileBio,
+      );
+
+      // Save updated data (including profile image)
+      await _saveUserData();
+      notifyListeners();
+
+      print('Profile image updated successfully from camera');
+    } catch (error) {
+      print('Error changing user image from camera: $error');
+
+      // Handle specific image picker errors
+      if (error.toString().contains('camera_access_denied')) {
+        throw Exception(
+          'Camera access denied. Please enable camera permissions in settings.',
+        );
+      } else if (error.toString().contains('file_not_found')) {
+        throw Exception('Camera capture failed.');
+      } else {
+        throw Exception(
+          'Failed to update profile image from camera. Please try again.',
+        );
+      }
     }
   }
 
@@ -566,6 +882,7 @@ class UserProvider with ChangeNotifier {
     }
   }
 
+  // Refresh the authentication token using the refresh token
   Future<bool> refreshToken() async {
     final prefs = await SharedPreferences.getInstance();
     final refreshToken = prefs.getString('userRefreshToken');
@@ -619,45 +936,102 @@ class UserProvider with ChangeNotifier {
     }
   }
 
+  // Refresh the Google Sign-In token
   Future<void> refreshTokenGoogle() async {
-    // Save updated token
-    final prefs = await SharedPreferences.getInstance();
-    final refreshToken = prefs.getString('userRefreshToken');
-
-    if (refreshToken == null || _currentUser == null) {
+    if (_currentUser == null) {
+      print('No current user for Google token refresh');
       return;
     }
 
     try {
-      final googleSignIn = GoogleSignIn();
-      final googleUser = await googleSignIn.signInSilently();
-      if (googleUser == null) {
-        // User is not signed in
-        return;
-      }
-      final googleAuth = await googleUser.authentication;
-      if (googleAuth.idToken == null) {
-        // Unable to get idToken
-        return;
-      }
+      // For Google Sign-In users, we need to refresh through Firebase Auth
+      final firebaseUser = fb_auth.FirebaseAuth.instance.currentUser;
 
-      // Update user token
-      _currentUser = User(
-        id: _currentUser!.id,
-        email: _currentUser!.email,
-        password: _currentUser!.password,
-        username: _currentUser!.username,
-        token: googleAuth.idToken,
-        refreshToken: '', // Firebase handles refresh tokens internally
-        createdAt: _currentUser!.createdAt,
-      );
+      if (firebaseUser != null) {
+        // Force refresh the Firebase ID token
+        final newToken = await firebaseUser.getIdToken(
+          true,
+        ); // true forces refresh
 
-      notifyListeners();
-    } on Exception catch (e) {
+        if (newToken != null) {
+          // Update user with new token
+          _currentUser = User(
+            id: _currentUser!.id,
+            email: _currentUser!.email,
+            password: _currentUser!.password,
+            username: _currentUser!.username,
+            token: newToken,
+            refreshToken: '', // Firebase handles refresh tokens internally
+            createdAt: _currentUser!.createdAt,
+            profileBio: _currentUser!.profileBio,
+            profileImage: _currentUser!.profileImage,
+          );
+
+          // Save updated token to SharedPreferences
+          final prefs = await SharedPreferences.getInstance();
+          await prefs.setString('userToken', newToken);
+
+          print('Google token refreshed successfully');
+          notifyListeners();
+        }
+      } else {
+        // Fallback: Try Google Sign-In silent authentication
+        print('No Firebase user, trying Google Sign-In silent auth');
+        final googleSignIn = GoogleSignIn();
+        final googleUser = await googleSignIn.signInSilently();
+
+        if (googleUser != null) {
+          final googleAuth = await googleUser.authentication;
+
+          if (googleAuth.idToken != null) {
+            // Re-authenticate with Firebase using the new Google tokens
+            final credential = fb_auth.GoogleAuthProvider.credential(
+              accessToken: googleAuth.accessToken,
+              idToken: googleAuth.idToken,
+            );
+
+            final userCredential = await fb_auth.FirebaseAuth.instance
+                .signInWithCredential(credential);
+
+            if (userCredential.user != null) {
+              final newToken = await userCredential.user!.getIdToken();
+
+              if (newToken != null) {
+                // Update user with new token
+                _currentUser = User(
+                  id: _currentUser!.id,
+                  email: _currentUser!.email,
+                  password: _currentUser!.password,
+                  username: _currentUser!.username,
+                  token: newToken,
+                  refreshToken: '',
+                  createdAt: _currentUser!.createdAt,
+                  profileBio: _currentUser!.profileBio,
+                  profileImage: _currentUser!.profileImage,
+                );
+
+                // Save updated token
+                final prefs = await SharedPreferences.getInstance();
+                await prefs.setString('userToken', newToken);
+
+                print('Google token refreshed via silent sign-in');
+                notifyListeners();
+              }
+            }
+          }
+        } else {
+          print(
+            'Google silent sign-in failed - user may need to re-authenticate',
+          );
+        }
+      }
+    } catch (e) {
       print('Error refreshing Google token: $e');
+      // Don't rethrow here as this is called during auto-login
     }
   }
 
+  // Get a valid token, refreshing if necessary
   Future<String?> getValidToken() async {
     if (_currentUser == null || _currentUser!.token == null) {
       return null;
@@ -665,16 +1039,17 @@ class UserProvider with ChangeNotifier {
 
     // Determine authentication type and refresh accordingly
     bool refreshed = false;
-    
+
     if (_currentUser!.password.isNotEmpty) {
       // Email/password account - use regular refresh token
       refreshed = await refreshToken();
     } else {
       // Social login account (Google/Facebook) - use Google refresh
       await refreshTokenGoogle();
-      refreshed = true; // Google refresh doesn't return bool, assume success if no exception
+      refreshed =
+          true; // Google refresh doesn't return bool, assume success if no exception
     }
-    
+
     if (refreshed && _currentUser != null) {
       return _currentUser!.token;
     }
@@ -682,6 +1057,32 @@ class UserProvider with ChangeNotifier {
     // If refresh failed but we still have a token, return it
     // (it might still be valid)
     return _currentUser!.token;
+  }
+
+  /// Handles 401 authentication errors by attempting appropriate token refresh
+  Future<bool> handle401Error() async {
+    if (_currentUser == null) {
+      print('No current user to refresh token for');
+      return false;
+    }
+
+    try {
+      // Determine authentication type and refresh accordingly
+      if (_currentUser!.password.isNotEmpty) {
+        // Email/password account - use regular refresh token
+        print('Attempting regular token refresh for email/password account');
+        return await refreshToken();
+      } else {
+        // Social login account (Google/Facebook) - use Google refresh
+        print('Attempting Google token refresh for social login account');
+        await refreshTokenGoogle();
+        // Google refresh doesn't return bool, but if no exception was thrown, assume success
+        return true;
+      }
+    } catch (e) {
+      print('Error handling 401 authentication error: $e');
+      return false;
+    }
   }
 
   // Example of using the valid token in an API call
@@ -697,15 +1098,20 @@ class UserProvider with ChangeNotifier {
     );
 
     if (response.statusCode == 401) {
-      // Try refreshing token and retry once
-      final refreshed = await refreshToken();
-      if (refreshed) {
+      // Try refreshing token using the smart handler
+      final refreshed = await handle401Error();
+      if (refreshed && _currentUser?.token != null) {
         // Always get the latest token after refresh!
         token = _currentUser!.token;
         final retryResponse = await http.get(
           Uri.parse('https://your-api-endpoint.com'),
           headers: {'Authorization': 'Bearer $token'},
         );
+        if (retryResponse.statusCode == 401) {
+          throw Exception(
+            'Authentication failed even after token refresh. Please login again.',
+          );
+        }
         if (retryResponse.statusCode != 200) {
           throw Exception('Failed to fetch user data after token refresh');
         }

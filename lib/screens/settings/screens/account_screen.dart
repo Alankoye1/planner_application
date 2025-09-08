@@ -1,7 +1,12 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:planner/providers/user_provider.dart';
 import 'package:planner/screens/settings/widgets/custom_setting_list_tile.dart';
+import 'package:planner/widgets/profile_image_widget.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AccountScreen extends StatelessWidget {
   const AccountScreen({super.key});
@@ -10,9 +15,9 @@ class AccountScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final userProvider = Provider.of<UserProvider>(context);
     return Scaffold(
-        appBar: AppBar(title: const Text('Account Settings')),
+      appBar: AppBar(title: const Text('Account Settings')),
       body: ListView(
-          padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(16),
         children: [
           CustomSettingListTile(
             title: 'Profile',
@@ -29,7 +34,7 @@ class AccountScreen extends StatelessWidget {
           CustomSettingListTile(
             title: 'Email',
             subtitle: 'Change your email address',
-              icon: Icons.email,
+            icon: Icons.email,
             onTap: () {
               Navigator.of(
                 context,
@@ -41,7 +46,7 @@ class AccountScreen extends StatelessWidget {
           CustomSettingListTile(
             title: 'Password',
             subtitle: 'Change your password',
-              icon: Icons.lock,
+            icon: Icons.lock,
             onTap: () {
               Navigator.of(
                 context,
@@ -53,7 +58,7 @@ class AccountScreen extends StatelessWidget {
           CustomSettingListTile(
             title: 'Logout',
             subtitle: 'Log out of your account',
-              icon: Icons.logout,
+            icon: Icons.logout,
             onTap: () {
               showDialog(
                 context: context,
@@ -69,7 +74,8 @@ class AccountScreen extends StatelessWidget {
 }
 
 class ProfileScreen extends StatelessWidget {
-  const ProfileScreen({super.key});
+  final double size;
+  const ProfileScreen({super.key}) : size = 100.0;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -89,7 +95,7 @@ class ProfileScreen extends StatelessWidget {
       body: Consumer<UserProvider>(
         builder: (context, userProvider, child) {
           final currentUser = userProvider.currentUser;
-          
+
           if (currentUser == null) {
             return const Center(
               child: Column(
@@ -116,23 +122,28 @@ class ProfileScreen extends StatelessWidget {
                       CircleAvatar(
                         radius: 50,
                         backgroundColor: Theme.of(context).colorScheme.primary,
-                        child: Text(
-                          currentUser.username?.isNotEmpty == true 
-                              ? currentUser.username![0].toUpperCase()
-                              : currentUser.email[0].toUpperCase(),
-                          style: const TextStyle(
-                            fontSize: 36,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                          ),
+                        child: Consumer<UserProvider>(
+                          builder: (context, userProvider, child) {
+                            final imageWidget = userProvider.getProfileImageWidget(
+                              width: 100.0,
+                              height: 100.0,
+                              fit: BoxFit.cover,
+                            );
+                            return ClipOval(
+                              child: imageWidget ?? const Icon(
+                                Icons.person,
+                                size: 64,
+                                color: Colors.grey,
+                              ),
+                            );
+                          },
                         ),
                       ),
                       const SizedBox(height: 16),
                       Text(
                         currentUser.username ?? 'User',
-                        style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
+                        style: Theme.of(context).textTheme.headlineSmall
+                            ?.copyWith(fontWeight: FontWeight.bold),
                       ),
                       const SizedBox(height: 8),
                       Text(
@@ -145,7 +156,7 @@ class ProfileScreen extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 32),
-                
+
                 // Profile Information Cards
                 _buildInfoCard(
                   context,
@@ -167,7 +178,7 @@ class ProfileScreen extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 16),
-                
+
                 // Account Information Card
                 _buildInfoCard(
                   context,
@@ -196,7 +207,11 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildInfoCard(BuildContext context, {required String title, required List<Widget> children}) {
+  Widget _buildInfoCard(
+    BuildContext context, {
+    required String title,
+    required List<Widget> children,
+  }) {
     return Card(
       elevation: 2,
       child: Padding(
@@ -206,9 +221,9 @@ class ProfileScreen extends StatelessWidget {
           children: [
             Text(
               title,
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
+              style: Theme.of(
+                context,
+              ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 16),
             ...children,
@@ -218,7 +233,8 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildInfoRow(BuildContext context, {
+  Widget _buildInfoRow(
+    BuildContext context, {
     required IconData icon,
     required String label,
     required String value,
@@ -233,9 +249,9 @@ class ProfileScreen extends StatelessWidget {
             flex: 2,
             child: Text(
               label,
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                fontWeight: FontWeight.w500,
-              ),
+              style: Theme.of(
+                context,
+              ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500),
             ),
           ),
           Expanded(
@@ -254,7 +270,7 @@ class ProfileScreen extends StatelessWidget {
 
 class EmailScreen extends StatefulWidget {
   const EmailScreen({super.key});
-  
+
   @override
   State<EmailScreen> createState() => _EmailScreenState();
 }
@@ -271,7 +287,7 @@ class _EmailScreenState extends State<EmailScreen> {
     super.initState();
     final userProvider = Provider.of<UserProvider>(context, listen: false);
     final currentUser = userProvider.currentUser;
-    
+
     _emailController = TextEditingController(text: currentUser?.email ?? '');
     _passwordController = TextEditingController();
   }
@@ -293,7 +309,7 @@ class _EmailScreenState extends State<EmailScreen> {
     try {
       final userProvider = Provider.of<UserProvider>(context, listen: false);
       final currentUser = userProvider.currentUser;
-      
+
       if (currentUser == null) {
         throw Exception('No user logged in');
       }
@@ -334,9 +350,7 @@ class _EmailScreenState extends State<EmailScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Change Email'),
-      ),
+      appBar: AppBar(title: const Text('Change Email')),
       body: Form(
         key: _formKey,
         child: ListView(
@@ -357,9 +371,9 @@ class _EmailScreenState extends State<EmailScreen> {
                     const SizedBox(height: 8),
                     Text(
                       'Enter your new email address and current password to confirm the change.',
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: Colors.grey[600],
-                      ),
+                      style: Theme.of(
+                        context,
+                      ).textTheme.bodyMedium?.copyWith(color: Colors.grey[600]),
                     ),
                     const SizedBox(height: 24),
                     TextFormField(
@@ -378,7 +392,10 @@ class _EmailScreenState extends State<EmailScreen> {
                         if (!value.contains('@') || !value.contains('.')) {
                           return 'Please enter a valid email address';
                         }
-                        final userProvider = Provider.of<UserProvider>(context, listen: false);
+                        final userProvider = Provider.of<UserProvider>(
+                          context,
+                          listen: false,
+                        );
                         if (value.trim() == userProvider.currentUser?.email) {
                           return 'This is already your current email';
                         }
@@ -393,8 +410,14 @@ class _EmailScreenState extends State<EmailScreen> {
                         labelText: 'Current Password',
                         prefixIcon: const Icon(Icons.lock),
                         suffixIcon: IconButton(
-                          icon: Icon(_obscurePassword ? Icons.visibility : Icons.visibility_off),
-                          onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
+                          icon: Icon(
+                            _obscurePassword
+                                ? Icons.visibility
+                                : Icons.visibility_off,
+                          ),
+                          onPressed: () => setState(
+                            () => _obscurePassword = !_obscurePassword,
+                          ),
                         ),
                         border: const OutlineInputBorder(),
                         helperText: 'Confirm with your current password',
@@ -434,10 +457,11 @@ class _EmailScreenState extends State<EmailScreen> {
                         const SizedBox(width: 8),
                         Text(
                           'Important',
-                          style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                            fontWeight: FontWeight.bold,
-                            color: Colors.amber.shade700,
-                          ),
+                          style: Theme.of(context).textTheme.titleSmall
+                              ?.copyWith(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.amber.shade700,
+                              ),
                         ),
                       ],
                     ),
@@ -461,7 +485,7 @@ class _EmailScreenState extends State<EmailScreen> {
 
 class PasswordScreen extends StatefulWidget {
   const PasswordScreen({super.key});
-  
+
   @override
   State<PasswordScreen> createState() => _PasswordScreenState();
 }
@@ -528,9 +552,7 @@ class _PasswordScreenState extends State<PasswordScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Change Password'),
-      ),
+      appBar: AppBar(title: const Text('Change Password')),
       body: Form(
         key: _formKey,
         child: ListView(
@@ -551,9 +573,9 @@ class _PasswordScreenState extends State<PasswordScreen> {
                     const SizedBox(height: 8),
                     Text(
                       'Enter your current password and choose a new secure password.',
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: Colors.grey[600],
-                      ),
+                      style: Theme.of(
+                        context,
+                      ).textTheme.bodyMedium?.copyWith(color: Colors.grey[600]),
                     ),
                     const SizedBox(height: 24),
                     TextFormField(
@@ -563,8 +585,15 @@ class _PasswordScreenState extends State<PasswordScreen> {
                         labelText: 'Current Password',
                         prefixIcon: const Icon(Icons.lock_outline),
                         suffixIcon: IconButton(
-                          icon: Icon(_obscureCurrentPassword ? Icons.visibility : Icons.visibility_off),
-                          onPressed: () => setState(() => _obscureCurrentPassword = !_obscureCurrentPassword),
+                          icon: Icon(
+                            _obscureCurrentPassword
+                                ? Icons.visibility
+                                : Icons.visibility_off,
+                          ),
+                          onPressed: () => setState(
+                            () => _obscureCurrentPassword =
+                                !_obscureCurrentPassword,
+                          ),
                         ),
                         border: const OutlineInputBorder(),
                       ),
@@ -583,8 +612,14 @@ class _PasswordScreenState extends State<PasswordScreen> {
                         labelText: 'New Password',
                         prefixIcon: const Icon(Icons.lock),
                         suffixIcon: IconButton(
-                          icon: Icon(_obscureNewPassword ? Icons.visibility : Icons.visibility_off),
-                          onPressed: () => setState(() => _obscureNewPassword = !_obscureNewPassword),
+                          icon: Icon(
+                            _obscureNewPassword
+                                ? Icons.visibility
+                                : Icons.visibility_off,
+                          ),
+                          onPressed: () => setState(
+                            () => _obscureNewPassword = !_obscureNewPassword,
+                          ),
                         ),
                         border: const OutlineInputBorder(),
                         helperText: 'Password must be at least 8 characters',
@@ -610,8 +645,15 @@ class _PasswordScreenState extends State<PasswordScreen> {
                         labelText: 'Confirm New Password',
                         prefixIcon: const Icon(Icons.lock),
                         suffixIcon: IconButton(
-                          icon: Icon(_obscureConfirmPassword ? Icons.visibility : Icons.visibility_off),
-                          onPressed: () => setState(() => _obscureConfirmPassword = !_obscureConfirmPassword),
+                          icon: Icon(
+                            _obscureConfirmPassword
+                                ? Icons.visibility
+                                : Icons.visibility_off,
+                          ),
+                          onPressed: () => setState(
+                            () => _obscureConfirmPassword =
+                                !_obscureConfirmPassword,
+                          ),
                         ),
                         border: const OutlineInputBorder(),
                       ),
@@ -653,10 +695,11 @@ class _PasswordScreenState extends State<PasswordScreen> {
                         const SizedBox(width: 8),
                         Text(
                           'Password Security Tips',
-                          style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                            fontWeight: FontWeight.bold,
-                            color: Colors.blue.shade700,
-                          ),
+                          style: Theme.of(context).textTheme.titleSmall
+                              ?.copyWith(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.blue.shade700,
+                              ),
                         ),
                       ],
                     ),
@@ -687,21 +730,20 @@ class LogoutScreen extends StatelessWidget {
       title: const Text('Logout'),
       content: const Text('Are you sure you want to log out?'),
       actions: [
-      TextButton(
-        onPressed: () => Navigator.of(context).pop(),
-        child: const Text('Cancel'),
-      ),
-      ElevatedButton(
-        onPressed: () {
-          onLogout();
-          Navigator.of(context).pop(); // Close dialog
-          Navigator.of(context).pushNamedAndRemoveUntil(
-            '/', 
-            (route) => false,
-          );
-        },
-        child: const Text('Logout'),
-      ),
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(),
+          child: const Text('Cancel'),
+        ),
+        ElevatedButton(
+          onPressed: () {
+            onLogout();
+            Navigator.of(context).pop(); // Close dialog
+            Navigator.of(
+              context,
+            ).pushNamedAndRemoveUntil('/', (route) => false);
+          },
+          child: const Text('Logout'),
+        ),
       ],
     );
   }
@@ -725,8 +767,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     super.initState();
     final userProvider = Provider.of<UserProvider>(context, listen: false);
     final currentUser = userProvider.currentUser;
-    
-    _usernameController = TextEditingController(text: currentUser?.username ?? '');
+
+    _usernameController = TextEditingController(
+      text: currentUser?.username ?? '',
+    );
     _emailController = TextEditingController(text: currentUser?.email ?? '');
   }
 
@@ -778,6 +822,74 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     }
   }
 
+  // Show image picker dialog with camera and gallery options
+  Future<void> showImagePickerDialog(
+    BuildContext context,
+    UserProvider userProvider,
+  ) async {
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Select Profile Picture'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(
+                leading: const Icon(Icons.photo_library),
+                title: const Text('Choose from Gallery'),
+                onTap: () async {
+                  await userProvider.changeUserImage(
+                    source: ImageSource.gallery,
+                  );
+                  Navigator.of(context).pop();
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.camera_alt),
+                title: const Text('Take a Photo'),
+                onTap: () async {
+                  await userProvider.changeUserImageFromCamera();
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('Cancel'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  // Helper method to get profile image as Widget
+  Widget? getProfileImageWidget() {
+    final prefs = SharedPreferences.getInstance();
+    return FutureBuilder<SharedPreferences>(
+      future: prefs,
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          final base64Image = snapshot.data!.getString('userProfileImage');
+          if (base64Image != null) {
+            final bytes = base64Decode(base64Image);
+            return CircleAvatar(
+              radius: 50,
+              backgroundImage: MemoryImage(bytes),
+            );
+          }
+        }
+        return const CircleAvatar(
+          radius: 50,
+          child: Icon(Icons.person, size: 50),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -786,7 +898,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         actions: [
           TextButton(
             onPressed: _isLoading ? null : _saveProfile,
-            child: _isLoading 
+            child: _isLoading
                 ? const SizedBox(
                     width: 20,
                     height: 20,
@@ -804,43 +916,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             // Profile Picture Section
             Center(
               child: Column(
-                children: [
-                  Consumer<UserProvider>(
-                    builder: (context, userProvider, child) {
-                      final currentUser = userProvider.currentUser;
-                      return CircleAvatar(
-                        radius: 50,
-                        backgroundColor: Theme.of(context).colorScheme.primary,
-                        child: Text(
-                          _usernameController.text.isNotEmpty 
-                              ? _usernameController.text[0].toUpperCase()
-                              : (currentUser?.email[0].toUpperCase() ?? 'U'),
-                          style: const TextStyle(
-                            fontSize: 36,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                  const SizedBox(height: 16),
-                  OutlinedButton.icon(
-                    onPressed: () {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Profile picture feature coming soon'),
-                        ),
-                      );
-                    },
-                    icon: const Icon(Icons.camera_alt),
-                    label: const Text('Change Photo'),
-                  ),
-                ],
+                children: [const SizedBox(height: 16), ProfileImageWidget()],
               ),
             ),
             const SizedBox(height: 32),
-            
+
             // Username Field
             Card(
               child: Padding(
@@ -901,7 +981,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               ),
             ),
             const SizedBox(height: 16),
-            
+
             // Password Change Section
             Card(
               child: Padding(
@@ -923,7 +1003,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       trailing: const Icon(Icons.arrow_forward_ios),
                       onTap: () {
                         Navigator.of(context).push(
-                          MaterialPageRoute(builder: (_) => const ChangePasswordScreen()),
+                          MaterialPageRoute(
+                            builder: (_) => const ChangePasswordScreen(),
+                          ),
                         );
                       },
                     ),
@@ -1008,9 +1090,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Change Password'),
-      ),
+      appBar: AppBar(title: const Text('Change Password')),
       body: Form(
         key: _formKey,
         child: ListView(
@@ -1028,7 +1108,14 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    const SizedBox(height: 16),
+                    const SizedBox(height: 8),
+                    Text(
+                      'Enter your current password and choose a new secure password.',
+                      style: Theme.of(
+                        context,
+                      ).textTheme.bodyMedium?.copyWith(color: Colors.grey[600]),
+                    ),
+                    const SizedBox(height: 24),
                     TextFormField(
                       controller: _currentPasswordController,
                       obscureText: _obscureCurrentPassword,
@@ -1036,8 +1123,15 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                         labelText: 'Current Password',
                         prefixIcon: const Icon(Icons.lock_outline),
                         suffixIcon: IconButton(
-                          icon: Icon(_obscureCurrentPassword ? Icons.visibility : Icons.visibility_off),
-                          onPressed: () => setState(() => _obscureCurrentPassword = !_obscureCurrentPassword),
+                          icon: Icon(
+                            _obscureCurrentPassword
+                                ? Icons.visibility
+                                : Icons.visibility_off,
+                          ),
+                          onPressed: () => setState(
+                            () => _obscureCurrentPassword =
+                                !_obscureCurrentPassword,
+                          ),
                         ),
                         border: const OutlineInputBorder(),
                       ),
@@ -1056,8 +1150,14 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                         labelText: 'New Password',
                         prefixIcon: const Icon(Icons.lock),
                         suffixIcon: IconButton(
-                          icon: Icon(_obscureNewPassword ? Icons.visibility : Icons.visibility_off),
-                          onPressed: () => setState(() => _obscureNewPassword = !_obscureNewPassword),
+                          icon: Icon(
+                            _obscureNewPassword
+                                ? Icons.visibility
+                                : Icons.visibility_off,
+                          ),
+                          onPressed: () => setState(
+                            () => _obscureNewPassword = !_obscureNewPassword,
+                          ),
                         ),
                         border: const OutlineInputBorder(),
                         helperText: 'Password must be at least 8 characters',
@@ -1080,8 +1180,15 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                         labelText: 'Confirm New Password',
                         prefixIcon: const Icon(Icons.lock),
                         suffixIcon: IconButton(
-                          icon: Icon(_obscureConfirmPassword ? Icons.visibility : Icons.visibility_off),
-                          onPressed: () => setState(() => _obscureConfirmPassword = !_obscureConfirmPassword),
+                          icon: Icon(
+                            _obscureConfirmPassword
+                                ? Icons.visibility
+                                : Icons.visibility_off,
+                          ),
+                          onPressed: () => setState(
+                            () => _obscureConfirmPassword =
+                                !_obscureConfirmPassword,
+                          ),
                         ),
                         border: const OutlineInputBorder(),
                       ),

@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 class User {
   final String? id;
   final String email;
@@ -8,7 +6,7 @@ class User {
   final String? token;
   final String? refreshToken; // Add this field
   final DateTime? createdAt;
-  final Image? profileImage;
+  final dynamic profileImage; // Can be File, String (base64), or XFile
   final String? profileBio;
 
   User({
