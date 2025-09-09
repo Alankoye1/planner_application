@@ -12,17 +12,8 @@
 .swiftpm/
 migrate_working_dir/
 config/
-<<<<<<< HEAD
 build/
-=======
-build/app
-build/.cxx
-.vscode/
-.idea/
-.dart_tool/
 doc/
->>>>>>> d9d5fe9b1419173ae678fa8905a9e5ee225d7994
-
 # IntelliJ related
 *.ipr
 *.iws
