@@ -12,11 +12,7 @@
 .swiftpm/
 migrate_working_dir/
 config/
-.vscode/
 build/
-.idea/
-.dart_tool/
-doc/
 
 # IntelliJ related
 *.ipr
