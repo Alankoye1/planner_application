@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "906862508246",
+    "firebase_url": "https://fit-planner-de29a-default-rtdb.firebaseio.com",
+    "project_id": "fit-planner-de29a",
+    "storage_bucket": "fit-planner-de29a.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:906862508246:android:15a9a85e04d7d49eff7177",
+        "android_client_info": {
+          "package_name": "com.example.fit_planner"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "906862508246-isqsajauao7ce0osev6ui88dbt9p1hjt.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.fit_planner",
+            "certificate_hash": "f14f556bbf91a93137792b08396194138f27e7b6"
+          }
+        },
+        {
+          "client_id": "906862508246-5s0tlv70v7bua2u935mkm3pj6j7ofa2f.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAVORdFMCmE9U-5KlQ17rMubq7ShPa-3f4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "906862508246-02pc7kcptmohp2l7n4jmi952a67fv9n9.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "906862508246-b025p3mg51l6cvtsog4cqutj3td6rk3t.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.planner"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

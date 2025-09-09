@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">fit_planner</string>
+    <string name="facebook_app_id">1220830716465892</string>
+    <string name="facebook_client_token">29f44112aec1ed8103123ae0710cf671</string>
+    <string name="facebook_login_protocol_scheme">fb1220830716465892</string>
+</resources>
