@@ -12,8 +12,9 @@
 .swiftpm/
 migrate_working_dir/
 config/
+build/app
+build/.cxx
 .vscode/
-build/
 .idea/
 .dart_tool/
 doc/
