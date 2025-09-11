@@ -14,6 +14,7 @@ migrate_working_dir/
 config/
 build/
 doc/
+.dart_tool/
 # IntelliJ related
 *.ipr
 *.iws

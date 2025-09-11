@@ -12,7 +12,8 @@ class FavoriteScreen extends StatefulWidget {
   State<FavoriteScreen> createState() => _FavoriteScreenState();
 }
 
-class _FavoriteScreenState extends State<FavoriteScreen> with TickerProviderStateMixin {
+class _FavoriteScreenState extends State<FavoriteScreen>
+    with TickerProviderStateMixin {
   late AnimationController _fadeController;
   late Animation<double> _fadeAnimation;
 
@@ -36,37 +37,72 @@ class _FavoriteScreenState extends State<FavoriteScreen> with TickerProviderStat
     super.dispose();
   }
 
+  _showModaldialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Information'),
+          content: Text(
+            'This is a favorite screen each exercise You add to your favorites will appear here for quick access. You can tap on any exercise to view its details or remove it from your favorites list. Start exploring and adding exercises to see them here!',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('Close'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final exerciseProvider = Provider.of<ExerciseProvider>(context);
     final favoriteExercises = exerciseProvider.favoriteExercises;
     final userProvider = Provider.of<UserProvider>(context);
+    final colorScheme = Theme.of(context).colorScheme;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF8FAFC),
+      backgroundColor: colorScheme.surface,
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
+        backgroundColor: colorScheme.primary,
+        centerTitle: true,
+        actions: [
+          IconButton(
+            onPressed: _showModaldialog,
+            icon: Icon(Icons.info_outline),
+          ),
+        ],
         elevation: 0,
-        title: const Text(
+        title: Text(
           'Favorites',
           style: TextStyle(
-            color: Color(0xFF1A1D29),
+            color: colorScheme.onSurface,
             fontWeight: FontWeight.bold,
             fontSize: 24,
           ),
         ),
-        iconTheme: const IconThemeData(color: Color(0xFF1A1D29)),
+        iconTheme: IconThemeData(color: colorScheme.onSurface),
       ),
       body: FadeTransition(
         opacity: _fadeAnimation,
         child: favoriteExercises.isEmpty
-            ? _buildEmptyState()
-            : _buildFavoritesList(favoriteExercises, exerciseProvider, userProvider),
+            ? _buildEmptyState(colorScheme)
+            : _buildFavoritesList(
+                favoriteExercises,
+                exerciseProvider,
+                userProvider,
+                colorScheme,
+              ),
       ),
     );
   }
 
-  Widget _buildEmptyState() {
+  Widget _buildEmptyState(ColorScheme colorScheme) {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -75,8 +111,8 @@ class _FavoriteScreenState extends State<FavoriteScreen> with TickerProviderStat
             width: 120,
             height: 120,
             decoration: BoxDecoration(
-              gradient: const LinearGradient(
-                colors: [Color(0xFF667EEA), Color(0xFF764BA2)],
+              gradient: LinearGradient(
+                colors: [colorScheme.primary, colorScheme.secondary],
               ),
               borderRadius: BorderRadius.circular(60),
             ),
@@ -87,34 +123,34 @@ class _FavoriteScreenState extends State<FavoriteScreen> with TickerProviderStat
             ),
           ),
           const SizedBox(height: 24),
-          const Text(
+          Text(
             'No Favorites Yet',
             style: TextStyle(
               fontSize: 24,
               fontWeight: FontWeight.bold,
-              color: Color(0xFF1A1D29),
+              color: colorScheme.onSurface,
             ),
           ),
           const SizedBox(height: 8),
-          const Text(
+          Text(
             'Start adding exercises to your favorites\nto see them here',
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 16,
-              color: Color(0xFF64748B),
+              color: colorScheme.onSurfaceVariant,
               height: 1.5,
             ),
           ),
           const SizedBox(height: 32),
           Container(
             decoration: BoxDecoration(
-              gradient: const LinearGradient(
-                colors: [Color(0xFF667EEA), Color(0xFF764BA2)],
+              gradient: LinearGradient(
+                colors: [colorScheme.primary, colorScheme.secondary],
               ),
               borderRadius: BorderRadius.circular(16),
               boxShadow: [
                 BoxShadow(
-                  color: const Color(0xFF667EEA).withValues(alpha:0.3),
+                  color: colorScheme.primary.withValues(alpha: 0.3),
                   blurRadius: 20,
                   offset: const Offset(0, 10),
                 ),
@@ -162,7 +198,12 @@ class _FavoriteScreenState extends State<FavoriteScreen> with TickerProviderStat
     );
   }
 
-  Widget _buildFavoritesList(favoriteExercises, exerciseProvider, userProvider) {
+  Widget _buildFavoritesList(
+    favoriteExercises,
+    exerciseProvider,
+    userProvider,
+    ColorScheme colorScheme,
+  ) {
     return CustomScrollView(
       physics: const BouncingScrollPhysics(),
       slivers: [
@@ -173,20 +214,23 @@ class _FavoriteScreenState extends State<FavoriteScreen> with TickerProviderStat
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
+                Text(
                   'Your Favorite Exercises',
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
-                    color: Color(0xFF1A1D29),
+                    color: colorScheme.onSurface,
                   ),
                 ),
                 const SizedBox(height: 8),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 6,
+                  ),
                   decoration: BoxDecoration(
-                    gradient: const LinearGradient(
-                      colors: [Color(0xFF667EEA), Color(0xFF764BA2)],
+                    gradient: LinearGradient(
+                      colors: [colorScheme.primary, colorScheme.secondary],
                     ),
                     borderRadius: BorderRadius.circular(20),
                   ),
@@ -203,175 +247,184 @@ class _FavoriteScreenState extends State<FavoriteScreen> with TickerProviderStat
             ),
           ),
         ),
-        
+
         // Favorites List
         SliverPadding(
           padding: const EdgeInsets.symmetric(horizontal: 24),
           sliver: SliverList(
-            delegate: SliverChildBuilderDelegate(
-              (context, index) {
-                final exercise = favoriteExercises[index];
-                return TweenAnimationBuilder<double>(
-                  duration: Duration(milliseconds: 300 + (index * 100)),
-                  tween: Tween(begin: 0.0, end: 1.0),
-                  curve: Curves.easeOutCubic,
-                  builder: (context, value, child) {
-                    return Opacity(
-                      opacity: value,
-                      child: Transform.translate(
-                        offset: Offset(0, 20 * (1 - value)),
-                        child: Container(
-                          margin: const EdgeInsets.only(bottom: 16),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
+            delegate: SliverChildBuilderDelegate((context, index) {
+              final exercise = favoriteExercises[index];
+              return TweenAnimationBuilder<double>(
+                duration: Duration(milliseconds: 300 + (index * 100)),
+                tween: Tween(begin: 0.0, end: 1.0),
+                curve: Curves.easeOutCubic,
+                builder: (context, value, child) {
+                  return Opacity(
+                    opacity: value,
+                    child: Transform.translate(
+                      offset: Offset(0, 20 * (1 - value)),
+                      child: Container(
+                        margin: const EdgeInsets.only(bottom: 16),
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).cardColor,
+                          borderRadius: BorderRadius.circular(20),
+                          boxShadow: [
+                            BoxShadow(
+                              color: colorScheme.shadow.withValues(alpha: 0.08),
+                              blurRadius: 20,
+                              offset: const Offset(0, 5),
+                            ),
+                          ],
+                        ),
+                        child: Material(
+                          color: Colors.transparent,
+                          child: InkWell(
                             borderRadius: BorderRadius.circular(20),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withValues(alpha:0.08),
-                                blurRadius: 20,
-                                offset: const Offset(0, 5),
-                              ),
-                            ],
-                          ),
-                          child: Material(
-                            color: Colors.transparent,
-                            child: InkWell(
-                              borderRadius: BorderRadius.circular(20),
-                              onTap: () {
-                                Navigator.of(context).push(
-                                  MaterialPageRoute(
-                                    builder: (context) => ExerciseDetailScreen(
-                                      imageUrl: exercise.excerciseImage,
-                                      title: exercise.excerciseTitle,
-                                      id: exercise.id,
+                            onTap: () {
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (context) => ExerciseDetailScreen(
+                                    imageUrl: exercise.excerciseImage,
+                                    title: exercise.excerciseTitle,
+                                    id: exercise.id,
+                                  ),
+                                ),
+                              );
+                            },
+                            child: Padding(
+                              padding: const EdgeInsets.all(16),
+                              child: Row(
+                                children: [
+                                  // Exercise Image
+                                  Hero(
+                                    tag: 'exercise_${exercise.id}',
+                                    child: Container(
+                                      width: 60,
+                                      height: 60,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(16),
+                                        gradient: LinearGradient(
+                                          colors: [
+                                            colorScheme.primary,
+                                            colorScheme.secondary,
+                                          ],
+                                        ),
+                                      ),
+                                      child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(16),
+                                        child: Image.asset(
+                                          exercise.excerciseImage,
+                                          fit: BoxFit.cover,
+                                          errorBuilder:
+                                              (context, error, stackTrace) {
+                                                return const Icon(
+                                                  Icons.fitness_center,
+                                                  color: Colors.white,
+                                                  size: 30,
+                                                );
+                                              },
+                                        ),
+                                      ),
                                     ),
                                   ),
-                                );
-                              },
-                              child: Padding(
-                                padding: const EdgeInsets.all(16),
-                                child: Row(
-                                  children: [
-                                    // Exercise Image
-                                    Hero(
-                                      tag: 'exercise_${exercise.id}',
-                                      child: Container(
-                                        width: 60,
-                                        height: 60,
-                                        decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(16),
-                                          gradient: const LinearGradient(
-                                            colors: [Color(0xFF667EEA), Color(0xFF764BA2)],
+
+                                  const SizedBox(width: 16),
+
+                                  // Exercise Info
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          exercise.excerciseTitle,
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold,
+                                            color: colorScheme.onSurface,
                                           ),
+                                          maxLines: 2,
+                                          overflow: TextOverflow.ellipsis,
                                         ),
-                                        child: ClipRRect(
-                                          borderRadius: BorderRadius.circular(16),
-                                          child: Image.asset(
-                                            exercise.excerciseImage,
-                                            fit: BoxFit.cover,
-                                            errorBuilder: (context, error, stackTrace) {
-                                              return const Icon(
-                                                Icons.fitness_center,
-                                                color: Colors.white,
-                                                size: 30,
-                                              );
-                                            },
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                    
-                                    const SizedBox(width: 16),
-                                    
-                                    // Exercise Info
-                                    Expanded(
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            exercise.excerciseTitle,
-                                            style: const TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.bold,
-                                              color: Color(0xFF1A1D29),
+                                        const SizedBox(height: 4),
+                                        Row(
+                                          children: [
+                                            Icon(
+                                              Icons.timer_outlined,
+                                              size: 14,
+                                              color:
+                                                  colorScheme.onSurfaceVariant,
                                             ),
-                                            maxLines: 2,
-                                            overflow: TextOverflow.ellipsis,
-                                          ),
-                                          const SizedBox(height: 4),
-                                          const Row(
-                                            children: [
-                                              Icon(
-                                                Icons.timer_outlined,
-                                                size: 14,
-                                                color: Color(0xFF64748B),
+                                            const SizedBox(width: 4),
+                                            Text(
+                                              '15 min',
+                                              style: TextStyle(
+                                                fontSize: 12,
+                                                color: colorScheme
+                                                    .onSurfaceVariant,
                                               ),
-                                              SizedBox(width: 4),
-                                              Text(
-                                                '15 min',
-                                                style: TextStyle(
-                                                  fontSize: 12,
-                                                  color: Color(0xFF64748B),
-                                                ),
+                                            ),
+                                            const SizedBox(width: 16),
+                                            Icon(
+                                              Icons.fitness_center,
+                                              size: 14,
+                                              color:
+                                                  colorScheme.onSurfaceVariant,
+                                            ),
+                                            const SizedBox(width: 4),
+                                            Text(
+                                              'Beginner',
+                                              style: TextStyle(
+                                                fontSize: 12,
+                                                color: colorScheme
+                                                    .onSurfaceVariant,
                                               ),
-                                              SizedBox(width: 16),
-                                              Icon(
-                                                Icons.fitness_center,
-                                                size: 14,
-                                                color: Color(0xFF64748B),
-                                              ),
-                                              SizedBox(width: 4),
-                                              Text(
-                                                'Beginner',
-                                                style: TextStyle(
-                                                  fontSize: 12,
-                                                  color: Color(0xFF64748B),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    
-                                    // Favorite Button
-                                    Container(
-                                      width: 44,
-                                      height: 44,
-                                      decoration: BoxDecoration(
-                                        color: Colors.red.withValues(alpha:0.1),
-                                        borderRadius: BorderRadius.circular(12),
-                                      ),
-                                      child: IconButton(
-                                        onPressed: () {
-                                          exerciseProvider.toggleFavorite(exercise.id, userProvider);
-                                        },
-                                        icon: const Icon(
-                                          Icons.favorite,
-                                          color: Colors.red,
-                                          size: 20,
+                                            ),
+                                          ],
                                         ),
+                                      ],
+                                    ),
+                                  ),
+
+                                  // Favorite Button
+                                  Container(
+                                    width: 44,
+                                    height: 44,
+                                    decoration: BoxDecoration(
+                                      color: colorScheme.error.withValues(
+                                        alpha: 0.1,
+                                      ),
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                    child: IconButton(
+                                      onPressed: () {
+                                        exerciseProvider.toggleFavorite(
+                                          exercise.id,
+                                          userProvider,
+                                        );
+                                      },
+                                      icon: Icon(
+                                        Icons.favorite,
+                                        color: colorScheme.error,
+                                        size: 20,
                                       ),
                                     ),
-                                  ],
-                                ),
+                                  ),
+                                ],
                               ),
                             ),
                           ),
                         ),
                       ),
-                    );
-                  },
-                );
-              },
-              childCount: favoriteExercises.length,
-            ),
+                    ),
+                  );
+                },
+              );
+            }, childCount: favoriteExercises.length),
           ),
         ),
-        
-        const SliverToBoxAdapter(
-          child: SizedBox(height: 100),
-        ),
+
+        const SliverToBoxAdapter(child: SizedBox(height: 100)),
       ],
     );
   }

@@ -23,25 +23,25 @@ class _MyDrawerState extends State<MyDrawer> with TickerProviderStateMixin {
       icon: Icons.calculate,
       title: 'BMI Calculator',
       subtitle: 'Check your body mass index',
-      color: Colors.blue,
+      colorKey: 'primary',
     ),
     DrawerItem(
       icon: Icons.local_fire_department,
       title: 'Calorie Tracker',
       subtitle: 'Track your daily calories',
-      color: Colors.orange,
+      colorKey: 'secondary',
     ),
     DrawerItem(
       icon: Icons.favorite,
       title: 'Favorites',
       subtitle: 'Your favorite exercises',
-      color: Colors.red,
+      colorKey: 'error',
     ),
     DrawerItem(
       icon: Icons.settings,
       title: 'Settings',
       subtitle: 'App preferences',
-      color: Colors.grey,
+      colorKey: 'outline',
     ),
   ];
 
@@ -54,28 +54,32 @@ class _MyDrawerState extends State<MyDrawer> with TickerProviderStateMixin {
     );
 
     _slideAnimations = List.generate(_drawerItems.length, (index) {
+      final start = index * 0.08;
+      final end = (0.3 + (index * 0.08)).clamp(0.0, 1.0);
       return Tween<Offset>(
         begin: const Offset(-1.0, 0.0),
         end: Offset.zero,
       ).animate(CurvedAnimation(
         parent: _animationController,
         curve: Interval(
-          index * 0.1,
-          0.4 + (index * 0.1),
+          start,
+          end,
           curve: Curves.easeOutCubic,
         ),
       ));
     });
 
     _fadeAnimations = List.generate(_drawerItems.length, (index) {
+      final start = index * 0.08;
+      final end = (0.3 + (index * 0.08)).clamp(0.0, 1.0);
       return Tween<double>(
         begin: 0.0,
         end: 1.0,
       ).animate(CurvedAnimation(
         parent: _animationController,
         curve: Interval(
-          index * 0.1,
-          0.4 + (index * 0.1),
+          start,
+          end,
           curve: Curves.easeInOut,
         ),
       ));
@@ -90,11 +94,29 @@ class _MyDrawerState extends State<MyDrawer> with TickerProviderStateMixin {
     super.dispose();
   }
 
+  Color _getColorFromKey(String colorKey, ColorScheme colorScheme) {
+    switch (colorKey) {
+      case 'primary':
+        return colorScheme.primary;
+      case 'secondary':
+        return colorScheme.secondary;
+      case 'error':
+        return colorScheme.error;
+      case 'outline':
+        return colorScheme.outline;
+      default:
+        return colorScheme.primary;
+    }
+  }
+
   Widget _buildDrawerItem({
     required DrawerItem item,
     required VoidCallback onTap,
     required int index,
+    required ColorScheme colorScheme,
   }) {
+    final itemColor = _getColorFromKey(item.colorKey, colorScheme);
+    
     return SlideTransition(
       position: _slideAnimations[index],
       child: FadeTransition(
@@ -120,15 +142,15 @@ class _MyDrawerState extends State<MyDrawer> with TickerProviderStateMixin {
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
                           colors: [
-                            item.color.withValues(alpha: 0.2),
-                            item.color.withValues(alpha: 0.1),
+                            itemColor.withValues(alpha: 0.2),
+                            itemColor.withValues(alpha: 0.1),
                           ],
                         ),
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: Icon(
                         item.icon,
-                        color: item.color,
+                        color: itemColor,
                         size: 24,
                       ),
                     ),
@@ -139,10 +161,10 @@ class _MyDrawerState extends State<MyDrawer> with TickerProviderStateMixin {
                         children: [
                           Text(
                             item.title,
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.w600,
-                              color: Colors.black87,
+                              color: colorScheme.onSurface,
                             ),
                           ),
                           const SizedBox(height: 2),
@@ -150,7 +172,7 @@ class _MyDrawerState extends State<MyDrawer> with TickerProviderStateMixin {
                             item.subtitle,
                             style: TextStyle(
                               fontSize: 12,
-                              color: Colors.grey.shade600,
+                              color: colorScheme.onSurfaceVariant,
                             ),
                           ),
                         ],
@@ -158,7 +180,7 @@ class _MyDrawerState extends State<MyDrawer> with TickerProviderStateMixin {
                     ),
                     Icon(
                       Icons.arrow_forward_ios,
-                      color: Colors.grey.shade400,
+                      color: colorScheme.onSurfaceVariant,
                       size: 16,
                     ),
                   ],
@@ -174,16 +196,17 @@ class _MyDrawerState extends State<MyDrawer> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     final userProvider = Provider.of<UserProvider>(context);
+    final colorScheme = Theme.of(context).colorScheme;
     
     return Drawer(
       child: Container(
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
             colors: [
-              Color(0xFFF8FAFC),
-              Color(0xFFE2E8F0),
+              colorScheme.surface,
+              colorScheme.surface.withValues(alpha: 0.8),
             ],
           ),
         ),
@@ -197,8 +220,8 @@ class _MyDrawerState extends State<MyDrawer> with TickerProviderStateMixin {
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                   colors: [
-                    Colors.blue.shade600,
-                    Colors.purple.shade600,
+                    colorScheme.primary,
+                    colorScheme.secondary,
                   ],
                 ),
                 borderRadius: const BorderRadius.only(
@@ -248,7 +271,7 @@ class _MyDrawerState extends State<MyDrawer> with TickerProviderStateMixin {
                                       ) ?? Icon(
                                         Icons.person,
                                         size: 45,
-                                        color: Colors.grey.shade600,
+                                        color: colorScheme.onSurfaceVariant,
                                       ),
                                     ),
                                   );
@@ -334,7 +357,7 @@ class _MyDrawerState extends State<MyDrawer> with TickerProviderStateMixin {
                           style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
-                            color: Colors.grey.shade700,
+                            color: colorScheme.onSurface,
                           ),
                         ),
                       ),
@@ -349,6 +372,7 @@ class _MyDrawerState extends State<MyDrawer> with TickerProviderStateMixin {
                           );
                         },
                         index: 0,
+                        colorScheme: colorScheme,
                       ),
                       _buildDrawerItem(
                         item: _drawerItems[1],
@@ -360,6 +384,7 @@ class _MyDrawerState extends State<MyDrawer> with TickerProviderStateMixin {
                           );
                         },
                         index: 1,
+                        colorScheme: colorScheme,
                       ),
                       _buildDrawerItem(
                         item: _drawerItems[2],
@@ -369,6 +394,7 @@ class _MyDrawerState extends State<MyDrawer> with TickerProviderStateMixin {
                           );
                         },
                         index: 2,
+                        colorScheme: colorScheme,
                       ),
                       _buildDrawerItem(
                         item: _drawerItems[3],
@@ -378,6 +404,7 @@ class _MyDrawerState extends State<MyDrawer> with TickerProviderStateMixin {
                           );
                         },
                         index: 3,
+                        colorScheme: colorScheme,
                       ),
                       
                       const SizedBox(height: 40),
@@ -393,7 +420,7 @@ class _MyDrawerState extends State<MyDrawer> with TickerProviderStateMixin {
                               child: Text(
                                 'Fitness Planner v1.0',
                                 style: TextStyle(
-                                  color: Colors.grey.shade500,
+                                  color: colorScheme.onSurfaceVariant,
                                   fontSize: 12,
                                 ),
                               ),
@@ -418,12 +445,12 @@ class DrawerItem {
   final IconData icon;
   final String title;
   final String subtitle;
-  final Color color;
+  final String colorKey;
 
   DrawerItem({
     required this.icon,
     required this.title,
     required this.subtitle,
-    required this.color,
+    required this.colorKey,
   });
 }

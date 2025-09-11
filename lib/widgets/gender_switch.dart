@@ -50,18 +50,15 @@ class _GenderSwitchState extends State<GenderSwitch> with TickerProviderStateMix
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    
     return Container(
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [
-            Colors.blue.shade50,
-            Colors.pink.shade50,
-          ],
-        ),
+        color: Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withValues(alpha: 0.2),
+            color: colorScheme.shadow.withValues(alpha: 0.1),
             blurRadius: 10,
             offset: const Offset(0, 5),
           ),
@@ -86,7 +83,7 @@ class _GenderSwitchState extends State<GenderSwitch> with TickerProviderStateMix
                   decoration: BoxDecoration(
                     gradient: widget.isMale
                         ? LinearGradient(
-                            colors: [Colors.blue.shade400, Colors.blue.shade600],
+                            colors: [colorScheme.primary, colorScheme.primary.withValues(alpha: 0.8)],
                           )
                         : null,
                     color: widget.isMale ? null : Colors.transparent,
@@ -94,7 +91,7 @@ class _GenderSwitchState extends State<GenderSwitch> with TickerProviderStateMix
                     boxShadow: widget.isMale
                         ? [
                             BoxShadow(
-                              color: Colors.blue.withValues(alpha: 0.3),
+                              color: colorScheme.primary.withValues(alpha: 0.3),
                               blurRadius: 8,
                               offset: const Offset(0, 4),
                             ),
@@ -131,15 +128,7 @@ class _GenderSwitchState extends State<GenderSwitch> with TickerProviderStateMix
               width: 2,
               height: 32,
               decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [
-                    Colors.grey.shade300,
-                    Colors.grey.shade200,
-                    Colors.grey.shade300,
-                  ],
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                ),
+                color: colorScheme.outline.withValues(alpha: 0.3),
                 borderRadius: BorderRadius.circular(1),
               ),
             ),

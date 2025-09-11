@@ -14,7 +14,8 @@ class TableCalory extends StatefulWidget {
   State<TableCalory> createState() => _TableCaloryState();
 }
 
-class _TableCaloryState extends State<TableCalory> with TickerProviderStateMixin {
+class _TableCaloryState extends State<TableCalory>
+    with TickerProviderStateMixin {
   late AnimationController _animationController;
   late List<Animation<double>> _rowAnimations;
 
@@ -25,22 +26,23 @@ class _TableCaloryState extends State<TableCalory> with TickerProviderStateMixin
       duration: const Duration(milliseconds: 1200),
       vsync: this,
     );
-    
+
     // Create staggered animations for each row
     _rowAnimations = List.generate(5, (index) {
-      return Tween<double>(
-        begin: 0.0,
-        end: 1.0,
-      ).animate(CurvedAnimation(
-        parent: _animationController,
-        curve: Interval(
-          index * 0.15,
-          0.6 + (index * 0.15),
-          curve: Curves.easeOutCubic,
+      final start = index * 0.1;
+      final end = (0.4 + (index * 0.1)).clamp(0.0, 1.0);
+      return Tween<double>(begin: 0.0, end: 1.0).animate(
+        CurvedAnimation(
+          parent: _animationController,
+          curve: Interval(
+            start,
+            end,
+            curve: Curves.easeOutCubic,
+          ),
         ),
-      ));
+      );
     });
-    
+
     _animationController.forward();
   }
 
@@ -56,6 +58,7 @@ class _TableCaloryState extends State<TableCalory> with TickerProviderStateMixin
     required Color color,
     required IconData icon,
     required int index,
+    required BuildContext context,
   }) {
     return AnimatedBuilder(
       animation: _rowAnimations[index],
@@ -88,11 +91,7 @@ class _TableCaloryState extends State<TableCalory> with TickerProviderStateMixin
                       color: color.withValues(alpha: 0.2),
                       borderRadius: BorderRadius.circular(8),
                     ),
-                    child: Icon(
-                      icon,
-                      color: color,
-                      size: 20,
-                    ),
+                    child: Icon(icon, color: color, size: 20),
                   ),
                   const SizedBox(width: 16),
                   Expanded(
@@ -101,7 +100,7 @@ class _TableCaloryState extends State<TableCalory> with TickerProviderStateMixin
                       children: [
                         Text(
                           goal,
-                          style: TextStyle(
+                          style: const TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.w600,
                             fontSize: 14,
@@ -119,7 +118,10 @@ class _TableCaloryState extends State<TableCalory> with TickerProviderStateMixin
                     ),
                   ),
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 6,
+                    ),
                     decoration: BoxDecoration(
                       color: color,
                       borderRadius: BorderRadius.circular(8),
@@ -216,23 +218,24 @@ class _TableCaloryState extends State<TableCalory> with TickerProviderStateMixin
             ],
           ),
           const SizedBox(height: 20),
-          
+
           // Calorie goals list
           ...caloryGoals.asMap().entries.map((entry) {
             final int index = entry.key;
             final Map<String, dynamic> goal = entry.value;
-            
+
             return _buildCaloryRow(
               goal: goal['goal'],
               calories: goal['calories'],
               color: goal['color'],
               icon: goal['icon'],
               index: index,
+              context: context,
             );
           }),
-          
+
           const SizedBox(height: 16),
-          
+
           // Footer note
           AnimatedBuilder(
             animation: _rowAnimations.last,
