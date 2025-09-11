@@ -10,17 +10,61 @@ class NotificationSettingScreen extends StatefulWidget {
       _NotificationSettingScreenState();
 }
 
-class _NotificationSettingScreenState extends State<NotificationSettingScreen> {
+class _NotificationSettingScreenState extends State<NotificationSettingScreen>
+    with TickerProviderStateMixin {
   bool _enabled = false;
   TimeOfDay? _time;
   bool _loading = true;
   bool _busy = false;
   bool _exact = false; // allow user to force exact scheduling
 
+  late AnimationController _animationController;
+  late List<Animation<Offset>> _slideAnimations;
+  late List<Animation<double>> _fadeAnimations;
+
   @override
   void initState() {
     super.initState();
+    _animationController = AnimationController(
+      duration: const Duration(milliseconds: 800),
+      vsync: this,
+    );
+
+    _slideAnimations = List.generate(3, (index) {
+      return Tween<Offset>(
+        begin: const Offset(1.0, 0.0),
+        end: Offset.zero,
+      ).animate(CurvedAnimation(
+        parent: _animationController,
+        curve: Interval(
+          index * 0.2,
+          0.4 + (index * 0.2),
+          curve: Curves.easeOutCubic,
+        ),
+      ));
+    });
+
+    _fadeAnimations = List.generate(3, (index) {
+      return Tween<double>(
+        begin: 0.0,
+        end: 1.0,
+      ).animate(CurvedAnimation(
+        parent: _animationController,
+        curve: Interval(
+          index * 0.2,
+          0.4 + (index * 0.2),
+          curve: Curves.easeInOut,
+        ),
+      ));
+    });
+
     _init();
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
   }
 
   Future<void> _init() async {
@@ -31,6 +75,7 @@ class _NotificationSettingScreenState extends State<NotificationSettingScreen> {
       _enabled = t != null;
       _loading = false;
     });
+    _animationController.forward();
   }
 
   Future<void> _toggle(bool value) async {
@@ -72,66 +117,223 @@ class _NotificationSettingScreenState extends State<NotificationSettingScreen> {
     return '$hour:$minute $suffix';
   }
 
+  Widget _buildTimePickerCard() {
+    return SlideTransition(
+      position: _slideAnimations[1],
+      child: FadeTransition(
+        opacity: _fadeAnimations[1],
+        child: Container(
+          margin: const EdgeInsets.symmetric(vertical: 4),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(16),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.05),
+                blurRadius: 10,
+                offset: const Offset(0, 4),
+              ),
+            ],
+          ),
+          child: Material(
+            color: Colors.transparent,
+            child: InkWell(
+              borderRadius: BorderRadius.circular(16),
+              onTap: _enabled ? _pickTime : null,
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Row(
+                  children: [
+                    // Icon Container
+                    Container(
+                      width: 48,
+                      height: 48,
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [
+                            Colors.orange.withValues(alpha: 0.1),
+                            Colors.orange.withValues(alpha: 0.05),
+                          ],
+                        ),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: const Icon(
+                        Icons.schedule,
+                        color: Colors.orange,
+                        size: 24,
+                      ),
+                    ),
+                    const SizedBox(width: 16),
+                    
+                    // Content
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Reminder Time',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                              color: _enabled ? Colors.black87 : Colors.grey,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            _enabled
+                                ? (_time != null
+                                    ? 'Daily at ${_format(_time!)}'
+                                    : 'Not set')
+                                : 'Disabled',
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Colors.grey.shade600,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    
+                    // Trailing
+                    if (_busy)
+                      const SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      )
+                    else if (_enabled)
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 6,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.orange.withValues(alpha: 0.1),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: const Text(
+                          'Change',
+                          style: TextStyle(
+                            color: Colors.orange,
+                            fontWeight: FontWeight.w500,
+                            fontSize: 12,
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Daily Reminder')),
-      body: _loading
-          ? const Center(child: CircularProgressIndicator())
-          : ListView(
-              children: [
-                CustomSettingSwitchTile(
-                  title: 'Daily Reminder',
-                  subtitle: 'Send a local notification every day',
-                  value: _enabled,
-                  onChanged: (v) => _toggle(v),
-                ),
-                const Divider(),
-                ListTile(
-                  enabled: _enabled && !_busy,
-                  leading: const Icon(Icons.schedule),
-                  title: const Text('Reminder Time'),
-                  subtitle: Text(
-                    _enabled
-                        ? (_time != null
-                              ? 'Daily at ${_format(_time!)}'
-                              : 'Not set')
-                        : 'Disabled',
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              Color(0xFFF8FAFC),
+              Color(0xFFE2E8F0),
+            ],
+          ),
+        ),
+        child: _loading
+            ? const Center(child: CircularProgressIndicator())
+            : CustomScrollView(
+                slivers: [
+                  SliverAppBar(
+                    expandedHeight: 120,
+                    floating: false,
+                    pinned: true,
+                    elevation: 0,
+                    backgroundColor: Colors.transparent,
+                    flexibleSpace: FlexibleSpaceBar(
+                      title: const Text(
+                        'Daily Reminder',
+                        style: TextStyle(
+                          color: Colors.black87,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      background: Container(
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                            colors: [
+                              Colors.orange.shade50,
+                              Colors.red.shade50,
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
                   ),
-                  trailing: _busy
-                      ? const SizedBox(
-                          width: 20,
-                          height: 20,
-                          child: CircularProgressIndicator(strokeWidth: 2),
-                        )
-                      : (_enabled
-                            ? TextButton(
-                                onPressed: _pickTime,
-                                child: const Text('Change'),
-                              )
-                            : null),
-                  onTap: _enabled ? _pickTime : null,
-                ),
-                if (_enabled)
-                  SwitchListTile.adaptive(
-                    title: const Text('Exact (may use more battery)'),
-                    subtitle: const Text('Force precise trigger time'),
-                    value: _exact,
-                    onChanged: (v) async {
-                      setState(() => _exact = v);
-                      if (_time != null) {
-                        // Reschedule with new mode
-                        setState(() => _busy = true);
-                        await NotificationApi().scheduleDailyReminder(
-                          _time!,
-                          exact: _exact,
-                        );
-                        if (mounted) setState(() => _busy = false);
-                      }
-                    },
+                  SliverPadding(
+                    padding: const EdgeInsets.all(16),
+                    sliver: SliverList(
+                      delegate: SliverChildListDelegate([
+                        SlideTransition(
+                          position: _slideAnimations[0],
+                          child: FadeTransition(
+                            opacity: _fadeAnimations[0],
+                            child: Container(
+                              margin: const EdgeInsets.only(bottom: 12),
+                              child: CustomSettingSwitchTile(
+                                title: 'Daily Reminder',
+                                subtitle: 'Send a local notification every day',
+                                value: _enabled,
+                                onChanged: _toggle,
+                                icon: Icons.notifications,
+                                iconColor: Colors.blue,
+                              ),
+                            ),
+                          ),
+                        ),
+                        
+                        _buildTimePickerCard(),
+                        
+                        if (_enabled)
+                          SlideTransition(
+                            position: _slideAnimations[2],
+                            child: FadeTransition(
+                              opacity: _fadeAnimations[2],
+                              child: Container(
+                                margin: const EdgeInsets.only(top: 12),
+                                child: CustomSettingSwitchTile(
+                                  title: 'Exact Timing',
+                                  subtitle: 'Force precise trigger time (may use more battery)',
+                                  value: _exact,
+                                  onChanged: (v) async {
+                                    setState(() => _exact = v);
+                                    if (_time != null) {
+                                      setState(() => _busy = true);
+                                      await NotificationApi().scheduleDailyReminder(
+                                        _time!,
+                                        exact: _exact,
+                                      );
+                                      if (mounted) setState(() => _busy = false);
+                                    }
+                                  },
+                                  icon: Icons.timer,
+                                  iconColor: Colors.green,
+                                ),
+                              ),
+                            ),
+                          ),
+                      ]),
+                    ),
                   ),
-              ],
-            ),
+                ],
+              ),
+      ),
     );
   }
 }

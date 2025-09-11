@@ -11,7 +11,6 @@ import 'package:planner/screens/tab_screen.dart';
 import 'package:planner/providers/custom_exercise_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/services.dart';
-// TODO: Add Animations for transitions
 
 void main() async {
   // Ensure Flutter is initialized before accessing platform features

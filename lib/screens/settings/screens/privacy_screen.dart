@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:planner/screens/settings/widgets/custom_setting_switch_tile.dart';
+import 'package:planner/screens/settings/widgets/custom_setting_list_tile.dart';
 import 'package:planner/screens/settings/widgets/show_privacy.dart';
 
 // TODO: Implement privacy settings functionality after implementing user authentication and data persistence
@@ -10,54 +11,193 @@ class PrivacyScreen extends StatefulWidget {
   State<PrivacyScreen> createState() => _PrivacyScreenState();
 }
 
-class _PrivacyScreenState extends State<PrivacyScreen> {
+class _PrivacyScreenState extends State<PrivacyScreen>
+    with TickerProviderStateMixin {
   bool isProfilePrivate = false;
   bool allowSearch = true;
   bool personalizedAds = false;
 
+  late AnimationController _animationController;
+  late List<Animation<Offset>> _slideAnimations;
+  late List<Animation<double>> _fadeAnimations;
+
+  @override
+  void initState() {
+    super.initState();
+    _animationController = AnimationController(
+      duration: const Duration(milliseconds: 1000),
+      vsync: this,
+    );
+
+    _slideAnimations = List.generate(4, (index) {
+      return Tween<Offset>(
+        begin: const Offset(1.0, 0.0),
+        end: Offset.zero,
+      ).animate(CurvedAnimation(
+        parent: _animationController,
+        curve: Interval(
+          index * 0.2,
+          0.4 + (index * 0.2),
+          curve: Curves.easeOutCubic,
+        ),
+      ));
+    });
+
+    _fadeAnimations = List.generate(4, (index) {
+      return Tween<double>(
+        begin: 0.0,
+        end: 1.0,
+      ).animate(CurvedAnimation(
+        parent: _animationController,
+        curve: Interval(
+          index * 0.2,
+          0.4 + (index * 0.2),
+          curve: Curves.easeInOut,
+        ),
+      ));
+    });
+
+    _animationController.forward();
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Privacy Settings')),
-      body: ListView(
-        children: [
-          CustomSettingSwitchTile(
-            title: 'Private Profile',
-            subtitle: 'Only approved users can see your profile',
-            value: isProfilePrivate,
-            onChanged: (val) {
-              setState(() => isProfilePrivate = val);
-            },
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              Color(0xFFF8FAFC),
+              Color(0xFFE2E8F0),
+            ],
           ),
-          const Divider(),
-          CustomSettingSwitchTile(
-            title: 'Allow Search',
-            subtitle: 'Allow others to find you by email or username',
-            value: allowSearch,
-            onChanged: (val) {
-              setState(() => allowSearch = val);
-            },
-          ),
-          const Divider(),
-          CustomSettingSwitchTile(
-            title: 'Personalized Ads',
-            subtitle: 'Allow personalized ads based on your activity',
-            value: personalizedAds,
-            onChanged: (val) {
-              setState(() => personalizedAds = val);
-            },
-          ),
-          const Divider(),
-          ListTile(
-            leading: const Icon(Icons.info_outline, color: Colors.blueAccent),
-            title: const Text('Privacy Policy'),
-            subtitle: const Text('Read our privacy policy'),
-            onTap: () => showDialog(
-              context: context,
-              builder: (context) => const ShowPrivacy(),
+        ),
+        child: CustomScrollView(
+          slivers: [
+            SliverAppBar(
+              expandedHeight: 120,
+              floating: false,
+              pinned: true,
+              elevation: 0,
+              backgroundColor: Colors.transparent,
+              flexibleSpace: FlexibleSpaceBar(
+                title: const Text(
+                  'Privacy Settings',
+                  style: TextStyle(
+                    color: Colors.black87,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                background: Container(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [
+                        Colors.green.shade50,
+                        Colors.teal.shade50,
+                      ],
+                    ),
+                  ),
+                ),
+              ),
             ),
-          ),
-        ],
+            SliverPadding(
+              padding: const EdgeInsets.all(16),
+              sliver: SliverList(
+                delegate: SliverChildListDelegate([
+                  SlideTransition(
+                    position: _slideAnimations[0],
+                    child: FadeTransition(
+                      opacity: _fadeAnimations[0],
+                      child: Container(
+                        margin: const EdgeInsets.only(bottom: 12),
+                        child: CustomSettingSwitchTile(
+                          title: 'Private Profile',
+                          subtitle: 'Only approved users can see your profile',
+                          value: isProfilePrivate,
+                          onChanged: (val) {
+                            setState(() => isProfilePrivate = val);
+                          },
+                          icon: Icons.visibility_off,
+                          iconColor: Colors.indigo,
+                        ),
+                      ),
+                    ),
+                  ),
+                  
+                  SlideTransition(
+                    position: _slideAnimations[1],
+                    child: FadeTransition(
+                      opacity: _fadeAnimations[1],
+                      child: Container(
+                        margin: const EdgeInsets.only(bottom: 12),
+                        child: CustomSettingSwitchTile(
+                          title: 'Allow Search',
+                          subtitle: 'Allow others to find you by email or username',
+                          value: allowSearch,
+                          onChanged: (val) {
+                            setState(() => allowSearch = val);
+                          },
+                          icon: Icons.search,
+                          iconColor: Colors.green,
+                        ),
+                      ),
+                    ),
+                  ),
+                  
+                  SlideTransition(
+                    position: _slideAnimations[2],
+                    child: FadeTransition(
+                      opacity: _fadeAnimations[2],
+                      child: Container(
+                        margin: const EdgeInsets.only(bottom: 12),
+                        child: CustomSettingSwitchTile(
+                          title: 'Personalized Ads',
+                          subtitle: 'Allow personalized ads based on your activity',
+                          value: personalizedAds,
+                          onChanged: (val) {
+                            setState(() => personalizedAds = val);
+                          },
+                          icon: Icons.ads_click,
+                          iconColor: Colors.orange,
+                        ),
+                      ),
+                    ),
+                  ),
+                  
+                  SlideTransition(
+                    position: _slideAnimations[3],
+                    child: FadeTransition(
+                      opacity: _fadeAnimations[3],
+                      child: Container(
+                        margin: const EdgeInsets.only(bottom: 12),
+                        child: CustomSettingListTile(
+                          title: 'Privacy Policy',
+                          subtitle: 'Read our privacy policy',
+                          icon: Icons.info_outline,
+                          iconColor: Colors.blue,
+                          onTap: () => showDialog(
+                            context: context,
+                            builder: (context) => const ShowPrivacy(),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ]),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
