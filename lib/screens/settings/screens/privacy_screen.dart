@@ -68,15 +68,17 @@ class _PrivacyScreenState extends State<PrivacyScreen>
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    
     return Scaffold(
       body: Container(
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
             colors: [
-              Color(0xFFF8FAFC),
-              Color(0xFFE2E8F0),
+              colorScheme.surface,
+              colorScheme.surfaceContainerHighest,
             ],
           ),
         ),
@@ -89,10 +91,10 @@ class _PrivacyScreenState extends State<PrivacyScreen>
               elevation: 0,
               backgroundColor: Colors.transparent,
               flexibleSpace: FlexibleSpaceBar(
-                title: const Text(
+                title: Text(
                   'Privacy Settings',
                   style: TextStyle(
-                    color: Colors.black87,
+                    color: colorScheme.onSurface,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -102,8 +104,8 @@ class _PrivacyScreenState extends State<PrivacyScreen>
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                       colors: [
-                        Colors.green.shade50,
-                        Colors.teal.shade50,
+                        colorScheme.primaryContainer,
+                        colorScheme.tertiaryContainer,
                       ],
                     ),
                   ),
@@ -128,7 +130,7 @@ class _PrivacyScreenState extends State<PrivacyScreen>
                             setState(() => isProfilePrivate = val);
                           },
                           icon: Icons.visibility_off,
-                          iconColor: Colors.indigo,
+                          iconColor: colorScheme.primary,
                         ),
                       ),
                     ),
@@ -148,7 +150,7 @@ class _PrivacyScreenState extends State<PrivacyScreen>
                             setState(() => allowSearch = val);
                           },
                           icon: Icons.search,
-                          iconColor: Colors.green,
+                          iconColor: colorScheme.secondary,
                         ),
                       ),
                     ),
@@ -168,7 +170,7 @@ class _PrivacyScreenState extends State<PrivacyScreen>
                             setState(() => personalizedAds = val);
                           },
                           icon: Icons.ads_click,
-                          iconColor: Colors.orange,
+                          iconColor: colorScheme.tertiary,
                         ),
                       ),
                     ),
@@ -184,7 +186,7 @@ class _PrivacyScreenState extends State<PrivacyScreen>
                           title: 'Privacy Policy',
                           subtitle: 'Read our privacy policy',
                           icon: Icons.info_outline,
-                          iconColor: Colors.blue,
+                          iconColor: colorScheme.secondary,
                           onTap: () => showDialog(
                             context: context,
                             builder: (context) => const ShowPrivacy(),

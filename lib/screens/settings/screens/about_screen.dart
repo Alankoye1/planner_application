@@ -57,15 +57,17 @@ class _AboutScreenState extends State<AboutScreen>
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    
     return Scaffold(
       body: Container(
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
             colors: [
-              Color(0xFFF8FAFC),
-              Color(0xFFE2E8F0),
+              colorScheme.surface,
+              colorScheme.surfaceContainerHighest,
             ],
           ),
         ),
@@ -78,10 +80,10 @@ class _AboutScreenState extends State<AboutScreen>
               elevation: 0,
               backgroundColor: Colors.transparent,
               flexibleSpace: FlexibleSpaceBar(
-                title: const Text(
+                title: Text(
                   'About',
                   style: TextStyle(
-                    color: Colors.black87,
+                    color: colorScheme.onSurface,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -91,8 +93,8 @@ class _AboutScreenState extends State<AboutScreen>
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                       colors: [
-                        Colors.grey.shade50,
-                        Colors.blue.shade50,
+                        colorScheme.primaryContainer,
+                        colorScheme.secondaryContainer,
                       ],
                     ),
                   ),
@@ -120,23 +122,23 @@ class _AboutScreenState extends State<AboutScreen>
                             decoration: BoxDecoration(
                               gradient: LinearGradient(
                                 colors: [
-                                  Colors.blue.shade400,
-                                  Colors.purple.shade400,
+                                  colorScheme.primary,
+                                  colorScheme.secondary,
                                 ],
                               ),
                               borderRadius: BorderRadius.circular(30),
                               boxShadow: [
                                 BoxShadow(
-                                  color: Colors.blue.withValues(alpha: 0.3),
+                                  color: colorScheme.primary.withValues(alpha: 0.3),
                                   blurRadius: 20,
                                   offset: const Offset(0, 10),
                                 ),
                               ],
                             ),
-                            child: const Icon(
+                            child: Icon(
                               Icons.fitness_center,
                               size: 60,
-                              color: Colors.white,
+                              color: colorScheme.onPrimary,
                             ),
                           ),
                         ),
@@ -148,7 +150,7 @@ class _AboutScreenState extends State<AboutScreen>
                           'Fitness Planner',
                           style: Theme.of(context).textTheme.headlineLarge?.copyWith(
                             fontWeight: FontWeight.bold,
-                            color: Colors.black87,
+                            color: colorScheme.onSurface,
                           ),
                         ),
                         
@@ -161,13 +163,13 @@ class _AboutScreenState extends State<AboutScreen>
                             vertical: 8,
                           ),
                           decoration: BoxDecoration(
-                            color: Colors.blue.withValues(alpha: 0.1),
+                            color: colorScheme.primary.withValues(alpha: 0.1),
                             borderRadius: BorderRadius.circular(20),
                           ),
                           child: Text(
                             'Version 1.0.0',
                             style: TextStyle(
-                              color: Colors.blue.shade700,
+                              color: colorScheme.primary,
                               fontWeight: FontWeight.w500,
                             ),
                           ),
@@ -179,7 +181,7 @@ class _AboutScreenState extends State<AboutScreen>
                         Container(
                           padding: const EdgeInsets.all(20),
                           decoration: BoxDecoration(
-                            color: Colors.white,
+                            color: Theme.of(context).cardColor,
                             borderRadius: BorderRadius.circular(16),
                             boxShadow: [
                               BoxShadow(
@@ -191,9 +193,9 @@ class _AboutScreenState extends State<AboutScreen>
                           ),
                           child: Column(
                             children: [
-                              const Icon(
+                              Icon(
                                 Icons.description,
-                                color: Colors.grey,
+                                color: colorScheme.onSurfaceVariant,
                                 size: 32,
                               ),
                               const SizedBox(height: 16),
@@ -201,7 +203,7 @@ class _AboutScreenState extends State<AboutScreen>
                                 'Fitness Planner helps you organize your workouts, track calories, and manage your fitness journey with ease. Built with Flutter for a smooth and responsive experience.',
                                 textAlign: TextAlign.center,
                                 style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                                  color: Colors.grey.shade700,
+                                  color: colorScheme.onSurfaceVariant,
                                   height: 1.5,
                                 ),
                               ),
@@ -229,7 +231,7 @@ class _AboutScreenState extends State<AboutScreen>
                         Container(
                           padding: const EdgeInsets.all(16),
                           decoration: BoxDecoration(
-                            color: Colors.grey.shade100,
+                            color: colorScheme.surfaceContainerHighest,
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: Row(
@@ -238,13 +240,13 @@ class _AboutScreenState extends State<AboutScreen>
                               Icon(
                                 Icons.copyright,
                                 size: 16,
-                                color: Colors.grey.shade600,
+                                color: colorScheme.onSurfaceVariant,
                               ),
                               const SizedBox(width: 8),
                               Text(
                                 '2025 Fitness Planner App',
                                 style: TextStyle(
-                                  color: Colors.grey.shade600,
+                                  color: colorScheme.onSurfaceVariant,
                                   fontSize: 14,
                                 ),
                               ),
@@ -266,13 +268,15 @@ class _AboutScreenState extends State<AboutScreen>
   }
 
   Widget _buildFeatureChip(String label, IconData icon) {
+    final colorScheme = Theme.of(context).colorScheme;
+    
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       decoration: BoxDecoration(
-        color: Colors.blue.withValues(alpha: 0.1),
+        color: colorScheme.secondary.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
-          color: Colors.blue.withValues(alpha: 0.2),
+          color: colorScheme.secondary.withValues(alpha: 0.2),
         ),
       ),
       child: Row(
@@ -281,13 +285,13 @@ class _AboutScreenState extends State<AboutScreen>
           Icon(
             icon,
             size: 16,
-            color: Colors.blue.shade600,
+            color: colorScheme.secondary,
           ),
           const SizedBox(width: 6),
           Text(
             label,
             style: TextStyle(
-              color: Colors.blue.shade700,
+              color: colorScheme.secondary,
               fontSize: 12,
               fontWeight: FontWeight.w500,
             ),

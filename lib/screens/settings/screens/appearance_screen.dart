@@ -63,6 +63,8 @@ class _AppearanceScreenState extends State<AppearanceScreen>
   }
 
   Widget _buildFontSizeCard(FontProvider fontProvider) {
+    final colorScheme = Theme.of(context).colorScheme;
+    
     return SlideTransition(
       position: _slideAnimations[1],
       child: FadeTransition(
@@ -70,7 +72,7 @@ class _AppearanceScreenState extends State<AppearanceScreen>
         child: Container(
           margin: const EdgeInsets.symmetric(vertical: 4),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: Theme.of(context).cardColor,
             borderRadius: BorderRadius.circular(16),
             boxShadow: [
               BoxShadow(
@@ -91,15 +93,15 @@ class _AppearanceScreenState extends State<AppearanceScreen>
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       colors: [
-                        Colors.green.withValues(alpha: 0.1),
-                        Colors.green.withValues(alpha: 0.05),
+                        colorScheme.tertiary.withValues(alpha: 0.1),
+                        colorScheme.tertiary.withValues(alpha: 0.05),
                       ],
                     ),
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  child: const Icon(
+                  child: Icon(
                     Icons.text_fields,
-                    color: Colors.green,
+                    color: colorScheme.tertiary,
                     size: 24,
                   ),
                 ),
@@ -112,12 +114,12 @@ class _AppearanceScreenState extends State<AppearanceScreen>
                     children: [
                       Row(
                         children: [
-                          const Text(
+                          Text(
                             'Font Size',
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.w600,
-                              color: Colors.black87,
+                              color: colorScheme.onSurface,
                             ),
                           ),
                           const Spacer(),
@@ -127,13 +129,13 @@ class _AppearanceScreenState extends State<AppearanceScreen>
                               vertical: 4,
                             ),
                             decoration: BoxDecoration(
-                              color: Colors.green.withValues(alpha: 0.1),
+                              color: colorScheme.tertiary.withValues(alpha: 0.1),
                               borderRadius: BorderRadius.circular(8),
                             ),
                             child: Text(
                               '${fontProvider.fontSize.toStringAsFixed(0)}px',
-                              style: const TextStyle(
-                                color: Colors.green,
+                              style: TextStyle(
+                                color: colorScheme.tertiary,
                                 fontWeight: FontWeight.w500,
                                 fontSize: 12,
                               ),
@@ -144,11 +146,11 @@ class _AppearanceScreenState extends State<AppearanceScreen>
                       const SizedBox(height: 12),
                       SliderTheme(
                         data: SliderTheme.of(context).copyWith(
-                          activeTrackColor: Colors.green,
-                          inactiveTrackColor: Colors.green.withValues(alpha: 0.2),
-                          thumbColor: Colors.green,
-                          overlayColor: Colors.green.withValues(alpha: 0.1),
-                          valueIndicatorColor: Colors.green,
+                          activeTrackColor: colorScheme.tertiary,
+                          inactiveTrackColor: colorScheme.tertiary.withValues(alpha: 0.2),
+                          thumbColor: colorScheme.tertiary,
+                          overlayColor: colorScheme.tertiary.withValues(alpha: 0.1),
+                          valueIndicatorColor: colorScheme.tertiary,
                           trackHeight: 4,
                         ),
                         child: Slider(
@@ -168,7 +170,7 @@ class _AppearanceScreenState extends State<AppearanceScreen>
                         'Adjust text size throughout the app',
                         style: TextStyle(
                           fontSize: 12,
-                          color: Colors.grey.shade600,
+                          color: colorScheme.onSurfaceVariant,
                         ),
                       ),
                     ],
@@ -186,16 +188,17 @@ class _AppearanceScreenState extends State<AppearanceScreen>
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
     final fontProvider = Provider.of<FontProvider>(context);
+    final colorScheme = Theme.of(context).colorScheme;
     
     return Scaffold(
       body: Container(
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
             colors: [
-              Color(0xFFF8FAFC),
-              Color(0xFFE2E8F0),
+              colorScheme.surface,
+              colorScheme.surfaceContainerHighest,
             ],
           ),
         ),
@@ -208,10 +211,10 @@ class _AppearanceScreenState extends State<AppearanceScreen>
               elevation: 0,
               backgroundColor: Colors.transparent,
               flexibleSpace: FlexibleSpaceBar(
-                title: const Text(
+                title: Text(
                   'Appearance Settings',
                   style: TextStyle(
-                    color: Colors.black87,
+                    color: colorScheme.onSurface,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -221,8 +224,8 @@ class _AppearanceScreenState extends State<AppearanceScreen>
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                       colors: [
-                        Colors.purple.shade50,
-                        Colors.blue.shade50,
+                        colorScheme.primaryContainer,
+                        colorScheme.secondaryContainer,
                       ],
                     ),
                   ),
@@ -248,7 +251,7 @@ class _AppearanceScreenState extends State<AppearanceScreen>
                             if (mounted) setState(() {});
                           },
                           icon: themeProvider.isDarkMode ? Icons.dark_mode : Icons.light_mode,
-                          iconColor: themeProvider.isDarkMode ? Colors.indigo : Colors.amber,
+                          iconColor: themeProvider.isDarkMode ? colorScheme.secondary : colorScheme.primary,
                         ),
                       ),
                     ),

@@ -118,6 +118,8 @@ class _NotificationSettingScreenState extends State<NotificationSettingScreen>
   }
 
   Widget _buildTimePickerCard() {
+    final colorScheme = Theme.of(context).colorScheme;
+    
     return SlideTransition(
       position: _slideAnimations[1],
       child: FadeTransition(
@@ -125,7 +127,7 @@ class _NotificationSettingScreenState extends State<NotificationSettingScreen>
         child: Container(
           margin: const EdgeInsets.symmetric(vertical: 4),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: Theme.of(context).cardColor,
             borderRadius: BorderRadius.circular(16),
             boxShadow: [
               BoxShadow(
@@ -151,15 +153,15 @@ class _NotificationSettingScreenState extends State<NotificationSettingScreen>
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
                           colors: [
-                            Colors.orange.withValues(alpha: 0.1),
-                            Colors.orange.withValues(alpha: 0.05),
+                            colorScheme.secondary.withValues(alpha: 0.1),
+                            colorScheme.secondary.withValues(alpha: 0.05),
                           ],
                         ),
                         borderRadius: BorderRadius.circular(12),
                       ),
-                      child: const Icon(
+                      child: Icon(
                         Icons.schedule,
-                        color: Colors.orange,
+                        color: colorScheme.secondary,
                         size: 24,
                       ),
                     ),
@@ -175,7 +177,7 @@ class _NotificationSettingScreenState extends State<NotificationSettingScreen>
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.w600,
-                              color: _enabled ? Colors.black87 : Colors.grey,
+                              color: _enabled ? colorScheme.onSurface : colorScheme.onSurfaceVariant,
                             ),
                           ),
                           const SizedBox(height: 4),
@@ -187,7 +189,7 @@ class _NotificationSettingScreenState extends State<NotificationSettingScreen>
                                 : 'Disabled',
                             style: TextStyle(
                               fontSize: 14,
-                              color: Colors.grey.shade600,
+                              color: colorScheme.onSurfaceVariant,
                             ),
                           ),
                         ],
@@ -196,10 +198,13 @@ class _NotificationSettingScreenState extends State<NotificationSettingScreen>
                     
                     // Trailing
                     if (_busy)
-                      const SizedBox(
+                      SizedBox(
                         width: 20,
                         height: 20,
-                        child: CircularProgressIndicator(strokeWidth: 2),
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          valueColor: AlwaysStoppedAnimation<Color>(colorScheme.primary),
+                        ),
                       )
                     else if (_enabled)
                       Container(
@@ -208,13 +213,13 @@ class _NotificationSettingScreenState extends State<NotificationSettingScreen>
                           vertical: 6,
                         ),
                         decoration: BoxDecoration(
-                          color: Colors.orange.withValues(alpha: 0.1),
+                          color: colorScheme.secondary.withValues(alpha: 0.1),
                           borderRadius: BorderRadius.circular(8),
                         ),
-                        child: const Text(
+                        child: Text(
                           'Change',
                           style: TextStyle(
-                            color: Colors.orange,
+                            color: colorScheme.secondary,
                             fontWeight: FontWeight.w500,
                             fontSize: 12,
                           ),
@@ -232,15 +237,17 @@ class _NotificationSettingScreenState extends State<NotificationSettingScreen>
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    
     return Scaffold(
       body: Container(
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
             colors: [
-              Color(0xFFF8FAFC),
-              Color(0xFFE2E8F0),
+              colorScheme.surface,
+              colorScheme.surfaceContainerHighest,
             ],
           ),
         ),
@@ -255,10 +262,10 @@ class _NotificationSettingScreenState extends State<NotificationSettingScreen>
                     elevation: 0,
                     backgroundColor: Colors.transparent,
                     flexibleSpace: FlexibleSpaceBar(
-                      title: const Text(
+                      title: Text(
                         'Daily Reminder',
                         style: TextStyle(
-                          color: Colors.black87,
+                          color: colorScheme.onSurface,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -268,8 +275,8 @@ class _NotificationSettingScreenState extends State<NotificationSettingScreen>
                             begin: Alignment.topLeft,
                             end: Alignment.bottomRight,
                             colors: [
-                              Colors.orange.shade50,
-                              Colors.red.shade50,
+                              colorScheme.primaryContainer,
+                              colorScheme.secondaryContainer,
                             ],
                           ),
                         ),
@@ -292,7 +299,7 @@ class _NotificationSettingScreenState extends State<NotificationSettingScreen>
                                 value: _enabled,
                                 onChanged: _toggle,
                                 icon: Icons.notifications,
-                                iconColor: Colors.blue,
+                                iconColor: colorScheme.primary,
                               ),
                             ),
                           ),
@@ -323,7 +330,7 @@ class _NotificationSettingScreenState extends State<NotificationSettingScreen>
                                     }
                                   },
                                   icon: Icons.timer,
-                                  iconColor: Colors.green,
+                                  iconColor: colorScheme.secondary,
                                 ),
                               ),
                             ),

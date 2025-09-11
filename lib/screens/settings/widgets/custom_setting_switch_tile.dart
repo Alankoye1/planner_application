@@ -51,12 +51,14 @@ class _CustomSettingSwitchTileState extends State<CustomSettingSwitchTile>
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    
     return ScaleTransition(
       scale: _scaleAnimation,
       child: Container(
         margin: const EdgeInsets.symmetric(vertical: 4),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: Theme.of(context).cardColor,
           borderRadius: BorderRadius.circular(16),
           boxShadow: [
             BoxShadow(
@@ -88,15 +90,15 @@ class _CustomSettingSwitchTileState extends State<CustomSettingSwitchTile>
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
                           colors: [
-                            (widget.iconColor ?? Colors.blue).withValues(alpha: 0.1),
-                            (widget.iconColor ?? Colors.blue).withValues(alpha: 0.05),
+                            (widget.iconColor ?? colorScheme.primary).withValues(alpha: 0.1),
+                            (widget.iconColor ?? colorScheme.primary).withValues(alpha: 0.05),
                           ],
                         ),
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: Icon(
                         widget.icon,
-                        color: widget.iconColor ?? Colors.blue,
+                        color: widget.iconColor ?? colorScheme.primary,
                         size: 24,
                       ),
                     ),
@@ -110,10 +112,10 @@ class _CustomSettingSwitchTileState extends State<CustomSettingSwitchTile>
                       children: [
                         Text(
                           widget.title,
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w600,
-                            color: Colors.black87,
+                            color: colorScheme.onSurface,
                           ),
                         ),
                         const SizedBox(height: 4),
@@ -121,7 +123,7 @@ class _CustomSettingSwitchTileState extends State<CustomSettingSwitchTile>
                           widget.subtitle,
                           style: TextStyle(
                             fontSize: 14,
-                            color: Colors.grey.shade600,
+                            color: colorScheme.onSurfaceVariant,
                           ),
                         ),
                       ],
@@ -138,7 +140,7 @@ class _CustomSettingSwitchTileState extends State<CustomSettingSwitchTile>
                         child: Switch.adaptive(
                           value: widget.value,
                           onChanged: widget.onChanged,
-                          activeColor: widget.iconColor ?? Colors.blue,
+                          activeColor: widget.iconColor ?? colorScheme.primary,
                           materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                         ),
                       );

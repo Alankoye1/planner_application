@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:planner/screens/auth_screen.dart';
 import 'package:provider/provider.dart';
 import '../../../providers/user_provider.dart';
 import 'edit_profile_screen.dart';
@@ -24,21 +25,17 @@ class _AccountScreenState extends State<AccountScreen>
       vsync: this,
     );
 
-    _fadeAnimation = Tween<double>(
-      begin: 0.0,
-      end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: Curves.easeInOut,
-    ));
+    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
+    );
 
-    _slideAnimation = Tween<Offset>(
-      begin: const Offset(0, 0.3),
-      end: Offset.zero,
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: Curves.easeOutCubic,
-    ));
+    _slideAnimation =
+        Tween<Offset>(begin: const Offset(0, 0.3), end: Offset.zero).animate(
+          CurvedAnimation(
+            parent: _animationController,
+            curve: Curves.easeOutCubic,
+          ),
+        );
 
     _animationController.forward();
   }
@@ -51,17 +48,19 @@ class _AccountScreenState extends State<AccountScreen>
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Scaffold(
       body: FadeTransition(
         opacity: _fadeAnimation,
         child: Container(
-          decoration: const BoxDecoration(
+          decoration: BoxDecoration(
             gradient: LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
               colors: [
-                Color(0xFFF8FAFC),
-                Color(0xFFE2E8F0),
+                colorScheme.surface,
+                colorScheme.surfaceContainerHighest,
               ],
             ),
           ),
@@ -74,10 +73,10 @@ class _AccountScreenState extends State<AccountScreen>
                 elevation: 0,
                 backgroundColor: Colors.transparent,
                 flexibleSpace: FlexibleSpaceBar(
-                  title: const Text(
+                  title: Text(
                     'Account Settings',
                     style: TextStyle(
-                      color: Colors.black87,
+                      color: colorScheme.onSurface,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -87,8 +86,8 @@ class _AccountScreenState extends State<AccountScreen>
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
                         colors: [
-                          Colors.blue.shade50,
-                          Colors.purple.shade50,
+                          colorScheme.primaryContainer,
+                          colorScheme.secondaryContainer,
                         ],
                       ),
                     ),
@@ -107,7 +106,7 @@ class _AccountScreenState extends State<AccountScreen>
                           return Container(
                             padding: const EdgeInsets.all(24),
                             decoration: BoxDecoration(
-                              color: Colors.white,
+                              color: Theme.of(context).cardColor,
                               borderRadius: BorderRadius.circular(20),
                               boxShadow: [
                                 BoxShadow(
@@ -126,54 +125,62 @@ class _AccountScreenState extends State<AccountScreen>
                                   decoration: BoxDecoration(
                                     shape: BoxShape.circle,
                                     border: Border.all(
-                                      color: const Color(0xFF667eea),
+                                      color: colorScheme.primary,
                                       width: 3,
                                     ),
                                   ),
                                   child: ClipOval(
-                                    child: userProvider.getProfileImageWidget(
-                                      width: 74,
-                                      height: 74,
-                                      fit: BoxFit.cover,
-                                    ) ?? Container(
-                                      width: 74,
-                                      height: 74,
-                                      decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        gradient: LinearGradient(
-                                          colors: [
-                                            const Color(0xFF667eea).withValues(alpha: 0.3),
-                                            const Color(0xFF764ba2).withValues(alpha: 0.3),
-                                          ],
+                                    child:
+                                        userProvider.getProfileImageWidget(
+                                          width: 74,
+                                          height: 74,
+                                          fit: BoxFit.cover,
+                                        ) ??
+                                        Container(
+                                          width: 74,
+                                          height: 74,
+                                          decoration: BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            gradient: LinearGradient(
+                                              colors: [
+                                                colorScheme.primary.withValues(
+                                                  alpha: 0.3,
+                                                ),
+                                                colorScheme.secondary
+                                                    .withValues(alpha: 0.3),
+                                              ],
+                                            ),
+                                          ),
+                                          child: Icon(
+                                            Icons.person,
+                                            size: 40,
+                                            color: colorScheme.primary,
+                                          ),
                                         ),
-                                      ),
-                                      child: const Icon(
-                                        Icons.person,
-                                        size: 40,
-                                        color: Color(0xFF667eea),
-                                      ),
-                                    ),
                                   ),
                                 ),
                                 const SizedBox(width: 16),
                                 Expanded(
                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        userProvider.currentUser?.username ?? 'User',
-                                        style: const TextStyle(
+                                        userProvider.currentUser?.username ??
+                                            'User',
+                                        style: TextStyle(
                                           fontSize: 20,
                                           fontWeight: FontWeight.bold,
-                                          color: Color(0xFF2D3436),
+                                          color: colorScheme.onSurface,
                                         ),
                                       ),
                                       const SizedBox(height: 4),
                                       Text(
-                                        userProvider.currentUser?.email ?? 'email@example.com',
+                                        userProvider.currentUser?.email ??
+                                            'email@example.com',
                                         style: TextStyle(
                                           fontSize: 14,
-                                          color: Colors.grey[600],
+                                          color: colorScheme.onSurfaceVariant,
                                         ),
                                       ),
                                     ],
@@ -185,9 +192,9 @@ class _AccountScreenState extends State<AccountScreen>
                         },
                       ),
                     ),
-                    
+
                     const SizedBox(height: 24),
-                    
+
                     // Account Options
                     SlideTransition(
                       position: _slideAnimation,
@@ -197,48 +204,61 @@ class _AccountScreenState extends State<AccountScreen>
                             icon: Icons.person_outline,
                             title: 'Edit Profile',
                             subtitle: 'Update your profile information',
-                            color: const Color(0xFF667eea),
+                            color: colorScheme.primary,
                             onTap: () {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => const EditProfileScreen(),
+                                  builder: (context) =>
+                                      const EditProfileScreen(),
                                 ),
                               );
                             },
                           ),
-                          
+
                           const SizedBox(height: 16),
-                          
+
                           _buildAccountOption(
                             icon: Icons.email_outlined,
                             title: 'Change Email',
                             subtitle: 'Update your email address',
-                            color: const Color(0xFF00b894),
+                            color: colorScheme.secondary,
                             onTap: () {
-                              _showChangeEmailDialog(context);
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      const EmailChangeScreen(),
+                                ),
+                              );
                             },
                           ),
-                          
+
                           const SizedBox(height: 16),
-                          
+
                           _buildAccountOption(
                             icon: Icons.lock_outline,
                             title: 'Change Password',
                             subtitle: 'Update your password',
-                            color: const Color(0xFFe17055),
+                            color: colorScheme.tertiary,
                             onTap: () {
-                              _showChangePasswordDialog(context);
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      const PasswordChangeScreen(),
+                                ),
+                              );
                             },
                           ),
-                          
+
                           const SizedBox(height: 16),
-                          
+
                           _buildAccountOption(
                             icon: Icons.logout,
                             title: 'Logout',
                             subtitle: 'Sign out of your account',
-                            color: const Color(0xFFd63031),
+                            color: colorScheme.error,
                             onTap: () {
                               _showLogoutDialog(context);
                             },
@@ -246,7 +266,7 @@ class _AccountScreenState extends State<AccountScreen>
                         ],
                       ),
                     ),
-                    
+
                     const SizedBox(height: 24),
                   ]),
                 ),
@@ -267,11 +287,11 @@ class _AccountScreenState extends State<AccountScreen>
   }) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
+            color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
             spreadRadius: 1,
             blurRadius: 10,
             offset: const Offset(0, 4),
@@ -294,11 +314,7 @@ class _AccountScreenState extends State<AccountScreen>
                     color: color.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  child: Icon(
-                    icon,
-                    color: color,
-                    size: 24,
-                  ),
+                  child: Icon(icon, color: color, size: 24),
                 ),
                 const SizedBox(width: 16),
                 Expanded(
@@ -307,10 +323,10 @@ class _AccountScreenState extends State<AccountScreen>
                     children: [
                       Text(
                         title,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w600,
-                          color: Color(0xFF2D3436),
+                          color: Theme.of(context).colorScheme.onSurface,
                         ),
                       ),
                       const SizedBox(height: 4),
@@ -318,7 +334,7 @@ class _AccountScreenState extends State<AccountScreen>
                         subtitle,
                         style: TextStyle(
                           fontSize: 14,
-                          color: Colors.grey[600],
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
                         ),
                       ),
                     ],
@@ -326,7 +342,7 @@ class _AccountScreenState extends State<AccountScreen>
                 ),
                 Icon(
                   Icons.arrow_forward_ios,
-                  color: Colors.grey[400],
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
                   size: 16,
                 ),
               ],
@@ -337,51 +353,11 @@ class _AccountScreenState extends State<AccountScreen>
     );
   }
 
-  void _showChangeEmailDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-        ),
-        title: const Text('Change Email'),
-        content: const Text('Email change functionality will be implemented soon.'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('OK'),
-          ),
-        ],
-      ),
-    );
-  }
-
-  void _showChangePasswordDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-        ),
-        title: const Text('Change Password'),
-        content: const Text('Password change functionality will be implemented soon.'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('OK'),
-          ),
-        ],
-      ),
-    );
-  }
-
   void _showLogoutDialog(BuildContext context) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         title: const Text('Logout'),
         content: const Text('Are you sure you want to logout?'),
         actions: [
@@ -392,12 +368,17 @@ class _AccountScreenState extends State<AccountScreen>
           TextButton(
             onPressed: () async {
               Navigator.pop(context);
-              final userProvider = Provider.of<UserProvider>(context, listen: false);
+              final userProvider = Provider.of<UserProvider>(
+                context,
+                listen: false,
+              );
               await userProvider.signOut();
-              // Navigate to login screen or handle logout navigation
+              Navigator.of(context).push(
+                MaterialPageRoute(builder: (context) => const AuthScreen()),
+              );
             },
             style: TextButton.styleFrom(
-              foregroundColor: Colors.red,
+              foregroundColor: Theme.of(context).colorScheme.error,
             ),
             child: const Text('Logout'),
           ),

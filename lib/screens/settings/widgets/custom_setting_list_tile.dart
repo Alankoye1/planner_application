@@ -52,12 +52,14 @@ class _CustomSettingListTileState extends State<CustomSettingListTile>
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    
     return ScaleTransition(
       scale: _scaleAnimation,
       child: Container(
         margin: const EdgeInsets.symmetric(vertical: 4),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: Theme.of(context).cardColor,
           borderRadius: BorderRadius.circular(16),
           boxShadow: [
             BoxShadow(
@@ -97,15 +99,15 @@ class _CustomSettingListTileState extends State<CustomSettingListTile>
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
                         colors: [
-                          (widget.iconColor ?? Colors.blue).withValues(alpha: 0.1),
-                          (widget.iconColor ?? Colors.blue).withValues(alpha: 0.05),
+                          (widget.iconColor ?? colorScheme.primary).withValues(alpha: 0.1),
+                          (widget.iconColor ?? colorScheme.primary).withValues(alpha: 0.05),
                         ],
                       ),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Icon(
                       widget.icon,
-                      color: widget.iconColor ?? Colors.blue,
+                      color: widget.iconColor ?? colorScheme.primary,
                       size: 24,
                     ),
                   ),
@@ -118,10 +120,10 @@ class _CustomSettingListTileState extends State<CustomSettingListTile>
                       children: [
                         Text(
                           widget.title,
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w600,
-                            color: Colors.black87,
+                            color: colorScheme.onSurface,
                           ),
                         ),
                         const SizedBox(height: 4),
@@ -129,7 +131,7 @@ class _CustomSettingListTileState extends State<CustomSettingListTile>
                           widget.subtitle,
                           style: TextStyle(
                             fontSize: 14,
-                            color: Colors.grey.shade600,
+                            color: colorScheme.onSurfaceVariant,
                           ),
                         ),
                       ],
@@ -146,7 +148,7 @@ class _CustomSettingListTileState extends State<CustomSettingListTile>
                             offset: Offset(value * 4, 0),
                             child: Icon(
                               Icons.arrow_forward_ios,
-                              color: Colors.grey.shade400,
+                              color: colorScheme.onSurfaceVariant,
                               size: 16,
                             ),
                           );
