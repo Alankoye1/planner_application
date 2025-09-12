@@ -54,8 +54,10 @@ class _TabScreenState extends State<TabScreen> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    
     return Scaffold(
-      backgroundColor: const Color(0xFFF8FAFC),
+      backgroundColor: colorScheme.surface,
       drawer: const MyDrawer(),
       body: Stack(
         children: [
@@ -80,15 +82,15 @@ class _TabScreenState extends State<TabScreen> with TickerProviderStateMixin {
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   colors: [
-                    Colors.white.withValues(alpha: 0.95),
-                    Colors.white.withValues(alpha: 0.8),
+                    colorScheme.surface.withValues(alpha: 0.95),
+                    colorScheme.surface.withValues(alpha: 0.8),
                   ],
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.05),
+                    color: colorScheme.shadow.withValues(alpha: 0.05),
                     blurRadius: 10,
                     offset: const Offset(0, 2),
                   ),
@@ -106,12 +108,12 @@ class _TabScreenState extends State<TabScreen> with TickerProviderStateMixin {
                             width: 44,
                             height: 44,
                             decoration: BoxDecoration(
-                              color: const Color(0xFF667EEA).withValues(alpha: 0.1),
+                              color: colorScheme.primary.withValues(alpha: 0.1),
                               borderRadius: BorderRadius.circular(14),
                             ),
-                            child: const Icon(
+                            child: Icon(
                               Icons.menu_rounded,
-                              color: Color(0xFF667EEA),
+                              color: colorScheme.primary,
                               size: 24,
                             ),
                           ),
@@ -126,10 +128,10 @@ class _TabScreenState extends State<TabScreen> with TickerProviderStateMixin {
                           child: Text(
                             _pages![_selectedPageIndex]['title'] as String,
                             key: ValueKey(_selectedPageIndex),
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontSize: 24,
                               fontWeight: FontWeight.bold,
-                              color: Color(0xFF1A1D29),
+                              color: colorScheme.onSurface,
                             ),
                           ),
                         ),
@@ -139,12 +141,12 @@ class _TabScreenState extends State<TabScreen> with TickerProviderStateMixin {
                         width: 44,
                         height: 44,
                         decoration: BoxDecoration(
-                          color: const Color(0xFF667EEA).withValues(alpha: 0.1),
+                          color: colorScheme.primary.withValues(alpha: 0.1),
                           borderRadius: BorderRadius.circular(14),
                         ),
-                        child: const Icon(
+                        child: Icon(
                           Icons.notifications_outlined,
-                          color: Color(0xFF667EEA),
+                          color: colorScheme.primary,
                           size: 24,
                         ),
                       ),
@@ -159,14 +161,14 @@ class _TabScreenState extends State<TabScreen> with TickerProviderStateMixin {
       
       // Modern Bottom Navigation
       bottomNavigationBar: Container(
-        margin: const EdgeInsets.all(20),
-        padding: const EdgeInsets.symmetric(vertical: 8),
+        margin: const EdgeInsets.all(6),
+        padding: const EdgeInsets.symmetric(vertical: 6),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: Theme.of(context).cardColor,
           borderRadius: BorderRadius.circular(25),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: 0.1),
+              color: colorScheme.shadow.withValues(alpha: 0.1),
               blurRadius: 20,
               offset: const Offset(0, 5),
             ),
@@ -187,8 +189,8 @@ class _TabScreenState extends State<TabScreen> with TickerProviderStateMixin {
                 ),
                 decoration: BoxDecoration(
                   gradient: isSelected
-                      ? const LinearGradient(
-                          colors: [Color(0xFF667EEA), Color(0xFF764BA2)],
+                      ? LinearGradient(
+                          colors: [colorScheme.primary, colorScheme.secondary],
                         )
                       : null,
                   borderRadius: BorderRadius.circular(20),
@@ -203,7 +205,7 @@ class _TabScreenState extends State<TabScreen> with TickerProviderStateMixin {
                         isSelected
                             ? _pages![index]['selectedIcon'] as IconData
                             : _pages![index]['icon'] as IconData,
-                        color: isSelected ? Colors.white : const Color(0xFF64748B),
+                        color: isSelected ? Colors.white : colorScheme.onSurfaceVariant,
                         size: 24,
                       ),
                     ),

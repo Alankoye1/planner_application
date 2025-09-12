@@ -197,6 +197,7 @@ class _MyDrawerState extends State<MyDrawer> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     final userProvider = Provider.of<UserProvider>(context);
     final colorScheme = Theme.of(context).colorScheme;
+    final mediaQuery = MediaQuery.of(context).size;
     
     return Drawer(
       child: Container(
@@ -214,7 +215,7 @@ class _MyDrawerState extends State<MyDrawer> with TickerProviderStateMixin {
           children: [
             // Custom Header
             Container(
-              height: 220,
+              height: mediaQuery.height * 0.27,
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   begin: Alignment.topLeft,
@@ -300,34 +301,37 @@ class _MyDrawerState extends State<MyDrawer> with TickerProviderStateMixin {
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
-                                const SizedBox(height: 6),
+                                const SizedBox(height: 3),
                                 Container(
                                   padding: const EdgeInsets.symmetric(
                                     horizontal: 12,
-                                    vertical: 4,
+                                    // vertical: 4,
                                   ),
                                   decoration: BoxDecoration(
                                     color: Colors.white.withValues(alpha: 0.2),
                                     borderRadius: BorderRadius.circular(20),
                                   ),
-                                  child: const Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Icon(
-                                        Icons.fitness_center,
-                                        color: Colors.white,
-                                        size: 16,
-                                      ),
-                                      SizedBox(width: 6),
-                                      Text(
-                                        'Fitness Enthusiast',
-                                        style: TextStyle(
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(vertical: 4),
+                                    child: const Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Icon(
+                                          Icons.fitness_center,
                                           color: Colors.white,
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.w500,
+                                          size: 16,
                                         ),
-                                      ),
-                                    ],
+                                        SizedBox(width: 6),
+                                        Text(
+                                          'Fitness Enthusiast',
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ),
                               ],

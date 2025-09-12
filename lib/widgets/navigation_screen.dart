@@ -42,15 +42,17 @@ class _NavigationScreenState extends State<NavigationScreen> with TickerProvider
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    
     return Center(
       child: Container(
         padding: const EdgeInsets.all(4),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: colorScheme.onSurface.withValues(alpha: 0.1),
           borderRadius: BorderRadius.circular(25),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha:0.1),
+              color: colorScheme.shadow.withValues(alpha: 0.1),
               blurRadius: 20,
               offset: const Offset(0, 5),
             ),
@@ -64,12 +66,14 @@ class _NavigationScreenState extends State<NavigationScreen> with TickerProvider
               isSelected: isSchedule,
               onTap: () => _toggle(true),
               icon: Icons.calendar_today_outlined,
+              colorScheme: colorScheme,
             ),
             _buildToggleButton(
               text: 'Custom',
               isSelected: !isSchedule,
               onTap: () => _toggle(false),
               icon: Icons.tune,
+              colorScheme: colorScheme,
             ),
           ],
         ),
@@ -82,6 +86,7 @@ class _NavigationScreenState extends State<NavigationScreen> with TickerProvider
     required bool isSelected,
     required VoidCallback onTap,
     required IconData icon,
+    required ColorScheme colorScheme,
   }) {
     return GestureDetector(
       onTap: onTap,
@@ -91,8 +96,8 @@ class _NavigationScreenState extends State<NavigationScreen> with TickerProvider
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
         decoration: BoxDecoration(
           gradient: isSelected
-              ? const LinearGradient(
-                  colors: [Color(0xFF667EEA), Color(0xFF764BA2)],
+              ? LinearGradient(
+                  colors: [colorScheme.primary, colorScheme.secondary],
                 )
               : null,
           borderRadius: BorderRadius.circular(20),
@@ -105,7 +110,7 @@ class _NavigationScreenState extends State<NavigationScreen> with TickerProvider
               duration: const Duration(milliseconds: 300),
               child: Icon(
                 icon,
-                color: isSelected ? Colors.white : const Color(0xFF64748B),
+                color: isSelected ? Colors.white : colorScheme.onSurfaceVariant,
                 size: 16,
               ),
             ),
@@ -114,7 +119,7 @@ class _NavigationScreenState extends State<NavigationScreen> with TickerProvider
               duration: const Duration(milliseconds: 300),
               style: TextStyle(
                 fontWeight: FontWeight.w600,
-                color: isSelected ? Colors.white : const Color(0xFF64748B),
+                color: isSelected ? Colors.white : colorScheme.onSurfaceVariant,
                 fontSize: 14,
               ),
               child: Text(text),

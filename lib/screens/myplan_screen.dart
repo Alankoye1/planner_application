@@ -57,8 +57,11 @@ class _MyplanScreenState extends State<MyplanScreen> with TickerProviderStateMix
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    
     return Scaffold(
-      backgroundColor: const Color(0xFFF8FAFC),
+      backgroundColor: colorScheme.surface,
+      appBar: AppBar(),
       body: SafeArea(
         child: Column(
           children: [
@@ -74,7 +77,7 @@ class _MyplanScreenState extends State<MyplanScreen> with TickerProviderStateMix
                       'My Fitness Plan',
                       style: Theme.of(context).textTheme.headlineLarge?.copyWith(
                         fontWeight: FontWeight.bold,
-                        color: const Color(0xFF1A1D29),
+                        color: colorScheme.onSurface,
                         fontSize: 28,
                       ),
                     ),
@@ -82,7 +85,7 @@ class _MyplanScreenState extends State<MyplanScreen> with TickerProviderStateMix
                     Text(
                       'Track your progress and customize workouts',
                       style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                        color: const Color(0xFF64748B),
+                        color: colorScheme.onSurfaceVariant,
                         fontSize: 16,
                       ),
                     ),
@@ -142,13 +145,13 @@ class _MyplanScreenState extends State<MyplanScreen> with TickerProviderStateMix
               builder: (context, provider, child) {
                 return Container(
                   decoration: BoxDecoration(
-                    gradient: const LinearGradient(
-                      colors: [Color(0xFF667EEA), Color(0xFF764BA2)],
+                    gradient: LinearGradient(
+                      colors: [colorScheme.primary, colorScheme.secondary],
                     ),
                     borderRadius: BorderRadius.circular(28),
                     boxShadow: [
                       BoxShadow(
-                        color: const Color(0xFF667EEA).withValues(alpha:0.3),
+                        color: colorScheme.primary.withValues(alpha: 0.3),
                         blurRadius: 20,
                         offset: const Offset(0, 10),
                       ),

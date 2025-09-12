@@ -18,7 +18,7 @@ class ExerciseDetailScreen extends StatefulWidget {
   State<ExerciseDetailScreen> createState() => _ExerciseDetailScreenState();
 }
 
-class _ExerciseDetailScreenState extends State<ExerciseDetailScreen> 
+class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
     with TickerProviderStateMixin {
   late AnimationController _fadeController;
   late AnimationController _slideController;
@@ -36,19 +36,16 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
       duration: const Duration(milliseconds: 600),
       vsync: this,
     );
-    
+
     _fadeAnimation = CurvedAnimation(
       parent: _fadeController,
       curve: Curves.easeInOut,
     );
-    _slideAnimation = Tween<Offset>(
-      begin: const Offset(0, 0.3),
-      end: Offset.zero,
-    ).animate(CurvedAnimation(
-      parent: _slideController,
-      curve: Curves.easeOutCubic,
-    ));
-    
+    _slideAnimation =
+        Tween<Offset>(begin: const Offset(0, 0.3), end: Offset.zero).animate(
+          CurvedAnimation(parent: _slideController, curve: Curves.easeOutCubic),
+        );
+
     _fadeController.forward();
     _slideController.forward();
   }
@@ -65,9 +62,10 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
     final exerciseProvider = Provider.of<ExerciseProvider>(context);
     final userProvider = Provider.of<UserProvider>(context);
     final isFavorite = exerciseProvider.isFavorite(widget.id);
-    
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Scaffold(
-      backgroundColor: const Color(0xFFF8FAFC),
+      backgroundColor: colorScheme.surface,
       body: CustomScrollView(
         slivers: [
           // Custom App Bar with Hero Image
@@ -75,8 +73,25 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
             expandedHeight: 300,
             pinned: true,
             elevation: 0,
-            backgroundColor: Colors.white,
-            foregroundColor: const Color(0xFF1A1D29),
+            backgroundColor: colorScheme.onSurface,
+            foregroundColor: colorScheme.surface,
+            leading: Container(
+              margin: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(12),
+                boxShadow: [
+                  BoxShadow(
+                    color: colorScheme.shadow.withValues(alpha: 0.1),
+                    blurRadius: 8,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
+              ),
+              child: IconButton(
+                icon: Icon(Icons.arrow_back, color: colorScheme.surface),
+                onPressed: () => Navigator.pop(context),
+              ),
+            ),
             flexibleSpace: FlexibleSpaceBar(
               background: Stack(
                 fit: StackFit.expand,
@@ -88,9 +103,9 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
                           colors: [
-                            Colors.black.withValues(alpha:0.3),
+                            Colors.black.withValues(alpha: 0.3),
                             Colors.transparent,
-                            Colors.black.withValues(alpha:0.7),
+                            Colors.black.withValues(alpha: 0.7),
                           ],
                           begin: Alignment.topCenter,
                           end: Alignment.bottomCenter,
@@ -101,9 +116,12 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
                         fit: BoxFit.cover,
                         errorBuilder: (context, error, stackTrace) {
                           return Container(
-                            decoration: const BoxDecoration(
+                            decoration: BoxDecoration(
                               gradient: LinearGradient(
-                                colors: [Color(0xFF667EEA), Color(0xFF764BA2)],
+                                colors: [
+                                  colorScheme.primary,
+                                  colorScheme.secondary,
+                                ],
                               ),
                             ),
                             child: const Icon(
@@ -116,7 +134,7 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
                       ),
                     ),
                   ),
-                  
+
                   // Exercise Title Overlay
                   Positioned(
                     bottom: 20,
@@ -149,10 +167,10 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
                               vertical: 6,
                             ),
                             decoration: BoxDecoration(
-                              color: Colors.white.withValues(alpha:0.2),
+                              color: Colors.white.withValues(alpha: 0.2),
                               borderRadius: BorderRadius.circular(20),
                               border: Border.all(
-                                color: Colors.white.withValues(alpha:0.3),
+                                color: Colors.white.withValues(alpha: 0.3),
                               ),
                             ),
                             child: const Text(
@@ -171,32 +189,8 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
                 ],
               ),
             ),
-            actions: [
-              // Favorite Button
-              Container(
-                margin: const EdgeInsets.only(right: 16, top: 8),
-                decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha:0.9),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: IconButton(
-                  icon: AnimatedSwitcher(
-                    duration: const Duration(milliseconds: 300),
-                    child: Icon(
-                      isFavorite ? Icons.favorite : Icons.favorite_border,
-                      key: ValueKey(isFavorite),
-                      color: isFavorite ? Colors.red : const Color(0xFF64748B),
-                      size: 24,
-                    ),
-                  ),
-                  onPressed: () {
-                    exerciseProvider.toggleFavorite(widget.id, userProvider);
-                  },
-                ),
-              ),
-            ],
           ),
-          
+
           // Content Section
           SliverToBoxAdapter(
             child: SlideTransition(
@@ -213,29 +207,32 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
                         'Exercise Overview',
                         'This exercise targets specific muscle groups and helps improve strength, endurance, and overall fitness.',
                         Icons.info_outline,
-                        const Color(0xFF3B82F6),
+                        colorScheme.primary,
+                        colorScheme,
                       ),
-                      
+
                       const SizedBox(height: 20),
-                      
+
                       _buildInfoCard(
                         'Instructions',
                         '1. Start in the proper position\n2. Maintain good form throughout\n3. Control your breathing\n4. Complete the recommended repetitions',
                         Icons.list_alt,
-                        const Color(0xFF10B981),
+                        colorScheme.secondary,
+                        colorScheme,
                       ),
-                      
+
                       const SizedBox(height: 20),
-                      
+
                       _buildInfoCard(
                         'Tips & Safety',
                         '• Warm up before starting\n• Focus on proper form over speed\n• Stop if you feel pain\n• Stay hydrated',
                         Icons.security,
-                        const Color(0xFFF59E0B),
+                        colorScheme.tertiary,
+                        colorScheme,
                       ),
-                      
+
                       const SizedBox(height: 32),
-                      
+
                       // Action Buttons
                       Row(
                         children: [
@@ -243,13 +240,13 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
                             child: _buildActionButton(
                               'Start Workout',
                               Icons.play_arrow,
-                              const Color(0xFF667EEA),
+                              colorScheme.primary,
                               () {
                                 // Handle start workout
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text('Starting workout...'),
-                                    backgroundColor: Color(0xFF10B981),
+                                  SnackBar(
+                                    content: const Text('Starting workout...'),
+                                    backgroundColor: colorScheme.secondary,
                                   ),
                                 );
                               },
@@ -260,13 +257,13 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
                             child: _buildActionButton(
                               'Watch Video',
                               Icons.play_circle_outline,
-                              const Color(0xFF8B5CF6),
+                              colorScheme.secondary,
                               () {
                                 // Handle watch video
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text('Opening video...'),
-                                    backgroundColor: Color(0xFF8B5CF6),
+                                  SnackBar(
+                                    content: const Text('Opening video...'),
+                                    backgroundColor: colorScheme.tertiary,
                                   ),
                                 );
                               },
@@ -274,7 +271,7 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
                           ),
                         ],
                       ),
-                      
+
                       const SizedBox(height: 100),
                     ],
                   ),
@@ -284,18 +281,33 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
           ),
         ],
       ),
+      // Floating Action Button to toggle favorite status
+      floatingActionButton: FloatingActionButton(
+        child: Icon(isFavorite ? Icons.favorite : Icons.favorite_border),
+        onPressed: () {
+          setState(() {
+            exerciseProvider.toggleFavorite(widget.id, userProvider);
+          });
+        },
+      ),
     );
   }
 
-  Widget _buildInfoCard(String title, String content, IconData icon, Color color) {
+  Widget _buildInfoCard(
+    String title,
+    String content,
+    IconData icon,
+    Color color,
+    ColorScheme colorScheme,
+  ) {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: colorScheme.surface,
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha:0.05),
+            color: colorScheme.shadow.withValues(alpha: 0.05),
             blurRadius: 20,
             offset: const Offset(0, 5),
           ),
@@ -309,16 +321,12 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
               Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: color.withValues(alpha:0.1),
+                  color: color.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(8),
                 ),
-                child: Icon(
-                  icon,
-                  color: color,
-                  size: 20,
-                ),
+                child: Icon(icon, color: color, size: 20),
               ),
-              const SizedBox(width: 12),
+              const SizedBox(width: 8),
               Text(
                 title,
                 style: TextStyle(
@@ -332,9 +340,9 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
           const SizedBox(height: 12),
           Text(
             content,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 14,
-              color: Color(0xFF64748B),
+              color: colorScheme.onSurfaceVariant,
               height: 1.5,
             ),
           ),
@@ -343,17 +351,20 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
     );
   }
 
-  Widget _buildActionButton(String text, IconData icon, Color color, VoidCallback onPressed) {
+  Widget _buildActionButton(
+    String text,
+    IconData icon,
+    Color color,
+    VoidCallback onPressed,
+  ) {
     return Container(
       height: 48,
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [color, color.withValues(alpha:0.8)],
-        ),
+        gradient: LinearGradient(colors: [color, color.withValues(alpha: 0.8)]),
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color: color.withValues(alpha:0.3),
+            color: color.withValues(alpha: 0.3),
             blurRadius: 15,
             offset: const Offset(0, 5),
           ),

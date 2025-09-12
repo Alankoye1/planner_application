@@ -37,6 +37,8 @@ class _ExcercisescreenState extends State<Excercisescreen> with TickerProviderSt
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    
     // Find the category that matches the categoryTitle
     final category = categories.firstWhere(
       (cat) => cat.categoryTitle == widget.categoryTitle,
@@ -44,7 +46,7 @@ class _ExcercisescreenState extends State<Excercisescreen> with TickerProviderSt
     );
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF8FAFC),
+      backgroundColor: colorScheme.surface,
       body: CustomScrollView(
         physics: const BouncingScrollPhysics(),
         slivers: [
@@ -53,14 +55,14 @@ class _ExcercisescreenState extends State<Excercisescreen> with TickerProviderSt
             expandedHeight: 120,
             pinned: true,
             elevation: 0,
-            backgroundColor: Colors.white,
-            foregroundColor: const Color(0xFF1A1D29),
+            backgroundColor: colorScheme.surface,
+            foregroundColor: colorScheme.onSurface,
             flexibleSpace: FlexibleSpaceBar(
               titlePadding: const EdgeInsets.only(left: 60, bottom: 16),
               title: Text(
                 widget.categoryTitle,
-                style: const TextStyle(
-                  color: Color(0xFF1A1D29),
+                style: TextStyle(
+                  color: colorScheme.onSurface,
                   fontWeight: FontWeight.bold,
                   fontSize: 20,
                 ),
@@ -69,8 +71,8 @@ class _ExcercisescreenState extends State<Excercisescreen> with TickerProviderSt
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     colors: [
-                      Colors.white,
-                      const Color(0xFF667EEA).withValues(alpha:0.05),
+                      colorScheme.surface,
+                      colorScheme.primary.withValues(alpha: 0.05),
                     ],
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
@@ -91,8 +93,8 @@ class _ExcercisescreenState extends State<Excercisescreen> with TickerProviderSt
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                       decoration: BoxDecoration(
-                        gradient: const LinearGradient(
-                          colors: [Color(0xFF667EEA), Color(0xFF764BA2)],
+                        gradient: LinearGradient(
+                          colors: [colorScheme.primary, colorScheme.secondary],
                         ),
                         borderRadius: BorderRadius.circular(20),
                       ),
@@ -110,9 +112,9 @@ class _ExcercisescreenState extends State<Excercisescreen> with TickerProviderSt
                       onPressed: () {
                         // Handle filter/sort
                       },
-                      icon: const Icon(
+                      icon: Icon(
                         Icons.tune,
-                        color: Color(0xFF64748B),
+                        color: colorScheme.onSurfaceVariant,
                       ),
                     ),
                   ],
@@ -150,6 +152,7 @@ class _ExcercisescreenState extends State<Excercisescreen> with TickerProviderSt
                             child: _ModernExerciseCard(
                               exercise: category.excercises[index],
                               index: index,
+                              colorScheme: colorScheme,
                             ),
                           ),
                         ),
@@ -174,32 +177,35 @@ class _ExcercisescreenState extends State<Excercisescreen> with TickerProviderSt
 class _ModernExerciseCard extends StatelessWidget {
   final dynamic exercise;
   final int index;
+  final ColorScheme colorScheme;
 
   const _ModernExerciseCard({
     required this.exercise,
     required this.index,
+    required this.colorScheme,
   });
 
   @override
   Widget build(BuildContext context) {
+    // Create theme-aware color pairs
     final colors = [
-      [const Color(0xFF667EEA), const Color(0xFF764BA2)],
-      [const Color(0xFF4FACFE), const Color(0xFF00F2FE)],
-      [const Color(0xFF43E97B), const Color(0xFF38F9D7)],
-      [const Color(0xFFF093FB), const Color(0xFFFF4E8C)],
-      [const Color(0xFFFA709A), const Color(0xFFFEE140)],
-      [const Color(0xFFA8EDEA), const Color(0xFFFED6E3)],
+      [colorScheme.primary, colorScheme.secondary],
+      [colorScheme.secondary, colorScheme.tertiary],
+      [colorScheme.primary, colorScheme.tertiary],
+      [colorScheme.secondary, colorScheme.primary],
+      [colorScheme.tertiary, colorScheme.secondary],
+      [colorScheme.primary, colorScheme.primary.withValues(alpha: 0.8)],
     ];
     
     final colorPair = colors[index % colors.length];
 
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: colorScheme.surface,
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha:0.08),
+            color: colorScheme.shadow.withValues(alpha: 0.08),
             blurRadius: 20,
             offset: const Offset(0, 5),
           ),
@@ -299,9 +305,9 @@ class _ModernExerciseCard extends StatelessWidget {
                             color: Colors.white.withValues(alpha:0.9),
                             borderRadius: BorderRadius.circular(12),
                           ),
-                          child: const Icon(
+                          child: Icon(
                             Icons.play_arrow,
-                            color: Color(0xFF667EEA),
+                            color: colorScheme.primary,
                             size: 16,
                           ),
                         ),
@@ -315,16 +321,16 @@ class _ModernExerciseCard extends StatelessWidget {
               Expanded(
                 flex: 2,
                 child: Padding(
-                  padding: const EdgeInsets.all(16),
+                  padding: const EdgeInsets.all(12),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
                         exercise.excerciseTitle,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
-                          color: Color(0xFF1A1D29),
+                          color: colorScheme.onSurface,
                         ),
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
@@ -336,7 +342,7 @@ class _ModernExerciseCard extends StatelessWidget {
                         'Beginner Level',
                         style: TextStyle(
                           fontSize: 12,
-                          color: const Color(0xFF64748B),
+                          color: colorScheme.onSurfaceVariant,
                         ),
                       ),
                       

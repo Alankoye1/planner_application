@@ -52,6 +52,8 @@ class _CustomExerciseState extends State<CustomExercise> with TickerProviderStat
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    
     return Consumer<CustomExerciseProvider>(
       builder: (context, provider, child) {
         return AnimatedBuilder(
@@ -62,8 +64,8 @@ class _CustomExerciseState extends State<CustomExercise> with TickerProviderStat
               child: Opacity(
                 opacity: _fadeAnimation.value.clamp(0.0, 1.0),
                 child: customExercises.isEmpty
-                    ? _buildEmptyState(provider)
-                    : _buildExerciseList(provider),
+                    ? _buildEmptyState(provider, colorScheme)
+                    : _buildExerciseList(provider, colorScheme),
               ),
             );
           },
@@ -72,7 +74,7 @@ class _CustomExerciseState extends State<CustomExercise> with TickerProviderStat
     );
   }
 
-  Widget _buildEmptyState(CustomExerciseProvider provider) {
+  Widget _buildEmptyState(CustomExerciseProvider provider, ColorScheme colorScheme) {
     return Center(
       child: Container(
         margin: const EdgeInsets.all(32),
@@ -80,14 +82,14 @@ class _CustomExerciseState extends State<CustomExercise> with TickerProviderStat
         decoration: BoxDecoration(
           gradient: LinearGradient(
             colors: [
-              Colors.blue.shade50,
-              Colors.purple.shade50,
+              colorScheme.surfaceContainer,
+              colorScheme.surfaceContainerHigh,
             ],
           ),
           borderRadius: BorderRadius.circular(25),
           boxShadow: [
             BoxShadow(
-              color: Colors.grey.withValues(alpha: 0.1),
+              color: colorScheme.shadow.withValues(alpha: 0.1),
               blurRadius: 20,
               offset: const Offset(0, 10),
             ),
@@ -101,12 +103,12 @@ class _CustomExerciseState extends State<CustomExercise> with TickerProviderStat
               height: 80,
               decoration: BoxDecoration(
                 gradient: LinearGradient(
-                  colors: [Colors.blue.shade400, Colors.purple.shade400],
+                  colors: [colorScheme.primary, colorScheme.secondary],
                 ),
                 borderRadius: BorderRadius.circular(40),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.blue.withValues(alpha: 0.3),
+                    color: colorScheme.primary.withValues(alpha: 0.3),
                     blurRadius: 15,
                     offset: const Offset(0, 8),
                   ),
@@ -119,10 +121,10 @@ class _CustomExerciseState extends State<CustomExercise> with TickerProviderStat
                   onTap: () {
                     provider.addingCustom(context);
                   },
-                  child: const Center(
+                  child: Center(
                     child: Icon(
                       Icons.add,
-                      color: Colors.white,
+                      color: colorScheme.onPrimary,
                       size: 32,
                     ),
                   ),
@@ -136,7 +138,7 @@ class _CustomExerciseState extends State<CustomExercise> with TickerProviderStat
               style: TextStyle(
                 fontSize: 22,
                 fontWeight: FontWeight.bold,
-                color: Colors.grey.shade800,
+                color: colorScheme.onSurface,
               ),
             ),
             const SizedBox(height: 12),
@@ -145,7 +147,7 @@ class _CustomExerciseState extends State<CustomExercise> with TickerProviderStat
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 16,
-                color: Colors.grey.shade600,
+                color: colorScheme.onSurfaceVariant,
                 height: 1.4,
               ),
             ),
@@ -155,7 +157,7 @@ class _CustomExerciseState extends State<CustomExercise> with TickerProviderStat
     );
   }
 
-  Widget _buildExerciseList(CustomExerciseProvider provider) {
+  Widget _buildExerciseList(CustomExerciseProvider provider, ColorScheme colorScheme) {
     return ListView.builder(
       padding: const EdgeInsets.all(16),
       itemCount: customExercises.length,
@@ -176,14 +178,14 @@ class _CustomExerciseState extends State<CustomExercise> with TickerProviderStat
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       colors: [
-                        Colors.indigo.shade400,
-                        Colors.blue.shade500,
+                        colorScheme.primary,
+                        colorScheme.secondary,
                       ],
                     ),
                     borderRadius: BorderRadius.circular(20),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.indigo.withValues(alpha: 0.3),
+                        color: colorScheme.primary.withValues(alpha: 0.3),
                         blurRadius: 15,
                         offset: const Offset(0, 8),
                       ),
@@ -202,13 +204,13 @@ class _CustomExerciseState extends State<CustomExercise> with TickerProviderStat
                             width: 50,
                             height: 50,
                             decoration: BoxDecoration(
-                              color: Colors.white.withValues(alpha: 0.2),
+                              color: colorScheme.onPrimary.withValues(alpha: 0.2),
                               borderRadius: BorderRadius.circular(15),
                             ),
                             child: Center(
                               child: Icon(
                                 Icons.fitness_center,
-                                color: Colors.white,
+                                color: colorScheme.onPrimary,
                                 size: 24,
                               ),
                             ),
@@ -220,10 +222,10 @@ class _CustomExerciseState extends State<CustomExercise> with TickerProviderStat
                               children: [
                                 Text(
                                   category,
-                                  style: const TextStyle(
+                                  style: TextStyle(
                                     fontSize: 20,
                                     fontWeight: FontWeight.bold,
-                                    color: Colors.white,
+                                    color: colorScheme.onPrimary,
                                   ),
                                 ),
                                 const SizedBox(height: 4),
@@ -231,7 +233,7 @@ class _CustomExerciseState extends State<CustomExercise> with TickerProviderStat
                                   '${exercises.length} exercises',
                                   style: TextStyle(
                                     fontSize: 14,
-                                    color: Colors.white.withValues(alpha: 0.8),
+                                    color: colorScheme.onPrimary.withValues(alpha: 0.8),
                                   ),
                                 ),
                               ],
@@ -242,12 +244,12 @@ class _CustomExerciseState extends State<CustomExercise> with TickerProviderStat
                       trailing: Container(
                         padding: const EdgeInsets.all(8),
                         decoration: BoxDecoration(
-                          color: Colors.white.withValues(alpha: 0.2),
+                          color: colorScheme.onPrimary.withValues(alpha: 0.2),
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: PopupMenuButton<int>(
-                          icon: const Icon(Icons.more_vert, color: Colors.white),
-                          color: Colors.white,
+                          icon: Icon(Icons.more_vert, color: colorScheme.onPrimary),
+                          color: colorScheme.surface,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),
                           ),
@@ -267,7 +269,7 @@ class _CustomExerciseState extends State<CustomExercise> with TickerProviderStat
                               value: 0,
                               child: Row(
                                 children: [
-                                  Icon(Icons.add, color: Colors.blue.shade600),
+                                  Icon(Icons.add, color: colorScheme.primary),
                                   const SizedBox(width: 8),
                                   const Text('Add Exercise'),
                                 ],
@@ -277,7 +279,7 @@ class _CustomExerciseState extends State<CustomExercise> with TickerProviderStat
                               value: 1,
                               child: Row(
                                 children: [
-                                  Icon(Icons.delete, color: Colors.red.shade600),
+                                  Icon(Icons.delete, color: colorScheme.error),
                                   const SizedBox(width: 8),
                                   const Text('Remove Category'),
                                 ],
@@ -290,10 +292,10 @@ class _CustomExerciseState extends State<CustomExercise> with TickerProviderStat
                         return Container(
                           margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 6),
                           decoration: BoxDecoration(
-                            color: Colors.white.withValues(alpha: 0.15),
+                            color: colorScheme.onPrimary.withValues(alpha: 0.15),
                             borderRadius: BorderRadius.circular(15),
                             border: Border.all(
-                              color: Colors.white.withValues(alpha: 0.2),
+                              color: colorScheme.onPrimary.withValues(alpha: 0.2),
                               width: 1,
                             ),
                           ),
@@ -305,7 +307,7 @@ class _CustomExerciseState extends State<CustomExercise> with TickerProviderStat
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(12),
                                 border: Border.all(
-                                  color: Colors.white,
+                                  color: colorScheme.onPrimary,
                                   width: 2,
                                 ),
                               ),
@@ -319,16 +321,16 @@ class _CustomExerciseState extends State<CustomExercise> with TickerProviderStat
                             ),
                             title: Text(
                               exercise.excerciseTitle,
-                              style: const TextStyle(
-                                color: Colors.white,
+                              style: TextStyle(
+                                color: colorScheme.onPrimary,
                                 fontWeight: FontWeight.w600,
                                 fontSize: 16,
                               ),
                             ),
                             subtitle: Text(
-                              'Custom Exercise',
+                              _getCategoryName(exercise.categoryId),
                               style: TextStyle(
-                                color: Colors.white.withValues(alpha: 0.7),
+                                color: colorScheme.onPrimary.withValues(alpha: 0.7),
                                 fontSize: 12,
                               ),
                             ),
@@ -337,13 +339,13 @@ class _CustomExerciseState extends State<CustomExercise> with TickerProviderStat
                               children: [
                                 Container(
                                   decoration: BoxDecoration(
-                                    color: Colors.white.withValues(alpha: 0.2),
+                                    color: colorScheme.onPrimary.withValues(alpha: 0.2),
                                     borderRadius: BorderRadius.circular(8),
                                   ),
                                   child: IconButton(
-                                    icon: const Icon(
+                                    icon: Icon(
                                       Icons.edit,
-                                      color: Colors.white,
+                                      color: colorScheme.onPrimary,
                                       size: 18,
                                     ),
                                     onPressed: () {
@@ -359,13 +361,13 @@ class _CustomExerciseState extends State<CustomExercise> with TickerProviderStat
                                 const SizedBox(width: 8),
                                 Container(
                                   decoration: BoxDecoration(
-                                    color: Colors.red.withValues(alpha: 0.2),
+                                    color: colorScheme.error,
                                     borderRadius: BorderRadius.circular(8),
                                   ),
                                   child: IconButton(
-                                    icon: const Icon(
+                                    icon: Icon(
                                       Icons.delete,
-                                      color: Colors.white,
+                                      color: colorScheme.onPrimary,
                                       size: 18,
                                     ),
                                     onPressed: () {
@@ -402,5 +404,12 @@ class _CustomExerciseState extends State<CustomExercise> with TickerProviderStat
         );
       },
     );
+  }
+
+  String _getCategoryName(String categoryId) {
+    final category = categories.firstWhere(
+      (cat) => cat.id == categoryId,
+    );
+    return category.categoryTitle;
   }
 }
